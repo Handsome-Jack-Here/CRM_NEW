@@ -20,7 +20,7 @@ class Order(models.Model):
         return super(Order, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f'Global id:{self.pk} Individual id:{self.order_id} Client:{self.client}'
+        return f'Global id:{self.pk} Individual id:{self.order_id} Client:{self.client} User: {self.user}'
 
 
 class Client(models.Model):
@@ -29,5 +29,7 @@ class Client(models.Model):
     phone = models.CharField(max_length=21)
     address = models.CharField(max_length=42)
 
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='clients')
+
     def __str__(self):
-        return f'{self.first_name} {self.last_name} {self.phone}'
+        return f'{self.first_name} {self.last_name} {self.phone} User: {self.user}'
