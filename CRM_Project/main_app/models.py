@@ -10,8 +10,8 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
 
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
-    client = models.ForeignKey('Client', on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='orders')
+    client = models.ForeignKey('Client', on_delete=models.PROTECT, related_name='orders')
 
     def save(self, *args, **kwargs):
         user = self.user
@@ -20,7 +20,7 @@ class Order(models.Model):
         return super(Order, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.pk} {self.defect} {self.client}'
+        return f'Global id:{self.pk} Individual id:{self.order_id} Client:{self.client}'
 
 
 class Client(models.Model):
@@ -28,3 +28,6 @@ class Client(models.Model):
     last_name = models.CharField(max_length=28)
     phone = models.CharField(max_length=21)
     address = models.CharField(max_length=42)
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name} {self.phone}'
