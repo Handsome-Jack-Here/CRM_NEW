@@ -15,7 +15,7 @@ class Order(models.Model):
 
     def save(self, *args, **kwargs):
         user = self.user
-        orders_count = user.orders.count()
+        orders_count = list(user.orders.get_queryset())[-1].order_id
         self.order_id = orders_count + 1
         return super(Order, self).save(*args, **kwargs)
 
@@ -32,4 +32,4 @@ class Client(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='clients')
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name} {self.phone} User: {self.user}'
+        return f'{self.first_name} {self.last_name} Phone number: {self.phone}'

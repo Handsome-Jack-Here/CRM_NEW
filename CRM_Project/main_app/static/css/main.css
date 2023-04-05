@@ -1,0 +1,38 @@
+.wrap {
+    margin: auto;
+    padding: 8px;
+    width: 97%;
+}
+
+.left_side {
+    margin: auto;
+    padding-top: 4px;
+    padding-right: 4px;
+    width: 27%;
+    height: 1600px;
+    min-width: 280px;
+    float: left;
+}
+
+
+.right_side {
+    margin: auto;
+    padding-top: 4px;
+    width: 70%;
+    float: right;
+    min-width: 350px;
+}
+
+.caption-top {
+    background: #a9bebf;
+    position: static;
+    width: 100%;
+}
+
+.flex-column {
+    height: 800px;
+}
+
+.a_general {
+    text-decoration: none;
+}

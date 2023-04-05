@@ -1,10 +1,11 @@
-from  rest_framework import serializers
+from rest_framework import serializers
 from .models import Order, Client
 
 
 class OrderListSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    # client = serializers.StringRelatedField(read_only=True)
+
+    # client = serializers.StringRelatedField(read_only=True, )
     # order_id = serializers.HiddenField(default=False)
 
     class Meta:

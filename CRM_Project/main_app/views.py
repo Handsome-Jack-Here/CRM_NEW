@@ -12,13 +12,15 @@ class Index(TemplateView):
 
 
 class OrderViewSet(viewsets.ModelViewSet):
+    lookup_field = 'order_id'
 
     def get_queryset(self):
         pk = self.kwargs.get('pk')
+        user = User.objects.get(id=self.request.user.id)
         if not pk:
-            return User.objects.get(id=self.request.user.id).orders.all()
+            return user.orders.all()
 
-        return Order.objects.filter(pk=pk)
+        return user.orders.filter(pk=pk)
 
     serializer_class = OrderListSerializer
 
