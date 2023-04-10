@@ -5,6 +5,9 @@ from rest_framework import viewsets
 from .serializers import OrderListSerializer, ClientListSerializer
 from .models import Order, Client, User
 from django.views.generic import View, TemplateView
+from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework import permissions
+from rest_framework.authentication import BaseAuthentication, SessionAuthentication, TokenAuthentication
 
 
 class Index(TemplateView):
@@ -18,11 +21,15 @@ class OrderViewSet(viewsets.ModelViewSet):
         pk = self.kwargs.get('pk')
         user = User.objects.get(id=self.request.user.id)
         if not pk:
-            return user.orders.all()
+            return user.orders.all().order_by('-order_id')
 
         return user.orders.filter(pk=pk)
 
     serializer_class = OrderListSerializer
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = ['defect', 'order_id']
+    permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = (TokenAuthentication, SessionAuthentication, )
 
 
 class ClientViewSet(viewsets.ModelViewSet):

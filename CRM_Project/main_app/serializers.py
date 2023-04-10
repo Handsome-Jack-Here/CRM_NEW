@@ -4,12 +4,14 @@ from .models import Order, Client
 
 class OrderListSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    order_id = serializers.ReadOnlyField()
 
     # client = serializers.StringRelatedField(read_only=True, )
-    # order_id = serializers.HiddenField(default=False)
+
 
     class Meta:
         model = Order
+
         fields = '__all__'
 
 

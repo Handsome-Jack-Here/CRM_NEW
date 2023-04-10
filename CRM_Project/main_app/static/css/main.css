@@ -1,7 +1,20 @@
 .wrap {
     margin: auto;
-    padding: 8px;
+    /*padding: auto;*/
     width: 97%;
+}
+
+.header {
+    margin-top: auto;
+    position: fixed;
+    width: 100%;
+    break-after: auto;
+    break-before: auto;
+}
+
+.content {
+    margin: auto;
+    padding-top: 80px;
 }
 
 .left_side {
@@ -12,6 +25,10 @@
     height: 1600px;
     min-width: 280px;
     float: left;
+    position: fixed;
+    break-after: auto;
+    break-before: auto;
+
 }
 
 
@@ -19,6 +36,7 @@
     margin: auto;
     padding-top: 4px;
     width: 70%;
+    align-content: center;
     float: right;
     min-width: 350px;
 }

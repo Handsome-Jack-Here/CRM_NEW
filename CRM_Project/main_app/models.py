@@ -15,12 +15,18 @@ class Order(models.Model):
 
     def save(self, *args, **kwargs):
         user = self.user
-        orders_count = list(user.orders.get_queryset())[-1].order_id
-        self.order_id = orders_count + 1
+        if user.orders.get_queryset():
+            if self.created:
+                pass
+            else:
+                orders_count = list(user.orders.get_queryset())[-1].order_id
+                self.order_id = orders_count + 1
+        else:
+            self.order_id = 1
         return super(Order, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f'Global id:{self.pk} Individual id:{self.order_id} Client:{self.client} User: {self.user}'
+        return f'Global id:{self.pk} Individual id:{self.order_id} Client:{self.client} User: {self.user} '
 
 
 class Client(models.Model):
@@ -32,4 +38,4 @@ class Client(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='clients')
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name} Phone number: {self.phone}'
+        return f'{self.first_name} {self.last_name} Phone number: {self.phone}  Order id: {self.pk}'
