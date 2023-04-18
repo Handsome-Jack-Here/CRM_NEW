@@ -1,49 +1,80 @@
 $(document).ready(function () {
-    let first_name = 'test name';
+
+        async function saveOrder(order_num, client_num) {
+            $('#order_detail').attr('hidden', true);
+
+            let order = {
+                // "id": 85,
+                // "order_id": 5,
+                'defect': $('#defect').val(),
+                'first_name': $('#first_name').val(),
+                'last_name': $('#last_name').val(),
+                'phone': $('#phone_number').val(),
 
 
-    $.ajax({
-        url: '/api/v1/orders/',
-        method: 'GET',
-    }).done(function (response) {
-        for (let i in response) {
+            }
+            let options = {
+                method: 'PATCH',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "token a4b09fcc7db19bab22a3e7dfe89cc1ff7cd0c1eb",
+                },
+                body: JSON.stringify(order)
+            }
+
+            await fetch(`/api/v1/orders/${order_num}/`, options);
+            await fetch(`/api/v1/clients/${client_num}/`, options);
 
 
+            getOrderList().then( $('#order_list').fadeIn(200))
 
-            let item = `<tr id="row"><th scope="row"><a class="a_general" href="">${response[i].order_id} <a href="" hidden="">${response[i].id}</a>
-                </a></th><td>${response[i].client}</td><td>Otto</td><td>@mdo</td><td>@mdo</td></tr>`;
-            $('#orders').append(item);
         }
 
+        async function getOrderList() {
+            $('#order_list tbody *').remove();
+            const response = await fetch('/api/v1/orders/');
+            const orders = await response.json();
+            for (let order of orders) {
+                const response1 = await fetch(`/api/v1/clients/${order.client}/`);
+                const client = await response1.json();
+                $('#order_list tbody').append(`<tr><td><a href="" style="text-decoration: none" ">${order.order_id}</a></td><td>${client.first_name} ${client.last_name}</td><td>None</td><td>${order.defect}</td><td>Stage none</td></tr>`)
+            }
+            $('#order_list').attr('hidden', false)
+        }
 
-    });
+        async function getOrderDetail(order_id) {
 
-    let orders = fetch('/api/v1/orders/1',)
-        .then(response => response.json())
-        .then(function (data) {return data.order_id})
-        alert(orders)
-    document.getElementBy('orders').append()
+            $('#order_list').hide();
+            $('#order_detail').removeAttr('hidden');
+            const order_detail = await fetch(`/api/v1/orders/${order_id}/`);
+            const order = await order_detail.json();
+            const client_detail = await fetch(`/api/v1/clients/${order.client}/`);
+            const client = await client_detail.json();
+            $('#order_id').text('Order# ' + order_id)
 
-
-
-
-
-    $('#orders').on('click', 'a', function (e) {
-        e.preventDefault();
-        let item = $(this).text()
-
-        $('#order_list').hide();
-        $('#order_detail').removeAttr('hidden');
-        $.ajax({
-            url: `/api/v1/orders/${item}/`,
-            method: 'GET',
-        }).done(function (response) {
-            let order = response
-            $('#defect').val(order.defect)
-            // alert('done')
-        })
+            $('#defect').val(order.defect);
+            $('#first_name').val(client.first_name);
+            $('#last_name').val(client.last_name);
+            $('#phone_number').val(client.phone);
 
 
-    });
 
-});
+            $('#save').off().click(function (e) {
+                e.preventDefault()
+                saveOrder(order_id, order.client)
+            })
+
+        }
+
+        $('#orders').on('click', 'a', function (e) {
+            e.preventDefault();
+            let order_id = $(this).text();
+            getOrderDetail(order_id = order_id).then()
+
+        });
+
+        getOrderList().then($('#order_list').fadeIn(200))
+    }
+)
+;
+

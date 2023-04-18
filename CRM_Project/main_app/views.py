@@ -29,7 +29,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = ['defect', 'order_id']
     permission_classes = (permissions.IsAuthenticated,)
-    authentication_classes = (TokenAuthentication, SessionAuthentication, )
+    # authentication_classes = (TokenAuthentication, SessionAuthentication, )
 
 
 class ClientViewSet(viewsets.ModelViewSet):

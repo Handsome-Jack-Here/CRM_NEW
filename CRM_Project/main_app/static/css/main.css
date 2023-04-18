@@ -1,4 +1,5 @@
 .wrap {
+
     margin: auto;
     /*padding: auto;*/
     width: 97%;
@@ -33,6 +34,7 @@
 
 
 .right_side {
+
     margin: auto;
     padding-top: 4px;
     width: 70%;
@@ -42,7 +44,8 @@
 }
 
 .caption-top {
-    background: #a9bebf;
+    background: #ffffff;
+    color: #0d0000;
     position: static;
     width: 100%;
 }

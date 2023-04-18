@@ -9,6 +9,7 @@ class Order(models.Model):
     defect = models.CharField(max_length=150)
     created = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
+    client_image = models.CharField(max_length=56, default='No info')
 
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='orders')
     client = models.ForeignKey('Client', on_delete=models.PROTECT, related_name='orders')
