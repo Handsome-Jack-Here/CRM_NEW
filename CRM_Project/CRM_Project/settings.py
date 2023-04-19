@@ -14,6 +14,7 @@ from pathlib import Path
 
 import corsheaders.middleware
 import django_filters.rest_framework
+import rest_framework.authentication
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -58,13 +59,16 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+
         'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+
     ],
     # 'DEFAULT_PERMISSIONS_CLASSES': [
     #     'rest_framework.permissions.AllowAny'
     # ],
+
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
     ]
@@ -126,7 +130,6 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 
 DATETIME_FORMAT = ["%m-%d-%Y"]
-
 
 USE_L10N = False
 

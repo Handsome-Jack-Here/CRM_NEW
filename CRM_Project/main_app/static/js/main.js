@@ -1,5 +1,59 @@
 $(document).ready(function () {
 
+
+        // get the CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
+
+        async function newOrderSave() {
+            $('#new_order_form').attr('hidden', true);
+
+            let order = {
+                'first_name': $('#new_order_form #first_name').val(),
+                'last_name': $('#new_order_form #last_name').val(),
+                'phone': $('#new_order_form #phone_number').val(),
+            }
+
+            let options = {
+
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    'X-CSRFToken': csrftoken,
+                },
+                body: JSON.stringify(order)
+            }
+            const response = await fetch(`/api/v1/clients/`, options)
+            let data = await response
+            alert(data.json())
+
+            if (data.status === 200) {
+                $('#client_form').each(function () {
+                    this.reset()
+                })
+            }
+
+            getOrderList()
+                .then($('#order_list').fadeIn(200))
+        }
+
+
         async function saveOrder(order_num, client_num) {
             $('#order_detail').attr('hidden', true);
 
@@ -17,7 +71,7 @@ $(document).ready(function () {
                 method: 'PATCH',
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "token a4b09fcc7db19bab22a3e7dfe89cc1ff7cd0c1eb",
+                    'X-CSRFToken': csrftoken,
                 },
                 body: JSON.stringify(order)
             }
@@ -26,7 +80,7 @@ $(document).ready(function () {
             await fetch(`/api/v1/clients/${client_num}/`, options);
 
 
-            getOrderList().then( $('#order_list').fadeIn(200))
+            getOrderList().then($('#order_list').fadeIn(200))
 
         }
 
@@ -58,7 +112,6 @@ $(document).ready(function () {
             $('#phone_number').val(client.phone);
 
 
-
             $('#save').off().click(function (e) {
                 e.preventDefault()
                 saveOrder(order_id, order.client)
@@ -73,8 +126,17 @@ $(document).ready(function () {
 
         });
 
+
+        $('#new_order').on('click', function () {
+            $('#order_list').hide();
+            $('#new_order_form').removeAttr('hidden');
+        })
+
+        $('#create_order').on('click', function () {
+            newOrderSave()
+        })
+
         getOrderList().then($('#order_list').fadeIn(200))
     }
-)
-;
+);
 

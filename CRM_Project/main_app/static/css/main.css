@@ -57,3 +57,11 @@
 .a_general {
     text-decoration: none;
 }
+
+#order_edit_buttons {
+    margin-top: 14px;
+}
+
+#save_row {
+    margin-top: 14px;
+}
