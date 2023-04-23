@@ -65,3 +65,7 @@
 #save_row {
     margin-top: 14px;
 }
+
+label.error {
+    color: red;
+}

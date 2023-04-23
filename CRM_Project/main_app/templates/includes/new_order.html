@@ -1,16 +1,24 @@
 <div id="new_order_form" hidden>
-    <form id="client_form">
+    <form name="form_validate" id="client_form">
+        <p>
         <label for="first_name">First name</label>
-        <input class="form-control" type="text" id="first_name">
+        <input class="form-control" type="text" id="first_name" name="first_name" placeholder="Input first name">
+        </p>
+        <p>
         <label for="last_name">Last name</label>
-        <input class="form-control" type="text" id="last_name">
+        <input class="form-control" type="text" id="last_name" name="last_name" placeholder="Input last name">
+        </p>
+        <p>
         <label for="phone_number">Phone number</label>
-        <input class="form-control" type="text" id="phone_number">
+        <input class="form-control" type="tel" data-tel-input id="phone_number" name="phone_number" placeholder="Phone number">
+        </p><p>
         <label for="address">Address</label>
-        <input class="form-control" type="text" id="address">
+        <input class="form-control" type="text" id="address" name="address" placeholder="Input address">
+        </p>
+        <div id="save_row">
+            <button  id="create_order" class="btn btn-success">Create order</button>
+        </div>
     </form>
-    <div id="save_row">
-        <button id="create_order" class="btn btn-success">Create order</button>
-    </div>
+
 
 </div>
