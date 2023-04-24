@@ -64,8 +64,6 @@ $(document).ready(function () {
         $('#order_detail').attr('hidden', true);
 
         let order = {
-            // "id": 85,
-            // "order_id": 5,
             'defect': $('#defect').val(),
             'first_name': $('#first_name').val(),
             'last_name': $('#last_name').val(),
@@ -104,6 +102,8 @@ $(document).ready(function () {
 
     async function getOrderDetail(order_id) {
 
+        let check_summ = []
+
         $('#order_list').hide();
         $('#order_detail').removeAttr('hidden');
         const order_detail = await fetch(`/api/v1/orders/${order_id}/`);
@@ -117,9 +117,11 @@ $(document).ready(function () {
         $('#last_name').val(client.last_name);
         $('#phone_number').val(client.phone);
 
+        check_summ += JSON.stringify(order) + JSON.stringify(client)
+        // alert(check_summ)
 
         $('#save').off().click(function (e) {
-            e.preventDefault()
+            e.preventDefault();
             saveOrder(order_id, order.client)
         })
 
@@ -128,6 +130,13 @@ $(document).ready(function () {
     $('#orders').on('click', 'a', function (e) {
         e.preventDefault();
         let order_id = $(this).text();
+        $('#discard').prop('disabled', true);
+
+        $('#discard').on('click', function () {
+
+        })
+
+
         getOrderDetail(order_id = order_id).then()
 
     });
@@ -138,6 +147,7 @@ $(document).ready(function () {
         $('#new_order_form').removeAttr('hidden');
     })
 
+// validate forms
     $('#create_order').on('click', function () {
         $('#client_form').validate({
 
@@ -172,14 +182,13 @@ $(document).ready(function () {
             }
         })
 
-        if ($('#client_form').valid()){
+        if ($('#client_form').valid()) {
             newOrderSave()
         }
 
     })
 
 
-    // alert('start')
     getOrderList().then($('#order_list').fadeIn(200))
 });
 

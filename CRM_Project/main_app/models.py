@@ -7,6 +7,9 @@ User = get_user_model()
 class Order(models.Model):
     order_id = models.IntegerField(null=True, blank=True)
     defect = models.CharField(max_length=150)
+    diagnostic_result = models.CharField(max_length=250, blank=True)
+    required_works = models.CharField(max_length=250, blank=True)
+
     created = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
     client_image = models.CharField(max_length=56, default='No info')
