@@ -1,26 +1,35 @@
-<div id="new_order_form" hidden>
-    <form name="form_validate" id="client_form">
+<div id="new_order" hidden>
+
+    <form name="form_validate" id="new_order_form">
         <p>
-        <label for="first_name">First name</label>
-        <input class="form-control" type="text" id="first_name" name="first_name" placeholder="Input first name">
+            <label for="first_name">First name</label>
+            <input class="form-control" type="text" id="first_name" name="first_name" placeholder="Input first name">
         </p>
         <p>
-        <label for="last_name">Last name</label>
-        <input class="form-control" type="text" id="last_name" name="last_name" placeholder="Input last name">
+            <label for="last_name">Last name</label>
+            <input class="form-control" type="text" id="last_name" name="last_name" placeholder="Input last name">
         </p>
         <p>
-        <label for="phone_number">Phone number</label>
-        <input class="form-control" type="tel" data-tel-input id="phone_number" name="phone_number" placeholder="+7(000)000-00-00">
-        </p><p>
-        <label for="address">Address</label>
-        <input class="form-control" type="text" id="address" name="address" placeholder="Input address">
+            <label for="phone_number">Phone number</label>
+            <input class="form-control" type="tel" data-tel-input id="phone_number" name="phone_number"
+                   placeholder="+7(000)000-00-00">
+        </p>
+        <p>
+            <label for="address">Address</label>
+            <input class="form-control" type="text" id="address" name="address" placeholder="Input address">
+        </p>
+        <p>
+            <label for="defect">Defect description</label>
+            <textarea class="form-control" name="defect" id="defect" rows="3"></textarea>
         </p>
 
-        <div id="order_create_buttons">
-            <button  id="create_order" class="btn btn-success">Create order</button>
-            <button id="discard" type="button" class="btn btn-danger">Discard</button>
-        </div>
+
     </form>
+
+    <div id="order_create_buttons">
+        <button id="create_order" class="btn btn-success">Create order</button>
+        <button id="discard" type="button" class="btn btn-danger">Discard</button>
+    </div>
 
 
 </div>
