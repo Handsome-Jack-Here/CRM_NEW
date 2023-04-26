@@ -41,5 +41,15 @@ class Client(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='clients')
 
+    def save(self, *args, **kwargs):
+        user = self.user
+        has_client = user.clients.filter(first_name=self.first_name, last_name=self.last_name, phone=self.phone)
+        if has_client:
+            client = user.clients.get(first_name=self.first_name, last_name=self.last_name, phone=self.phone)
+            self.pk = client.pk
+            return client
+        else:
+            return super(Client, self).save(*args, **kwargs)
+
     def __str__(self):
-        return f'{self.first_name} {self.last_name} Phone number: {self.phone}  Order id: {self.pk}'
+        return f'id:{self.pk} {self.first_name} {self.last_name} Phone number: {self.phone}'

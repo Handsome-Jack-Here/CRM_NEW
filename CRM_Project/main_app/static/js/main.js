@@ -165,6 +165,7 @@ $(document).ready(function () {
         $('#new_order').removeAttr('hidden');
     })
 
+
 // validate forms
     $('#create_order').on('click', function () {
         $('#new_order_form').validate({
