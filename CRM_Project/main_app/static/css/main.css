@@ -69,3 +69,15 @@
 label.error {
     color: red;
 }
+
+.time_field {
+    float: right;
+    color: black;
+    padding: 5px;
+    justify-content: right;
+    font-family: monospace;
+    font-size: medium;
+    background-color: #ffcc5e;
+    border-radius: 4px;
+}
+

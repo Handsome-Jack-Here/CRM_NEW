@@ -136,7 +136,13 @@ $(document).ready(function () {
         $('#last_name').val(client.last_name);
         $('#phone_number').val(client.phone);
 
+        $('.me-2').text('test')
 
+        $('.time_field span').empty()
+        $('#creation_date').append(order.created.slice(0,10))
+        $('#creation_time').append(order.created.slice(11, 16))
+        $('#update_date').append(order.edited.slice(0,10))
+        $('#update_time').append(order.edited.slice(11, 16))
 
         $('#save').off().click(function (e) {
             e.preventDefault();
