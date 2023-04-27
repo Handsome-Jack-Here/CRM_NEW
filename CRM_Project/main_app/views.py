@@ -27,17 +27,21 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     serializer_class = OrderListSerializer
     filter_backends = (SearchFilter, OrderingFilter)
-    search_fields = ['defect', 'order_id', ]
+    search_fields = ['defect', 'order_id', 'client_image', ]
     permission_classes = (permissions.IsAuthenticated,)
     # authentication_classes = (TokenAuthentication, SessionAuthentication, )
 
 
 class ClientViewSet(viewsets.ModelViewSet):
 
+
     def get_queryset(self):
         pk = self.kwargs.get('pk')
         if not pk:
             return User.objects.get(id=self.request.user.id).clients.all()
         return Client.objects.filter(pk=pk)
+
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = ['first_name', 'last_name', 'phone', 'address', ]
 
     serializer_class = ClientListSerializer
