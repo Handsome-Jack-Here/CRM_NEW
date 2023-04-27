@@ -118,9 +118,9 @@ $(document).ready(function () {
         const response = await fetch(`/api/v1/orders/` + `?search=${search}`);
         const orders = await response.json();
         for (let order of orders) {
-            const response1 = await fetch(`/api/v1/clients/${order.client}/`);
-            const client = await response1.json();
-            $('#order_list tbody').append(`<tr><td><a href="" style="text-decoration: none" ">${order.order_id}</a></td><td>${client.first_name} ${client.last_name}</td><td>None</td><td>${order.defect}</td><td>Stage none</td></tr>`)
+            // const response1 = await fetch(`/api/v1/clients/${order.client}/`);
+            // const client = await response1.json();
+            $('#order_list tbody').append(`<tr><td><a href="" style="text-decoration: none" ">${order.order_id}</a></td><td>${order.client_image} </td><td>None</td><td>${order.defect}</td><td>Stage none</td></tr>`)
         }
         $('#order_list').attr('hidden', false)
     }

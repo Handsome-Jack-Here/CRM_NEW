@@ -16,9 +16,10 @@ class Order(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='orders')
     client = models.ForeignKey('Client', on_delete=models.PROTECT, related_name='orders')
+    # cl = models.ForeignKey('Client', on_delete=models.CASCADE, blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        self.client_image = f'{self.client.first_name} {self.client.last_name} {self.client.phone} '
+        self.client_image = self.client
         user = self.user
         if user.orders.get_queryset():
             if self.created:
@@ -53,4 +54,4 @@ class Client(models.Model):
             return super(Client, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f'id:{self.pk} {self.first_name} {self.last_name} Phone number: {self.phone}'
+        return f'{self.first_name} {self.last_name}'

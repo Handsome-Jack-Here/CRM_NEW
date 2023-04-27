@@ -5,9 +5,7 @@ from .models import Order, Client
 class OrderListSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     order_id = serializers.ReadOnlyField()
-    # client = serializers.(read_only=True, )
-    # client_image = Client.objects.get(pk=client)
-
+    cl = serializers.CharField(read_only=True, )
 
     class Meta:
         model = Order
