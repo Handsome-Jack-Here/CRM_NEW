@@ -27,7 +27,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     serializer_class = OrderListSerializer
     filter_backends = (SearchFilter, OrderingFilter)
-    search_fields = ['defect', 'order_id']
+    search_fields = ['defect', 'order_id', ]
     permission_classes = (permissions.IsAuthenticated,)
     # authentication_classes = (TokenAuthentication, SessionAuthentication, )
 

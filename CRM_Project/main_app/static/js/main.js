@@ -104,9 +104,16 @@ $(document).ready(function () {
 
     }
 
-    async function getOrderList() {
+    async function getOrderList(search = '') {
+
+        $('.form-control-dark').off().on('input', function (e){
+            e.preventDefault()
+            search = $('.form-control-dark').val()
+            getOrderList(search)
+        })
+
         $('#order_list tbody *').remove();
-        const response = await fetch('/api/v1/orders/');
+        const response = await fetch(`/api/v1/orders/` + `?search=${search}`);
         const orders = await response.json();
         for (let order of orders) {
             const response1 = await fetch(`/api/v1/clients/${order.client}/`);
@@ -117,7 +124,6 @@ $(document).ready(function () {
     }
 
     async function getOrderDetail(order_id) {
-
 
 
         $('#order_list').hide();
@@ -136,12 +142,12 @@ $(document).ready(function () {
         $('#last_name').val(client.last_name);
         $('#phone_number').val(client.phone);
 
-        $('.me-2').text('test')
+        $('.text-end').hide()
 
         $('.time_field span').empty()
-        $('#creation_date').append(order.created.slice(0,10))
+        $('#creation_date').append(order.created.slice(0, 10))
         $('#creation_time').append(order.created.slice(11, 16))
-        $('#update_date').append(order.edited.slice(0,10))
+        $('#update_date').append(order.edited.slice(0, 10))
         $('#update_time').append(order.edited.slice(11, 16))
 
         $('#save').off().click(function (e) {
