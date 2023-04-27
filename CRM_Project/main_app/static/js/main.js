@@ -28,6 +28,8 @@ $(document).ready(function () {
             'first_name': $('#new_order_form #first_name').val(),
             'last_name': $('#new_order_form #last_name').val(),
             'phone': $('#new_order_form #phone_number').val(),
+            'address': $('#new_order_form #address').val(),
+
         }
         let options = {
 
