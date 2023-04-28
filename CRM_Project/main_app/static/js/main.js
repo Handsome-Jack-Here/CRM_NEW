@@ -174,12 +174,12 @@ $(document).ready(function () {
         $('#discard').prop('disabled', true);
 
         $('#discard').on('click', function () {
+            alert('discard');
 
-        })
+        });
 
 
         getOrderDetail(order_id = order_id).then()
-
     });
 
 
