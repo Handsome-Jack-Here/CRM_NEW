@@ -16,10 +16,9 @@ class Order(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='orders')
     client = models.ForeignKey('Client', on_delete=models.PROTECT, related_name='orders')
-    # cl = models.ForeignKey('Client', on_delete=models.CASCADE, blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        self.client_image = self.client
+        self.client_image = f'{self.client.first_name} {self.client.last_name} {self.client.phone}'
         user = self.user
         if user.orders.get_queryset():
             if self.created:

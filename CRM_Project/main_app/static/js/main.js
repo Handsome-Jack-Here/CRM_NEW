@@ -98,31 +98,40 @@ $(document).ready(function () {
             body: JSON.stringify(order)
         }
 
-        await fetch(`/api/v1/orders/${order_num}/`, options);
-        await fetch(`/api/v1/clients/${client_num}/`, options);
-
-
-        getOrderList().then($('#order_list').fadeIn(200))
-
+        await fetch(`/api/v1/clients/${client_num}/`, options)
+            .then(async function () {
+                await fetch(`/api/v1/orders/${order_num}/`, options)
+            }).then(function () {
+                getOrderList().then($('#order_list').fadeIn(200))
+            });
     }
 
     async function getOrderList(search = '') {
 
-        $('.form-control-dark').off().on('input', function (e){
+        // search filter
+        $('.form-control-dark').off().on('input', function (e) {
             e.preventDefault()
             search = $('.form-control-dark').val()
             getOrderList(search)
         })
 
-        $('#order_list tbody *').remove();
-        const response = await fetch(`/api/v1/orders/` + `?search=${search}`);
-        const orders = await response.json();
-        for (let order of orders) {
-            // const response1 = await fetch(`/api/v1/clients/${order.client}/`);
-            // const client = await response1.json();
-            $('#order_list tbody').append(`<tr><td><a href="" style="text-decoration: none" ">${order.order_id}</a></td><td>${order.client_image} </td><td>None</td><td>${order.defect}</td><td>Stage none</td></tr>`)
+        async function clear() {
+            $('#order_list tbody *').remove()
         }
-        $('#order_list').attr('hidden', false)
+
+        clear().then(function () {
+            listCreate()
+        })
+
+        async function listCreate() {
+            const response = await fetch(`/api/v1/orders/` + `?search=${search}`);
+            let orders = await response.json()
+            for (let order of orders) {
+                let client_image = order.client_image.split(' ')
+                $('#order_list tbody').append(`<tr><td><a href="" style="text-decoration: none" ">${order.order_id}</a></td><td>${client_image[0]} ${client_image[1]} </td><td>None</td><td>${order.defect}</td><td>Stage none</td></tr>`)
+            }
+            $('#order_list').attr('hidden', false)
+        }
     }
 
     async function getOrderDetail(order_id) {

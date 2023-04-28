@@ -5,7 +5,7 @@ from .models import Order, Client
 class OrderListSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     order_id = serializers.ReadOnlyField()
-    cl = serializers.CharField(read_only=True, )
+    # cl = serializers.CharField(read_only=True, )
 
     class Meta:
         model = Order
