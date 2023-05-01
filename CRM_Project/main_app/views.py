@@ -21,6 +21,12 @@ class OrderViewSet(viewsets.ModelViewSet):
         pk = self.kwargs.get('pk')
         user = User.objects.get(id=self.request.user.id)
         if not pk:
+            for order in user.orders.all():
+                client_actual = f'{order.client.first_name} {order.client.last_name}'
+                client_image = order.client_image
+                if client_image != client_actual:
+                    order.client_image = client_actual
+                    order.save()
             return user.orders.all().order_by('-order_id')
 
         return user.orders.filter(pk=pk)
