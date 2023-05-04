@@ -1,3 +1,4 @@
+import rest_framework.pagination
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import ListView
@@ -8,10 +9,17 @@ from django.views.generic import View, TemplateView
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework import permissions
 from rest_framework.authentication import BaseAuthentication, SessionAuthentication, TokenAuthentication
+from rest_framework.pagination import PageNumberPagination
 
 
 class Index(TemplateView):
     template_name = 'main_app/index.html'
+
+
+class OrderPagination(PageNumberPagination):
+    page_size = 3
+    page_size_query_param = 'page_size'
+    max_page_size = 14
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -35,11 +43,12 @@ class OrderViewSet(viewsets.ModelViewSet):
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = ['defect', 'order_id', 'client_image', ]
     permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = OrderPagination
+
     # authentication_classes = (TokenAuthentication, SessionAuthentication, )
 
 
 class ClientViewSet(viewsets.ModelViewSet):
-
 
     def get_queryset(self):
         pk = self.kwargs.get('pk')

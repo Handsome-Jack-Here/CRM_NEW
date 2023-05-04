@@ -112,21 +112,29 @@ $(document).ready(function () {
         $('.form-control-dark').off().on('input', function (e) {
             e.preventDefault()
             search = $('.form-control-dark').val()
+            if (search){search = `search=` + `${search}`}
+
             getOrderList(search)
         })
+
+        let current_page = 2
+        
+        let page = `page=${current_page}`
+        if (search){page = ''}
+
 
         async function clear() {
             $('#order_list tbody *').remove()
         }
 
         clear().then(function () {
-            listCreate()
-        })
+            listCreate();
+        });
 
         async function listCreate() {
-            const response = await fetch(`/api/v1/orders/` + `?search=${search}`);
+            const response = await fetch(`/api/v1/orders/?` + page + search  );
             let orders = await response.json()
-            for (let order of orders) {
+            for (let order of orders['results']) {
                 let client_image = order.client_image.split(' ')
                 $('#order_list tbody').append(`<tr><td><a href="" style="text-decoration: none" ">${order.order_id}</a></td><td>${client_image[0]} ${client_image[1]} </td><td>None</td><td>${order.defect}</td><td>Stage none</td></tr>`)
             }

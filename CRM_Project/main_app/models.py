@@ -53,3 +53,17 @@ class Client(models.Model):
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+
+    # class Unit(models.Model):
+    #     serial_number = models.CharField(max_length=35)
+    #     brand = models.ForeignKey('Brand', on_delete=models.PROTECT)
+    #     model = models.ForeignKey('Model', on_delete=models.PROTECT)
+    #
+    #     def __str__(self):
+    #         return f'{self.brand} {self.model}'
+    #
+    # class Brand(models.Model):
+    #     name = models.CharField(max_length=28)
+    #
+    # class Model(models.Model):
+    #     name = models.CharField(max_length=28)
