@@ -17,9 +17,20 @@ class Index(TemplateView):
 
 
 class OrderPagination(PageNumberPagination):
-    page_size = 3
+
+    def get_page_size(self, request):
+
+        if 'page_size' not in request.POST:
+            return super().get_page_size(request)
+        else:
+            self.page_size = request.POST['page_size']
+            return self.page_size
+
+    page_size = 4
     page_size_query_param = 'page_size'
-    max_page_size = 14
+    max_page_size = 28
+
+
 
 
 class OrderViewSet(viewsets.ModelViewSet):
