@@ -1,7 +1,14 @@
 <div id="order_list" hidden="">
     <button id="new_order_button" class="btn btn-primary">New order</button>
-    <table class="table caption-top data-sticky-header">
+    <div id="pagination_bar">
+        <ul class="pagination pagination-sm">
+            <li class="page-item"><a class="page-link" href="#">20</a></li>
+            <li class="page-item"><a class="page-link" href="#">30</a></li>
+            <li class="page-item"><a class="page-link" href="#">40</a></li>
+        </ul>
+    </div>
 
+    <table class="table caption-top data-sticky-header">
         <caption>Order List</caption>
         <thead>
         <tr>
@@ -19,5 +26,6 @@
         </tbody>
 
     </table>
+
 
 </div>

@@ -106,7 +106,7 @@ $(document).ready(function () {
             });
     }
 
-    async function getOrderList(search = '') {
+    async function getOrderList(search = '', elem_per_page=28) {
 
         // search filter
         $('.form-control-dark').off().on('input', function (e) {
@@ -117,8 +117,12 @@ $(document).ready(function () {
             getOrderList(search)
         })
 
-        let current_page = 2
-        
+        let current_page = 1
+
+        $('#pagination_bar li').off().click(function (){
+            getOrderList(search='',elem_per_page=$(this).text())
+        })
+
         let page = `page=${current_page}`
         if (search){page = ''}
 
@@ -126,13 +130,12 @@ $(document).ready(function () {
         async function clear() {
             $('#order_list tbody *').remove()
         }
-
         clear().then(function () {
             listCreate();
         });
 
         async function listCreate() {
-            const response = await fetch(`/api/v1/orders/?` + page + search  );
+            const response = await fetch(`/api/v1/orders/?` + page + search + '&page_size=' + elem_per_page );
             let orders = await response.json()
             for (let order of orders['results']) {
                 let client_image = order.client_image.split(' ')

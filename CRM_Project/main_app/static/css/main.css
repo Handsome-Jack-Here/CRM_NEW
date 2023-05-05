@@ -81,3 +81,8 @@ label.error {
     border-radius: 4px;
 }
 
+#pagination_bar {
+    float: right;
+    margin-bottom: 2px;
+    position: sticky;
+}
