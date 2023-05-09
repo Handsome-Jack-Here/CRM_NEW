@@ -3,8 +3,8 @@ from django.shortcuts import render
 from django.views import View
 from django.views.generic import ListView
 from rest_framework import viewsets
-from .serializers import OrderListSerializer, ClientListSerializer
-from .models import Order, Client, User
+from .serializers import OrderListSerializer, ClientListSerializer, UnitListSerializer
+from .models import Order, Client, User, Unit
 from django.views.generic import View, TemplateView
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework import permissions
@@ -45,8 +45,10 @@ class OrderViewSet(viewsets.ModelViewSet):
                     order.client_image = client_actual
                     order.save()
             return user.orders.all().order_by('-order_id')
-
         return user.orders.filter(pk=pk)
+
+    def get_object(self):
+        return super(OrderViewSet, self).get_object()
 
     serializer_class = OrderListSerializer
     filter_backends = (SearchFilter, OrderingFilter)
@@ -69,3 +71,14 @@ class ClientViewSet(viewsets.ModelViewSet):
     search_fields = ['first_name', 'last_name', 'phone', 'address', ]
 
     serializer_class = ClientListSerializer
+
+
+class UnitViewSet(viewsets.ModelViewSet):
+
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        if not pk:
+            return User.objects.get(id=self.request.user.id).units.all()
+        return Unit.objects.filter(pk=pk)
+
+    serializer_class = UnitListSerializer

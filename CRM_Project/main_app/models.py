@@ -42,10 +42,9 @@ class Client(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='clients')
 
     def save(self, *args, **kwargs):
-        user = self.user
-        has_client = user.clients.filter(first_name=self.first_name, last_name=self.last_name, phone=self.phone)
+        has_client = self.user.clients.filter(first_name=self.first_name, last_name=self.last_name, phone=self.phone)
         if has_client:
-            client = user.clients.get(first_name=self.first_name, last_name=self.last_name, phone=self.phone)
+            client = self.user.clients.get(first_name=self.first_name, last_name=self.last_name, phone=self.phone)
             self.pk = client.pk
             return client
         else:
@@ -57,12 +56,19 @@ class Client(models.Model):
 
 class Unit(models.Model):
     serial_number = models.CharField(max_length=35)
+
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='units')
     brand = models.ForeignKey('Brand', on_delete=models.PROTECT)
     model = models.ForeignKey('Model', on_delete=models.PROTECT)
 
     def save(self, *args, **kwargs):
-        user = self.user
+        has_unit = self.user.units.filter(serial_number=self.serial_number, brand=self.brand, model=self.model)
+        if has_unit:
+            unit = self.user.clients.get(serial_number=self.serial_number, brand=self.brand, model=self.model)
+            self.pk = unit.pk
+            return unit
+        else:
+            return super(Unit, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.brand.name} {self.model.name}'
