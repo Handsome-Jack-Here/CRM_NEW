@@ -106,7 +106,7 @@ $(document).ready(function () {
             });
     }
 
-    async function getOrderList(search = '', elem_per_page=28) {
+    async function getOrderList(search = '', elem_per_page=16) {
 
         // search filter
         $('.form-control-dark').off().on('input', function (e) {

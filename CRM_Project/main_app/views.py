@@ -31,8 +31,6 @@ class OrderPagination(PageNumberPagination):
     max_page_size = 28
 
 
-
-
 class OrderViewSet(viewsets.ModelViewSet):
     lookup_field = 'order_id'
 

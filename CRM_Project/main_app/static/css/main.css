@@ -7,14 +7,16 @@
 
 .header {
     margin-top: auto;
+    padding: 1px;
     position: fixed;
     width: 100%;
-    break-after: auto;
-    break-before: auto;
+    height: 80px;
+    break-after: right;
+    /*break-before: right;*/
 }
 
 .content {
-    margin: auto;
+    margin: 5px 5px;
     padding-top: 80px;
 }
 
@@ -27,8 +29,8 @@
     min-width: 280px;
     float: left;
     position: fixed;
-    break-after: auto;
-    break-before: auto;
+    break-after: right;
+    /*break-before: right;*/
 
 }
 
@@ -38,7 +40,8 @@
     margin: auto;
     padding-top: 4px;
     width: 70%;
-    align-content: center;
+    height: 600px;
+    /*align-content: center;*/
     float: right;
     min-width: 350px;
 }
@@ -85,4 +88,16 @@ label.error {
     float: right;
     margin-bottom: 2px;
     position: sticky;
+}
+
+#list_head {
+    background: red;
+    /*margin: auto;*/
+    position: sticky;
+    top: 0;
+}
+
+#list_header {
+    position: sticky;
+    top: 0;
 }
