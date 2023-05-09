@@ -103,7 +103,7 @@ WSGI_APPLICATION = 'CRM_Project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'test',
+        'NAME': BASE_DIR / 'CRM_DB',
     }
 }
 
