@@ -54,25 +54,27 @@ class Client(models.Model):
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
 
-    # class Unit(models.Model):
-    #     serial_number = models.CharField(max_length=35)
-    #
-    #     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='units')
-    #     brand = models.ForeignKey('Brand', on_delete=models.PROTECT)
-    #     model = models.ForeignKey('Model', on_delete=models.PROTECT)
-    #
-    #
-    #
-    #     def save(self, *args, **kwargs):
-    #         user = self.user
-    #         has_unit = user.units.filter()
-    #
-    #
-    #     def __str__(self):
-    #         return f'{self.brand.name} {self.model.name}'
-    #
-    # class Brand(models.Model):
-    #     name = models.CharField(max_length=28)
-    #
-    # class Model(models.Model):
-    #     name = models.CharField(max_length=28)
+    class Unit(models.Model):
+        serial_number = models.CharField(max_length=35)
+
+        user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='units')
+        brand = models.ForeignKey('Brand', on_delete=models.PROTECT)
+        model = models.ForeignKey('Model', on_delete=models.PROTECT)
+
+        def save(self, *args, **kwargs):
+            user = self.user
+
+        def __str__(self):
+            return f'{self.brand.name} {self.model.name}'
+
+    class Brand(models.Model):
+        name = models.CharField(max_length=28)
+
+        def __str__(self):
+            return f'{self.name}'
+
+    class Model(models.Model):
+        name = models.CharField(max_length=28)
+
+        def __str__(self):
+            return f'{self.name}'
