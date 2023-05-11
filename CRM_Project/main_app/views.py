@@ -3,8 +3,8 @@ from django.shortcuts import render
 from django.views import View
 from django.views.generic import ListView
 from rest_framework import viewsets
-from .serializers import OrderListSerializer, ClientListSerializer, UnitListSerializer
-from .models import Order, Client, User, Unit
+from .serializers import OrderListSerializer, ClientListSerializer, UnitListSerializer, BrandListSerializer, ModelListSerializer
+from .models import Order, Client, User, Unit, Brand
 from django.views.generic import View, TemplateView
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework import permissions
@@ -41,18 +41,25 @@ class OrderViewSet(viewsets.ModelViewSet):
             for order in user.orders.all():
                 client_actual = f'{order.client.first_name} {order.client.last_name}'
                 client_image = order.client_image
+                unit_actual = f'{order.unit.brand} {order.unit.model}'
+                unit_image = order.unit_image
+
                 if client_image != client_actual:
                     order.client_image = client_actual
                     order.save()
+                if unit_image != unit_actual:
+                    order.unit_image = unit_actual
+                    order.save()
+
             return user.orders.all().order_by('-order_id')
         return user.orders.filter(pk=pk)
 
-    def get_object(self):
-        return super(OrderViewSet, self).get_object()
+    # def get_object(self):
+    #     return super(OrderViewSet, self).get_object()
 
     serializer_class = OrderListSerializer
     filter_backends = (SearchFilter, OrderingFilter)
-    search_fields = ['defect', 'order_id', 'client_image', ]
+    search_fields = ['defect', 'order_id', 'client_image', 'unit_image']
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = OrderPagination
 
@@ -67,6 +74,7 @@ class ClientViewSet(viewsets.ModelViewSet):
             return User.objects.get(id=self.request.user.id).clients.all()
         return Client.objects.filter(pk=pk)
 
+
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = ['first_name', 'last_name', 'phone', 'address', ]
 
@@ -77,8 +85,27 @@ class UnitViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         pk = self.kwargs.get('pk')
+        user = User.objects.get(id=self.request.user.id)
         if not pk:
-            return User.objects.get(id=self.request.user.id).units.all()
+            return user.units.all()
         return Unit.objects.filter(pk=pk)
 
     serializer_class = UnitListSerializer
+
+
+class BrandViewSet(viewsets.ModelViewSet):
+
+    def get_queryset(self):
+        user = User.objects.get(id=self.request.user.id)
+        return user.brands.all()
+
+    serializer_class = BrandListSerializer
+
+
+class ModelViewSet(BrandViewSet):
+
+    # def get_queryset(self):
+    #     user = User.objects.get(id=self.request.user.id)
+    #     return user.models.all()
+
+    serializer_class = ModelListSerializer

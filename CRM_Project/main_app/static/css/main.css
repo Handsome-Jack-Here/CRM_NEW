@@ -91,7 +91,8 @@ label.error {
 }
 
 #list_head {
-    background: red;
+    color: white;
+    background: #2e2f2f;
     /*margin: auto;*/
     position: sticky;
     top: 0;

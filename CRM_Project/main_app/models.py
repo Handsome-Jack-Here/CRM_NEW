@@ -13,9 +13,11 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
     client_image = models.CharField(max_length=56, default='No info')
+    unit_image = models.CharField(max_length=28, default='No info')
 
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='orders')
     client = models.ForeignKey('Client', on_delete=models.PROTECT, related_name='orders')
+    unit = models.ForeignKey('Unit', on_delete=models.PROTECT, related_name='orders')
 
     def save(self, *args, **kwargs):
         user = self.user
@@ -58,13 +60,12 @@ class Unit(models.Model):
     serial_number = models.CharField(max_length=35)
 
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='units')
-    brand = models.ForeignKey('Brand', on_delete=models.PROTECT)
-    model = models.ForeignKey('Model', on_delete=models.PROTECT)
+    brand = models.ForeignKey('Brand', on_delete=models.PROTECT, related_name='units')
+    model = models.ForeignKey('Model', on_delete=models.PROTECT, related_name='units')
 
     def save(self, *args, **kwargs):
-        has_unit = self.user.units.filter(serial_number=self.serial_number, brand=self.brand, model=self.model)
-        if has_unit:
-            unit = self.user.clients.get(serial_number=self.serial_number, brand=self.brand, model=self.model)
+        if self.user.units.filter(brand=self.brand, model=self.model, serial_number=self.serial_number):
+            unit = self.user.units.get(brand=self.brand, model=self.model, serial_number=self.serial_number)
             self.pk = unit.pk
             return unit
         else:
@@ -77,12 +78,32 @@ class Unit(models.Model):
 class Brand(models.Model):
     name = models.CharField(max_length=28)
 
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='brands')
+
+    def save(self, *args, **kwargs):
+        if self.user.brands.filter(name=self.name):
+            brand = self.user.brands.get(name=self.name)
+            self.pk = brand.pk
+            return brand
+        else:
+            return super(Brand, self).save(*args, **kwargs)
+
     def __str__(self):
         return f'{self.name}'
 
 
 class Model(models.Model):
     name = models.CharField(max_length=28)
+
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='models')
+
+    def save(self, *args, **kwargs):
+        if self.user.models.filter(name=self.name):
+            model = self.user.models.get(name=self.name)
+            self.pk = model.pk
+            return model
+        else:
+            return super(Model, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.name}'

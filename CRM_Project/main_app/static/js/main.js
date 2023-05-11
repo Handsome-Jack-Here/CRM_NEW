@@ -24,6 +24,7 @@ $(document).ready(function () {
     async function newOrderSave() {
         $('#new_order').attr('hidden', true);
 
+        // client
         let client_fields = {
             'first_name': $('#new_order_form #first_name').val(),
             'last_name': $('#new_order_form #last_name').val(),
@@ -44,10 +45,77 @@ $(document).ready(function () {
         const response = await fetch(`/api/v1/clients/`, options)
         let data = await response.json()
         let client_id = parseInt(JSON.stringify(data.id))
+        // end client
+
+        // brand
+        let brand_fields = {
+            'name': $('#new_order_form #brand').val(),
+        }
+
+        let brand_options = {
+
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify(brand_fields)
+        }
+
+        const brand_response = await fetch(`/api/v1/brands/`, brand_options)
+        let brand_data = await brand_response.json()
+        let brand_id = JSON.stringify(brand_data.id)
+
+        // end brand
+
+        // model
+        let model_fields = {
+            'name': $('#new_order_form #model').val(),
+        }
+        let model_options = {
+
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify(model_fields)
+        }
+
+        const model_response = await fetch(`/api/v1/models/`, model_options)
+        let model_data = await model_response.json()
+        let model_id = parseInt(JSON.stringify(model_data.id))
+        // // end model
+        //
+        // // unit
+        let unit_fields = {
+            'serial_number': $('#new_order_form #serial_number').val(),
+            'brand': brand_id,
+            'model': model_id
+        }
+        let unit_options = {
+
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify(unit_fields)
+        }
+
+        const unit_response = await fetch(`/api/v1/units/`, unit_options)
+        let unit_data = await unit_response.json()
+        let unit_id = parseInt(JSON.stringify(unit_data.id))
+        // end unit
+
+
+
+
 
         let order_fields = {
             'defect': $('#new_order_form #defect').val(),
-            'client': client_id
+            'client': client_id,
+            'unit': unit_id,
         }
         options = {
             method: 'POST',
@@ -139,7 +207,7 @@ $(document).ready(function () {
             let orders = await response.json()
             for (let order of orders['results']) {
                 let client_image = order.client_image.split(' ')
-                $('#order_list tbody').append(`<tr><td><a href="" style="text-decoration: none" ">${order.order_id}</a></td><td>${client_image[0]} ${client_image[1]} </td><td>None</td><td>${order.defect}</td><td>Stage none</td></tr>`)
+                $('#order_list tbody').append(`<tr><td><a href="" style="text-decoration: none" ">${order.order_id}</a></td><td>${client_image[0]} ${client_image[1]} </td><td>${order.unit_image}</td><td>${order.defect}</td><td>Stage none</td></tr>`)
             }
             $('#order_list').attr('hidden', false)
         }
