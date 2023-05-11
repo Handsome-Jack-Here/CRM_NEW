@@ -3,7 +3,8 @@ from django.shortcuts import render
 from django.views import View
 from django.views.generic import ListView
 from rest_framework import viewsets
-from .serializers import OrderListSerializer, ClientListSerializer, UnitListSerializer, BrandListSerializer, ModelListSerializer
+from .serializers import OrderListSerializer, ClientListSerializer, UnitListSerializer, BrandListSerializer, \
+    ModelListSerializer
 from .models import Order, Client, User, Unit, Brand
 from django.views.generic import View, TemplateView
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -19,7 +20,6 @@ class Index(TemplateView):
 class OrderPagination(PageNumberPagination):
 
     def get_page_size(self, request):
-
         if 'page_size' not in request.POST:
             return super().get_page_size(request)
         else:
@@ -35,27 +35,20 @@ class OrderViewSet(viewsets.ModelViewSet):
     lookup_field = 'order_id'
 
     def get_queryset(self):
-        pk = self.kwargs.get('pk')
         user = User.objects.get(id=self.request.user.id)
-        if not pk:
-            for order in user.orders.all():
-                client_actual = f'{order.client.first_name} {order.client.last_name}'
-                client_image = order.client_image
-                unit_actual = f'{order.unit.brand} {order.unit.model}'
-                unit_image = order.unit_image
+        for order in user.orders.all():
+            client_actual = f'{order.client.first_name} {order.client.last_name}'
+            client_image = order.client_image
+            unit_actual = f'{order.unit.brand} {order.unit.model}'
+            unit_image = order.unit_image
 
-                if client_image != client_actual:
-                    order.client_image = client_actual
-                    order.save()
-                if unit_image != unit_actual:
-                    order.unit_image = unit_actual
-                    order.save()
-
-            return user.orders.all().order_by('-order_id')
-        return user.orders.filter(pk=pk)
-
-    # def get_object(self):
-    #     return super(OrderViewSet, self).get_object()
+            if client_image != client_actual:
+                order.client_image = client_actual
+                order.save()
+            if unit_image != unit_actual:
+                order.unit_image = unit_actual
+                order.save()
+        return user.orders.all().order_by('-order_id')
 
     serializer_class = OrderListSerializer
     filter_backends = (SearchFilter, OrderingFilter)
@@ -63,17 +56,14 @@ class OrderViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = OrderPagination
 
-    # authentication_classes = (TokenAuthentication, SessionAuthentication, )
 
+# authentication_classes = (TokenAuthentication, SessionAuthentication, )
 
 class ClientViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
-        pk = self.kwargs.get('pk')
-        if not pk:
-            return User.objects.get(id=self.request.user.id).clients.all()
-        return Client.objects.filter(pk=pk)
-
+        user = User.objects.get(id=self.request.user.id)
+        return user.clients.all()
 
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = ['first_name', 'last_name', 'phone', 'address', ]
@@ -84,11 +74,8 @@ class ClientViewSet(viewsets.ModelViewSet):
 class UnitViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
-        pk = self.kwargs.get('pk')
         user = User.objects.get(id=self.request.user.id)
-        if not pk:
-            return user.units.all()
-        return Unit.objects.filter(pk=pk)
+        return user.units.all()
 
     serializer_class = UnitListSerializer
 
@@ -103,9 +90,4 @@ class BrandViewSet(viewsets.ModelViewSet):
 
 
 class ModelViewSet(BrandViewSet):
-
-    # def get_queryset(self):
-    #     user = User.objects.get(id=self.request.user.id)
-    #     return user.models.all()
-
     serializer_class = ModelListSerializer
