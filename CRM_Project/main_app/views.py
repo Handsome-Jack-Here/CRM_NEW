@@ -89,5 +89,10 @@ class BrandViewSet(viewsets.ModelViewSet):
     serializer_class = BrandListSerializer
 
 
-class ModelViewSet(BrandViewSet):
+class ModelViewSet(viewsets.ModelViewSet):
+
+    def get_queryset(self):
+        user = User.objects.get(id=self.request.user.id)
+        return user.models.all()
+
     serializer_class = ModelListSerializer

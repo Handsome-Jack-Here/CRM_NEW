@@ -109,9 +109,6 @@ $(document).ready(function () {
         // end unit
 
 
-
-
-
         let order_fields = {
             'defect': $('#new_order_form #defect').val(),
             'client': client_id,
@@ -144,17 +141,19 @@ $(document).ready(function () {
     }
 
 
-    async function saveOrder(order_num, client_num) {
+    async function saveOrder(order_num, client_num, unit_num, brand_num, model_num, unit_serial) {
         $('#order_detail').attr('hidden', true);
 
         let order = {
             'defect': $('#defect').val(),
             'diagnostic_result': $('#diagnostic_result').val(),
             'required_works': $('#required_works').val(),
+
             'first_name': $('#first_name').val(),
             'last_name': $('#last_name').val(),
             'phone': $('#phone_number').val(),
 
+            'serial_number': $('#serial_number').val(),
 
         }
         let options = {
@@ -166,44 +165,81 @@ $(document).ready(function () {
             body: JSON.stringify(order)
         }
 
+
         await fetch(`/api/v1/clients/${client_num}/`, options)
-            .then(async function () {
+            .then(async function () { // model save
+                order["name"] = $('#model').val();
+                options.body = JSON.stringify(order);
+                options.method = 'POST';
+
+                const model_response = await fetch(`/api/v1/models/`, options);
+                const model_data = await model_response.json();
+
+                order['model'] = model_data.id;
+                options.body = JSON.stringify(order);
+                options.method = 'PATCH';
+
+                await fetch(`/api/v1/units/${unit_num}/`, options);
+            })
+            .then(async function () { // brand save
+                order["name"] = $('#brand').val();
+                options.body = JSON.stringify(order);
+                options.method = 'POST';
+
+                const brand_response = await fetch(`/api/v1/brands/`, options);
+                const brand_data = await brand_response.json();
+
+                order['brand'] = brand_data.id;
+                options.body = JSON.stringify(order);
+                options.method = 'PATCH';
+                alert(order.serial_number)
+
+                await fetch(`/api/v1/units/${unit_num}/`, options);
+            })
+            .then(async function () { // order save
+                options.method = 'PATCH'
                 await fetch(`/api/v1/orders/${order_num}/`, options)
-            }).then(function () {
+            })
+            .then(function () {
                 getOrderList().then($('#order_list').fadeIn(200))
             });
     }
 
-    async function getOrderList(search = '', elem_per_page=16) {
+    async function getOrderList(search = '', elem_per_page = 16) {
 
         // search filter
         $('.form-control-dark').off().on('input', function (e) {
             e.preventDefault()
             search = $('.form-control-dark').val()
-            if (search){search = `search=` + `${search}`}
+            if (search) {
+                search = `search=` + `${search}`
+            }
 
             getOrderList(search)
         })
 
         let current_page = 1
 
-        $('#pagination_bar li').off().click(function (){
-            getOrderList(search='',elem_per_page=$(this).text())
+        $('#pagination_bar li').off().click(function () {
+            getOrderList(search = '', elem_per_page = $(this).text())
         })
 
         let page = `page=${current_page}`
-        if (search){page = ''}
+        if (search) {
+            page = ''
+        }
 
 
         async function clear() {
             $('#order_list tbody *').remove()
         }
+
         clear().then(function () {
             listCreate();
         });
 
         async function listCreate() {
-            const response = await fetch(`/api/v1/orders/?` + page + search + '&page_size=' + elem_per_page );
+            const response = await fetch(`/api/v1/orders/?` + page + search + '&page_size=' + elem_per_page);
             let orders = await response.json()
             for (let order of orders['results']) {
                 let client_image = order.client_image.split(' ')
@@ -222,7 +258,16 @@ $(document).ready(function () {
         const order = await order_detail.json();
         const client_detail = await fetch(`/api/v1/clients/${order.client}/`);
         const client = await client_detail.json();
-        $('#order_id').text('Order# ' + order_id)
+        const unit_detail = await fetch(`/api/v1/units/${order.unit}/`);
+        const unit = await unit_detail.json();
+        const brand_detail = await fetch(`/api/v1/brands/${unit.brand}/`);
+        const brand = await brand_detail.json();
+        const model_detail = await fetch(`/api/v1/models/${unit.model}/`);
+        const model = await model_detail.json();
+        // alert(unit.model)
+
+
+        $('#order_id').text('Order# ' + order_id);
 
         $('#defect').val(order.defect);
         $('#diagnostic_result').val(order.diagnostic_result);
@@ -232,17 +277,21 @@ $(document).ready(function () {
         $('#last_name').val(client.last_name);
         $('#phone_number').val(client.phone);
 
-        $('.text-end').hide()
+        $('#brand').val(brand.name);
+        $('#model').val(model.name);
+        $('#serial_number').val(unit.serial_number);
 
-        $('.time_field span').empty()
-        $('#creation_date').append(order.created.slice(0, 10))
-        $('#creation_time').append(order.created.slice(11, 16))
-        $('#update_date').append(order.edited.slice(0, 10))
-        $('#update_time').append(order.edited.slice(11, 16))
+        $('.text-end').hide();
+
+        $('.time_field span').empty();
+        $('#creation_date').append(order.created.slice(0, 10));
+        $('#creation_time').append(order.created.slice(11, 16));
+        $('#update_date').append(order.edited.slice(0, 10));
+        $('#update_time').append(order.edited.slice(11, 16));
 
         $('#save').off().click(function (e) {
             e.preventDefault();
-            saveOrder(order_id, order.client)
+            saveOrder(order_id, order.client, order.unit, unit.brand, unit.model, unit.serial_number);
         })
 
     }

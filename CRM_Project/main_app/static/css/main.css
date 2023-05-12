@@ -18,6 +18,8 @@
 .content {
     margin: 5px 5px;
     padding-top: 80px;
+    padding-bottom: 5px;
+    height: auto;
 }
 
 .left_side {
