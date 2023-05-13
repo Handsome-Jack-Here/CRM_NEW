@@ -192,7 +192,6 @@ $(document).ready(function () {
                 order['brand'] = brand_data.id;
                 options.body = JSON.stringify(order);
                 options.method = 'PATCH';
-                alert(order.serial_number)
 
                 await fetch(`/api/v1/units/${unit_num}/`, options);
             })
