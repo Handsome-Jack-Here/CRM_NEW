@@ -107,3 +107,15 @@ class Model(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+
+class Money(models.Model):
+    money_total = models.PositiveIntegerField(default=0)
+    detail = models.CharField(max_length=120)
+    payment_value = models.IntegerField(default=0)
+
+    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='money')
+    order = models.ForeignKey(Order, on_delete=models.PROTECT, verbose_name='money', null=True)
+
+
+

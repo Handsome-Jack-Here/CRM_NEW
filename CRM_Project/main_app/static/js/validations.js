@@ -1,4 +1,4 @@
-$('#create_order').on('click', function () {
+function validator() {
     $('#new_order_form').validate({
 
         rules: {
@@ -14,10 +14,23 @@ $('#create_order').on('click', function () {
                 required: true,
                 minlength: 10,
             },
+            brand: {
+                required: true,
+                minlength: 1,
+            },
+            model: {
+                required: true,
+                minlength: 1,
+            },
+            serial_number: {
+                required: true,
+                minlength: 1,
+            },
             defect: {
                 required: true,
                 minlength: 7,
-            }
+            },
+
         },
 
         messages: {
@@ -33,14 +46,24 @@ $('#create_order').on('click', function () {
                 required: 'This field is required',
                 minlength: 'This field mest be at least 10 characters',
             },
+            brand: {
+                required: 'This field is required',
+                minlength: 'This field mest be at least 10 characters',
+            },
+            model: {
+                required: 'This field is required',
+                minlength: 'This field mest be at least 10 characters',
+            },
+            serial_number: {
+                required: 'This field is required',
+                minlength: 'This field mest be at least 10 characters',
+            },
             defect: {
                 required: 'This field is required',
                 minlength: 'This field mest be at least 7 characters'
             },
         }
     })
-    if ($('#new_order_form').valid()) {
-        newOrderSave()
-    }
+}
 
-})
+    export {validator}

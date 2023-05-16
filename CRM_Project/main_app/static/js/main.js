@@ -1,3 +1,6 @@
+import {validator} from "./validations.js";
+
+
 $(document).ready(function () {
 
 
@@ -141,7 +144,7 @@ $(document).ready(function () {
     }
 
 
-    async function saveOrder(order_num, client_num, unit_num, brand_num, model_num, unit_serial) {
+    async function saveOrder(order_num, client_num, unit_num) {
         $('#order_detail').attr('hidden', true);
 
         let order = {
@@ -263,7 +266,6 @@ $(document).ready(function () {
         const brand = await brand_detail.json();
         const model_detail = await fetch(`/api/v1/models/${unit.model}/`);
         const model = await model_detail.json();
-        // alert(unit.model)
 
 
         $('#order_id').text('Order# ' + order_id);
@@ -295,11 +297,11 @@ $(document).ready(function () {
 
     }
 
+
     $('#orders').on('click', 'a', function (e) {
         e.preventDefault();
         let order_id = $(this).text();
         $('#discard').prop('disabled', true);
-
         $('#discard').on('click', function () {
             alert('discard');
 
@@ -316,56 +318,18 @@ $(document).ready(function () {
     })
 
 
-// validate forms
-    $('#create_order').on('click', function () {
-        $('#new_order_form').validate({
-
-            rules: {
-                first_name: {
-                    required: true,
-                    minlength: 2,
-                },
-                last_name: {
-                    required: true,
-                    minlength: 2,
-                },
-                phone_number: {
-                    required: true,
-                    minlength: 10,
-                },
-                defect: {
-                    required: true,
-                    minlength: 7,
-                }
-            },
-
-            messages: {
-                first_name: {
-                    required: 'This field is required',
-                    minlength: 'This field mest be at least 2 characters',
-                },
-                last_name: {
-                    required: 'This field is required',
-                    minlength: 'This field mest be at least 2 characters',
-                },
-                phone_number: {
-                    required: 'This field is required',
-                    minlength: 'This field mest be at least 10 characters',
-                },
-                defect: {
-                    required: 'This field is required',
-                    minlength: 'This field mest be at least 7 characters'
-                },
+    // validation
+    $('#create_order').on('click',
+        function () {
+            validator();
+            if ($('#new_order_form').valid()) {
+                newOrderSave();
             }
-        })
-
-        if ($('#new_order_form').valid()) {
-            newOrderSave()
         }
-
-    })
-
-
+    )
     getOrderList().then($('#order_list').fadeIn(200))
+
+
 });
+
 
