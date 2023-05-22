@@ -1,25 +1,7 @@
 import {validator} from "./validations.js";
-
+import {getCookie} from "./get_CSRF.js";
 
 $(document).ready(function () {
-
-
-    // get the CSRF token
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
 
     const csrftoken = getCookie('csrftoken');
 
@@ -68,7 +50,6 @@ $(document).ready(function () {
         const brand_response = await fetch(`/api/v1/brands/`, brand_options)
         let brand_data = await brand_response.json()
         let brand_id = JSON.stringify(brand_data.id)
-
         // end brand
 
         // model
@@ -88,9 +69,9 @@ $(document).ready(function () {
         const model_response = await fetch(`/api/v1/models/`, model_options)
         let model_data = await model_response.json()
         let model_id = parseInt(JSON.stringify(model_data.id))
-        // // end model
-        //
-        // // unit
+        // end model
+
+        // unit
         let unit_fields = {
             'serial_number': $('#new_order_form #serial_number').val(),
             'brand': brand_id,
@@ -139,10 +120,7 @@ $(document).ready(function () {
             alert(response.status)
             $('#new_order').removeAttr('hidden');
         }
-
-
     }
-
 
     async function saveOrder(order_num, client_num, unit_num) {
         $('#order_detail').attr('hidden', true);
@@ -202,9 +180,9 @@ $(document).ready(function () {
                 options.method = 'PATCH'
                 await fetch(`/api/v1/orders/${order_num}/`, options)
             })
-            .then(function () {
-                getOrderList().then($('#order_list').fadeIn(200))
-            });
+        // .then(function () {
+        //     getOrderList()
+        // });
     }
 
     async function getOrderList(search = '', elem_per_page = 16) {
@@ -251,6 +229,7 @@ $(document).ready(function () {
         }
     }
 
+
     async function getOrderDetail(order_id) {
 
 
@@ -290,11 +269,77 @@ $(document).ready(function () {
         $('#update_date').append(order.edited.slice(0, 10));
         $('#update_time').append(order.edited.slice(11, 16));
 
-        $('#save').off().click(function (e) {
-            e.preventDefault();
-            saveOrder(order_id, order.client, order.unit, unit.brand, unit.model, unit.serial_number);
-        })
+        let on_edit = true
+        let hash = [];
 
+        $('#order_detail *').each(function () {
+            hash += $(this).val();
+        });
+
+        $(document).off().on('click', 'a', function (e) {
+
+
+            $('#general').hide();
+            let current = [];
+            $('#order_detail *').each(function () {
+                current += $(this).val();
+            });
+
+            if (on_edit === true && hash !== current) {
+                $('#order_detail').prop('hidden', true);
+                $('#save_page').prop('hidden', false);
+
+                $('#return').off().on('click', function () {
+                    $('#order_detail').prop('hidden', false);
+                    $('#save_page').prop('hidden', true);
+                });
+
+                $('#cancel').off().on('click', async function () {
+                    $('#save_page').prop('hidden', true);
+                    on_edit = false;
+                    $('#general').show();
+                });
+            }
+
+            else {
+                $('#general').show();
+            }
+
+        });
+
+
+        $('#save').off().on('click', async function (e) {
+
+            e.preventDefault();
+            on_edit = false;
+            $('#general').show();
+
+            let current = [];
+            $('#order_detail *').each(function () {
+                current += $(this).val();
+            })
+
+            if (hash !== current) {
+                saveOrder(order_id, order.client, order.unit)
+                    .then(function () {
+                        $('#general').show();
+                        on_edit = false;
+                        getOrderList()
+                            .then(function () {
+                                $('#order_list').fadeIn(200);
+                            });
+                    });
+
+                $('#general').show();
+            } else {
+                $('#order_detail').prop('hidden', true);
+                $('#general').show();
+                getOrderList().then(function () {
+                    $('#order_list').fadeIn(200);
+                    $('#general').show();
+                });
+            }
+        });
     }
 
 
@@ -302,33 +347,40 @@ $(document).ready(function () {
         e.preventDefault();
         let order_id = $(this).text();
         $('#discard').prop('disabled', true);
-        $('#discard').on('click', function () {
-            alert('discard');
 
-        });
-
-
-        getOrderDetail(order_id = order_id).then()
+        getOrderDetail(order_id = order_id)
     });
 
 
     $('#new_order_button').on('click', function () {
-        $('#order_list').hide();
+        $('#order_list').prop('hidden', true);
         $('#new_order').removeAttr('hidden');
     })
 
 
     // validation
-    $('#create_order').on('click',
-        function () {
-            validator();
-            if ($('#new_order_form').valid()) {
-                newOrderSave();
-            }
+    $('#create_order').on('click', function () {
+        validator();
+        if ($('#new_order_form').valid()) {
+            newOrderSave();
         }
-    )
-    getOrderList().then($('#order_list').fadeIn(200))
+    })
 
+    $('#payments a').click(function () {
+        $('#order_list').attr('hidden', true);
+        $('#order_detail').prop('hidden', true);
+        $('#payments_page').prop('hidden', false);
+    })
+
+    $('#orders_list_link a').on('click', function () {
+        $('#payments_page').prop('hidden', true);
+        $('#order_detail').prop('hidden', true);
+        getOrderList().then($('#order_list').fadeIn(200));
+    })
+
+    getOrderList().then(function () {
+        $('#order_list').fadeIn(200)
+    });
 
 });
 

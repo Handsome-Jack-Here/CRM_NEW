@@ -62,6 +62,7 @@ class Unit(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='units')
     brand = models.ForeignKey('Brand', on_delete=models.PROTECT, related_name='units')
     model = models.ForeignKey('Model', on_delete=models.PROTECT, related_name='units')
+    # type = models.ForeignKey('UnitType', on_delete=models.PROTECT, related_name='units')
 
     def save(self, *args, **kwargs):
         if self.user.units.filter(brand=self.brand, model=self.model, serial_number=self.serial_number):
@@ -73,6 +74,10 @@ class Unit(models.Model):
 
     def __str__(self):
         return f'{self.brand.name} {self.model.name}'
+
+
+class UnitType(models.Model):
+    name = models.CharField(max_length=21)
 
 
 class Brand(models.Model):
@@ -113,9 +118,7 @@ class Money(models.Model):
     money_total = models.PositiveIntegerField(default=0)
     detail = models.CharField(max_length=120)
     payment_value = models.IntegerField(default=0)
+    created = models.DateTimeField(auto_now_add=True)
 
     user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='money')
     order = models.ForeignKey(Order, on_delete=models.PROTECT, verbose_name='money', null=True)
-
-
-
