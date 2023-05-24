@@ -15,17 +15,19 @@
 }
 
 .content {
-    /*margin-left: 14px;*/
+
     padding-top: 80px;
     padding-bottom: 5px;
     height: auto;
+    font-size: medium;
+    font-family: "Ubuntu";
 }
 
 .left_side {
     margin: auto;
     padding-top: 4px;
     padding-right: 4px;
-    width: 27%;
+    width: 12%;
     height: 1600px;
     min-width: 280px;
     float: left;
@@ -37,6 +39,7 @@
 
 
 .right_side {
+    /*font-size: small;*/
 
     margin-left: 290px;
     padding-top: 4px;
@@ -129,6 +132,6 @@ label.error {
 }
 
 #save_page {
-    /*margin-top: -50px;*/
-    /*margin-left: 170px;*/
+    margin-top: 50px;
+    margin-left: 170px;
 }

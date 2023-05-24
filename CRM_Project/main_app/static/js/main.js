@@ -9,6 +9,7 @@ $(document).ready(function () {
     async function newOrderSave() {
         $('#new_order').attr('hidden', true);
 
+
         // client
         let client_fields = {
             'first_name': $('#new_order_form #first_name').val(),
@@ -113,8 +114,12 @@ $(document).ready(function () {
         if (response.status === 201) {
             $('#new_order_form').each(function () {
                 this.reset()
-                getOrderList().then($('#order_list').fadeIn(200))
+                getOrderList().then($('#order_list').fadeIn(200));
             })
+
+            $('#order_list').prop('hidden', false);
+            $('#order_list *').prop('hidden', false);
+
 
         } else {
             alert(response.status)
@@ -180,12 +185,10 @@ $(document).ready(function () {
                 options.method = 'PATCH'
                 await fetch(`/api/v1/orders/${order_num}/`, options)
             })
-        // .then(function () {
-        //     getOrderList()
-        // });
     }
 
     async function getOrderList(search = '', elem_per_page = 16) {
+        $('.static_content').css('pointer-events','auto').fadeTo(200, 1);
 
         // search filter
         $('.form-control-dark').off().on('input', function (e) {
@@ -232,9 +235,9 @@ $(document).ready(function () {
 
     async function getOrderDetail(order_id) {
 
-
+        $('.static_content').fadeTo(200, 0.9).css('pointer-events','none');
         $('#order_list').hide();
-        $('#order_detail').removeAttr('hidden');
+
         const order_detail = await fetch(`/api/v1/orders/${order_id}/`);
         const order = await order_detail.json();
         const client_detail = await fetch(`/api/v1/clients/${order.client}/`);
@@ -244,7 +247,7 @@ $(document).ready(function () {
         const brand_detail = await fetch(`/api/v1/brands/${unit.brand}/`);
         const brand = await brand_detail.json();
         const model_detail = await fetch(`/api/v1/models/${unit.model}/`);
-        const model = await model_detail.json();
+        const model = await model_detail.json().then($('#order_detail').removeAttr('hidden'));
 
 
         $('#order_id').text('Order# ' + order_id);
@@ -269,94 +272,112 @@ $(document).ready(function () {
         $('#update_date').append(order.edited.slice(0, 10));
         $('#update_time').append(order.edited.slice(11, 16));
 
-        let on_edit = true
+
         let hash = [];
 
         $('#order_detail *').each(function () {
             hash += $(this).val();
         });
 
-        $(document).off().on('click', 'a', function (e) {
-
-
-            $('#general').hide();
-            let current = [];
-            $('#order_detail *').each(function () {
-                current += $(this).val();
-            });
-
-            if (on_edit === true && hash !== current) {
-                $('#order_detail').prop('hidden', true);
-                $('#save_page').prop('hidden', false);
-
-                $('#return').off().on('click', function () {
-                    $('#order_detail').prop('hidden', false);
-                    $('#save_page').prop('hidden', true);
-                });
-
-                $('#cancel').off().on('click', async function () {
-                    $('#save_page').prop('hidden', true);
-                    on_edit = false;
-                    $('#general').show();
-                });
-            }
-
-            else {
-                $('#general').show();
-            }
-
-        });
-
 
         $('#save').off().on('click', async function (e) {
 
             e.preventDefault();
-            on_edit = false;
-            $('#general').show();
+            saveOrder(order_id, order.client, order.unit)
+                .then(function () {
+                        getOrderList();
+                        $('#order_list').fadeIn(200);
 
+                        $('#order_list ').prop('hidden', false);
+                        $('#order_list *').prop('hidden', false);
+                    });
+        });
+
+        $('#discard').off().on('click', function () {
             let current = [];
+
             $('#order_detail *').each(function () {
                 current += $(this).val();
             })
 
             if (hash !== current) {
-                saveOrder(order_id, order.client, order.unit)
-                    .then(function () {
-                        $('#general').show();
-                        on_edit = false;
-                        getOrderList()
-                            .then(function () {
-                                $('#order_list').fadeIn(200);
-                            });
-                    });
+                $('#order_detail').prop('hidden', true);
+                $('#save_page').prop('hidden', false);
+                $('#return').off().on('click', function (){
+                    $('#order_detail').prop('hidden', false);
+                    $('#save_page').prop('hidden', true);
 
-                $('#general').show();
-            } else {
+                    $('#order_list ').prop('hidden', false);
+                    $('#order_list *').prop('hidden', false);
+                })
+                $('#cancel').off().on('click', function (){
+                    $('#save_page').prop('hidden', true);
+                    getOrderList();
+                    $('#order_list').fadeIn(200);
+
+                    $('#order_list ').prop('hidden', false);
+                    $('#order_list *').prop('hidden', false);
+                })
+            }
+            else {
                 $('#order_detail').prop('hidden', true);
                 $('#general').show();
                 getOrderList().then(function () {
                     $('#order_list').fadeIn(200);
-                    $('#general').show();
+
+                    $('#order_list ').prop('hidden', false);
+                    $('#order_list *').prop('hidden', false);
                 });
             }
-        });
+        })
     }
 
 
     $('#orders').on('click', 'a', function (e) {
         e.preventDefault();
         let order_id = $(this).text();
-        $('#discard').prop('disabled', true);
 
-        getOrderDetail(order_id = order_id)
+        hideAndShow()
+
+        getOrderDetail(order_id = order_id).then(function (){
+            $('#order_detail').prop('hidden', false);
+            $('#order_detail *').prop('hidden', false);
+        })
     });
 
 
     $('#new_order_button').on('click', function () {
-        $('#order_list').prop('hidden', true);
-        $('#new_order').removeAttr('hidden');
+        $('.static_content').fadeTo(200, 0.9).css('pointer-events','none');
+
+
+        hideAndShow()
+        $('#new_order').prop('hidden', false);
+        $('#new_order *').prop('hidden', false);
     })
 
+
+
+
+    $('#payments a').click(function () {
+
+
+        hideAndShow()
+        $('#payments_page').prop('hidden', false);
+        $('#payments_page *').prop('hidden', false);
+
+    })
+
+    $('#orders_list_link a').on('click', function () {
+
+
+        hideAndShow()
+        let a = $('#order_list')
+        a.prop('hidden', false);
+        $('#order_list *').prop('hidden', false);
+
+        getOrderList();
+
+    })
 
     // validation
     $('#create_order').on('click', function () {
@@ -366,22 +387,14 @@ $(document).ready(function () {
         }
     })
 
-    $('#payments a').click(function () {
-        $('#order_list').attr('hidden', true);
-        $('#order_detail').prop('hidden', true);
-        $('#payments_page').prop('hidden', false);
-    })
-
-    $('#orders_list_link a').on('click', function () {
-        $('#payments_page').prop('hidden', true);
-        $('#order_detail').prop('hidden', true);
-        getOrderList().then($('#order_list').fadeIn(200));
-    })
+    function hideAndShow(show_item= NaN) {
+        $('.right_side div *').prop('hidden', true);
+        $('.right_side').prop('hidden', false);
+    }
 
     getOrderList().then(function () {
-        $('#order_list').fadeIn(200)
+        $('#order_list').fadeIn(200);
     });
-
 });
 
 
