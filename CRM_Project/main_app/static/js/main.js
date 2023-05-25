@@ -188,7 +188,8 @@ $(document).ready(function () {
     }
 
     async function getOrderList(search = '', elem_per_page = 16) {
-        $('.static_content').css('pointer-events','auto').fadeTo(200, 1);
+        $('.static_content').css('pointer-events', 'auto').fadeTo(200, 1);
+        $('#order_list').hide();
 
         // search filter
         $('.form-control-dark').off().on('input', function (e) {
@@ -204,7 +205,7 @@ $(document).ready(function () {
         let current_page = 1
 
         $('#pagination_bar li').off().click(function () {
-            getOrderList(search = '', elem_per_page = $(this).text())
+            getOrderList(search = '', elem_per_page = $(this).text());
         })
 
         let page = `page=${current_page}`
@@ -218,7 +219,7 @@ $(document).ready(function () {
         }
 
         clear().then(function () {
-            listCreate();
+            listCreate()
         });
 
         async function listCreate() {
@@ -228,14 +229,15 @@ $(document).ready(function () {
                 let client_image = order.client_image.split(' ')
                 $('#order_list tbody').append(`<tr><td><a href="" style="text-decoration: none" ">${order.order_id}</a></td><td>${client_image[0]} ${client_image[1]} </td><td>${order.unit_image}</td><td>${order.defect}</td><td>Stage none</td></tr>`)
             }
-            $('#order_list').attr('hidden', false)
+            let item = $('#order_list, #order_list *');
+            hideAndShow(item);
         }
     }
 
 
     async function getOrderDetail(order_id) {
 
-        $('.static_content').fadeTo(200, 0.9).css('pointer-events','none');
+        $('.static_content').fadeTo(200, 0.9).css('pointer-events', 'none');
         $('#order_list').hide();
 
         const order_detail = await fetch(`/api/v1/orders/${order_id}/`);
@@ -281,16 +283,11 @@ $(document).ready(function () {
 
 
         $('#save').off().on('click', async function (e) {
-
             e.preventDefault();
             saveOrder(order_id, order.client, order.unit)
                 .then(function () {
-                        getOrderList();
-                        $('#order_list').fadeIn(200);
-
-                        $('#order_list ').prop('hidden', false);
-                        $('#order_list *').prop('hidden', false);
-                    });
+                    getOrderList();
+                });
         });
 
         $('#discard').off().on('click', function () {
@@ -301,33 +298,21 @@ $(document).ready(function () {
             })
 
             if (hash !== current) {
-                $('#order_detail').prop('hidden', true);
-                $('#save_page').prop('hidden', false);
-                $('#return').off().on('click', function (){
-                    $('#order_detail').prop('hidden', false);
-                    $('#save_page').prop('hidden', true);
+                let item = $('#save_page, #save_page *');
+                hideAndShow(item);
 
-                    $('#order_list ').prop('hidden', false);
-                    $('#order_list *').prop('hidden', false);
+                $('#return').off().on('click', function () {
+                    let item = $('#order_detail, #order_detail *');
+                    hideAndShow(item);
+
                 })
-                $('#cancel').off().on('click', function (){
-                    $('#save_page').prop('hidden', true);
+
+                $('#cancel').off().on('click', function () {
                     getOrderList();
-                    $('#order_list').fadeIn(200);
-
-                    $('#order_list ').prop('hidden', false);
-                    $('#order_list *').prop('hidden', false);
                 })
-            }
-            else {
-                $('#order_detail').prop('hidden', true);
-                $('#general').show();
-                getOrderList().then(function () {
-                    $('#order_list').fadeIn(200);
 
-                    $('#order_list ').prop('hidden', false);
-                    $('#order_list *').prop('hidden', false);
-                });
+            } else {
+                getOrderList();
             }
         })
     }
@@ -336,48 +321,33 @@ $(document).ready(function () {
     $('#orders').on('click', 'a', function (e) {
         e.preventDefault();
         let order_id = $(this).text();
+        let item = $('#order_detail, #order_detail *');
 
-        hideAndShow()
-
-        getOrderDetail(order_id = order_id).then(function (){
-            $('#order_detail').prop('hidden', false);
-            $('#order_detail *').prop('hidden', false);
+        hideAndShow(item)
+        getOrderDetail(order_id = order_id).then(function () {
         })
     });
 
 
     $('#new_order_button').on('click', function () {
-        $('.static_content').fadeTo(200, 0.9).css('pointer-events','none');
-
-
-        hideAndShow()
-        $('#new_order').prop('hidden', false);
-        $('#new_order *').prop('hidden', false);
+        $('.static_content').fadeTo(200, 0.9).css('pointer-events', 'none');
+        let item = $('#new_order, #new_order *');
+        hideAndShow(item);
     })
-
-
 
 
     $('#payments a').click(function () {
-
-
-        hideAndShow()
-        $('#payments_page').prop('hidden', false);
-        $('#payments_page *').prop('hidden', false);
-
+        let item = $('#payments_page ,#payments_page *');
+        hideAndShow(item);
     })
 
     $('#orders_list_link a').on('click', function () {
-
-
-        hideAndShow()
-        let a = $('#order_list')
-        a.prop('hidden', false);
-        $('#order_list *').prop('hidden', false);
-
+        let item = $('#order_list, #order_list *');
+        hideAndShow(item);
         getOrderList();
 
     })
+
 
     // validation
     $('#create_order').on('click', function () {
@@ -387,13 +357,15 @@ $(document).ready(function () {
         }
     })
 
-    function hideAndShow(show_item= NaN) {
-        $('.right_side div *').prop('hidden', true);
-        $('.right_side').prop('hidden', false);
+    function hideAndShow(item = NaN) {
+
+        $('.right_side div *').prop('hidden', true).hide();
+        $('.right_side').prop('hidden', false).show(140);
+        item.prop('hidden', false).fadeIn(140);
     }
 
     getOrderList().then(function () {
-        $('#order_list').fadeIn(200);
+        $('#order_list').fadeIn(140);
     });
 });
 
