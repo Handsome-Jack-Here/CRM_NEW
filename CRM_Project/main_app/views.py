@@ -4,7 +4,7 @@ from django.views import View
 from django.views.generic import ListView
 from rest_framework import viewsets
 from .serializers import OrderListSerializer, ClientListSerializer, UnitListSerializer, BrandListSerializer, \
-    ModelListSerializer
+    ModelListSerializer, PaymentListSerializer
 from .models import Order, Client, User, Unit, Brand
 from django.views.generic import View, TemplateView
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -26,9 +26,9 @@ class OrderPagination(PageNumberPagination):
             self.page_size = request.POST['page_size']
             return self.page_size
 
-    page_size = 4
+    page_size = 2
     page_size_query_param = 'page_size'
-    max_page_size = 28
+    max_page_size = 18
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -53,11 +53,9 @@ class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderListSerializer
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = ['defect', 'order_id', 'client_image', 'unit_image']
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, )
     pagination_class = OrderPagination
 
-
-# authentication_classes = (TokenAuthentication, SessionAuthentication, )
 
 class ClientViewSet(viewsets.ModelViewSet):
 
@@ -96,3 +94,13 @@ class ModelViewSet(viewsets.ModelViewSet):
         return user.models.all()
 
     serializer_class = ModelListSerializer
+
+
+class PaymentViewSet(viewsets.ModelViewSet):
+
+    def get_queryset(self):
+        user = User.objects.get(id=self.request.user.id)
+        return user.payments.all()
+
+    serializer_class = PaymentListSerializer
+    permission_classes = (permissions.IsAuthenticated,)

@@ -64,6 +64,31 @@ function validator() {
             },
         }
     })
+
+    $('#new_payment_form').validate({
+
+        rules: {
+            payment_comment: {
+                required: true,
+                minlength: 2,
+            },
+            payment_value: {
+                required: true,
+                min: 1,
+            }
+        },
+
+        messages: {
+            payment_comment: {
+                required: 'This field is required',
+                minlength: 'This field mest be at least 2 characters',
+            },
+            payment_value: {
+                required: 'This field is required',
+                min: 'This value mest be at least 0',
+            },
+        }
+    })
 }
 
     export {validator}

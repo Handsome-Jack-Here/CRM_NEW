@@ -8,6 +8,7 @@ router.register(r'clients', views.ClientViewSet, basename='clients')
 router.register(r'units', views.UnitViewSet, basename='units')
 router.register(r'brands', views.BrandViewSet, basename='brands')
 router.register(r'models', views.ModelViewSet, basename='models')
+router.register(r'payments', views.PaymentViewSet, basename='payments')
 
 urlpatterns = [
     path('', include(router.urls)),

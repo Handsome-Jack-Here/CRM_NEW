@@ -187,44 +187,44 @@ $(document).ready(function () {
             })
     }
 
-    async function getOrderList(search = '', elem_per_page = 16) {
-        $('.static_content').css('pointer-events', 'auto').fadeTo(200, 1);
+    async function getOrderList(search = '', elem_per_page = '&page_size=1', current_page = 'page=1') {
+
+        releaseActions();
         $('#order_list').hide();
 
         // search filter
         $('.form-control-dark').off().on('input', function (e) {
             e.preventDefault()
-            search = $('.form-control-dark').val()
+            search = $('.form-control-dark').val();
             if (search) {
-                search = `search=` + `${search}`
+                search = `search=` + `${search}`;
             }
 
-            getOrderList(search)
-        })
-
-        let current_page = 1
-
-        $('#pagination_bar li').off().click(function () {
-            getOrderList(search = '', elem_per_page = $(this).text());
-        })
-
-        let page = `page=${current_page}`
+            getOrderList(search);
+        });
         if (search) {
-            page = ''
+            current_page = '';
         }
+
+
+        $('#pagination_bar a').off().click(function () {
+            resetPagination()
+            $(this).css('background-color', '#e3f6f5');
+            getOrderList(search = '', elem_per_page = '&page_size=' + $(this).text());
+        });
 
 
         async function clear() {
-            $('#order_list tbody *').remove()
+            $('#order_list tbody *').remove();
         }
 
         clear().then(function () {
-            listCreate()
+            listCreate();
         });
 
         async function listCreate() {
-            const response = await fetch(`/api/v1/orders/?` + page + search + '&page_size=' + elem_per_page);
-            let orders = await response.json()
+            const response = await fetch(`/api/v1/orders/?` + current_page + search + elem_per_page);
+            let orders = await response.json();
             for (let order of orders['results']) {
                 let client_image = order.client_image.split(' ')
                 $('#order_list tbody').append(`<tr><td><a href="" style="text-decoration: none" ">${order.order_id}</a></td><td>${client_image[0]} ${client_image[1]} </td><td>${order.unit_image}</td><td>${order.defect}</td><td>Stage none</td></tr>`)
@@ -237,7 +237,7 @@ $(document).ready(function () {
 
     async function getOrderDetail(order_id) {
 
-        $('.static_content').fadeTo(200, 0.9).css('pointer-events', 'none');
+        holdActions();
         $('#order_list').hide();
 
         const order_detail = await fetch(`/api/v1/orders/${order_id}/`);
@@ -318,7 +318,85 @@ $(document).ready(function () {
     }
 
 
+    async function getPaymentList() {
+
+        let item = $('#payments_page ,#payments_page *');
+        hideAndShow(item);
+
+        function clear() {
+            $('#payments_list tbody *').remove();
+            $('#payments_list_summary span *').remove();
+        }
+
+        clear();
+
+        // holdActions();
+        const response = await fetch(`/api/v1/payments/`);
+        let payments = await response.json();
+        let summary = 0
+        let color = ''
+        let sign = ''
+        for (let payment of payments) {
+            if (payment.payment_type === true) {
+                summary += payment.payment_value;
+                color = '#3f9565';
+                sign = ' +';
+
+            } else {
+                summary -= payment.payment_value;
+                color = '#cd6c7a';
+                sign = ' -';
+            }
+
+            $('#payments_list tbody')
+                .append(`<tr><td style="background: ${color}">${sign}${payment.payment_value}</td>
+                <td>${payment.created.slice(0, 10)} ${payment.created.slice(11, 16)}</td>
+                <td>${payment.order_preview}</td><td>${payment.money_total}</td></tr>`);
+        }
+        $('#current_summary').append(`<span>${summary}</span>`);
+    }
+
+    async function newPaymentSave(order = NaN, type = true) {
+
+
+        let payment_fields = {
+            'payment_detail': $('#payment_comment').val(),
+            'payment_value': $('#payment_value').val(),
+            'currency': '1',
+            'order': order,
+            'payment_type': type
+
+        }
+
+        let options = {
+
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify(payment_fields)
+        }
+        try {
+            const response = await fetch(`/api/v1/payments/`, options)
+            const data = await response.json()
+            $('#new_payment_form').each(function () {
+                this.reset();
+            })
+            let item = $('#payments_page ,#payments_page *');
+            hideAndShow(item);
+
+            getPaymentList();
+
+        } catch (error) {
+            $('#payment_value_error').append('The expense cannot exceed the amount in cashbox');
+
+        }
+    }
+
+
     $('#orders').on('click', 'a', function (e) {
+
         e.preventDefault();
         let order_id = $(this).text();
         let item = $('#order_detail, #order_detail *');
@@ -330,24 +408,71 @@ $(document).ready(function () {
 
 
     $('#new_order_button').on('click', function () {
-        $('.static_content').fadeTo(200, 0.9).css('pointer-events', 'none');
+        holdActions();
         let item = $('#new_order, #new_order *');
         hideAndShow(item);
-    })
+    });
 
 
     $('#payments a').click(function () {
-        let item = $('#payments_page ,#payments_page *');
-        hideAndShow(item);
-    })
+        getPaymentList();
+    });
 
     $('#orders_list_link a').on('click', function () {
         let item = $('#order_list, #order_list *');
         hideAndShow(item);
+        resetPagination();
         getOrderList();
 
+    });
+
+
+    $('#add').off().on('click', function () {
+        let item = $('#add_payment_page, #add_payment_page *');
+        hideAndShow(item);
+
+        $('#payment_discard').off().on('click', function () {
+            getPaymentList();
+        });
+
+        $('#payment_save').off().on('click', function () {
+            validator();
+            if ($('#new_payment_form').valid()) {
+                newPaymentSave(NaN, true);
+            }
+        });
+    });
+
+    $('#expense').off().on('click', function () {
+        let item = $('#add_payment_page, #add_payment_page *');
+        hideAndShow(item);
+
+        $('#payment_discard').off().on('click', function () {
+            getPaymentList();
+        });
+
+        $('#payment_save').off().on('click', function () {
+            validator();
+            if ($('#new_payment_form').valid()) {
+                newPaymentSave(NaN, false);
+            }
+        });
     })
 
+
+    function holdActions() {
+        $('.static_content').fadeTo(200, 0.9).css('pointer-events', 'none');
+    }
+
+    function releaseActions() {
+        $('.static_content').css('pointer-events', 'auto').fadeTo(200, 1);
+    }
+
+    function resetPagination() {
+        $('#pagination_bar a').each(function () {
+            $(this).css('background-color', 'white')
+        });
+    }
 
     // validation
     $('#create_order').on('click', function () {
@@ -355,7 +480,7 @@ $(document).ready(function () {
         if ($('#new_order_form').valid()) {
             newOrderSave();
         }
-    })
+    });
 
     function hideAndShow(item = NaN) {
 

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Order, Client, Unit, Brand, Model
+from .models import Order, Client, Unit, Brand, Model, Payment
 
 
 class OrderListSerializer(serializers.ModelSerializer):
@@ -40,4 +40,13 @@ class ModelListSerializer(BrandListSerializer):
 
     class Meta:
         model = Model
+        fields = '__all__'
+
+
+class PaymentListSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    # order = serializers.HiddenField(default='Cash')
+
+    class Meta:
+        model = Payment
         fields = '__all__'

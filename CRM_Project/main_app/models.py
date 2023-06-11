@@ -25,7 +25,7 @@ class Order(models.Model):
             if self.created:
                 pass
             else:
-                orders_count = list(user.orders.get_queryset())[-1].order_id
+                orders_count = user.orders.last().order_id
                 self.order_id = orders_count + 1
         else:
             self.order_id = 1
@@ -62,6 +62,7 @@ class Unit(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='units')
     brand = models.ForeignKey('Brand', on_delete=models.PROTECT, related_name='units')
     model = models.ForeignKey('Model', on_delete=models.PROTECT, related_name='units')
+
     # type = models.ForeignKey('UnitType', on_delete=models.PROTECT, related_name='units')
 
     def save(self, *args, **kwargs):
@@ -114,11 +115,49 @@ class Model(models.Model):
         return f'{self.name}'
 
 
-class Money(models.Model):
+class Currency(models.Model):
+    name = models.CharField(max_length=28)
+
+    def __str__(self):
+        return f'{self.name}'
+
+
+class Payment(models.Model):
     money_total = models.PositiveIntegerField(default=0)
-    detail = models.CharField(max_length=120)
+    payment_detail = models.CharField(max_length=120, default='Order payment')
     payment_value = models.IntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
+    payment_type = models.BooleanField(default=True)
+    order_preview = models.CharField(max_length=6, default='Cashbox payment')
+    currency_prev = models.CharField(max_length=21, null=True, blank=True)
 
-    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='money')
-    order = models.ForeignKey(Order, on_delete=models.PROTECT, verbose_name='money', null=True)
+    currency = models.ForeignKey(Currency, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='payments')
+    order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name='payments', null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.payment_value} {self.payment_detail} {self.money_total} Created at: {self.created}'
+
+    def increase(self):
+
+        if self.user.payments.last():
+            self.money_total = self.user.payments.last().money_total + self.payment_value
+        else:
+            self.money_total = self.payment_value
+
+    def decrease(self):
+
+        self.money_total = self.user.payments.last().money_total - self.payment_value
+
+    def save(self, *args, **kwargs):
+        user = self.user
+        if self.payment_type:
+            self.increase()
+        else:
+            self.decrease()
+
+        if self.order:
+            self.order_preview = 'Payment from order: ' + str(self.order.order_id)
+
+
+        return super(Payment, self).save(*args, **kwargs)
