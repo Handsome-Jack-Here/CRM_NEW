@@ -276,12 +276,22 @@ $(document).ready(function () {
         }
 
         function newSpFormClean() {
+
             $('#new_sp_description').val('');
             $('#new_sp_price').val('');
             $('#new_sp_warranty option:first').prop('selected', true);
         }
 
+        function editSpFormClean() {
+            $('#edit_sp_description').val('');
+            $('#edit_sp_price').val('');
+            $('#edit_sp_warranty option:first').prop('selected', true);
+        }
+
         async function createSPTable() {
+            
+            $('#edit_sp_form').prop('hidden', true);
+
             let order = await getOrder();
             $('#sp_id_header').hide()
 
@@ -307,34 +317,51 @@ $(document).ready(function () {
             snp_table.fadeIn(140);
 
 
-            $('#add_sp').off().on('click', async function() {
+            $('#add_sp_button').off().on('click', async function() {
+                let new_sp = {
+                    'name': $('#new_sp_description').val(),
+                    'price': $('#new_sp_price').val(),
+                    'warranty': $('#new_sp_warranty').find(":selected").text(),
 
-                await addSP();
+                }
+
+                await addSP(null, new_sp);
             });
 
             $('#snp tr').off().on('click', async function (e) {
                 e.preventDefault();
-                let remove_item = $(this).find('#sp_id').text();
-                $('#new_sp_description').val($(this).find('#sp_description').text());
-                $('#new_sp_price').val($(this).find('#sp_price').text());
-                let a = $(this).find('#sp_warranty').text();
-                $(`#new_sp_warranty option:contains(${a})`).prop('selected', true);
-                let sp_button = $('#add_sp');
-                sp_button.text('Change');
 
-                sp_button.off().on('click', async function (){
-                    alert('change');
-                    await addSP(remove_item);
+                let remove_item = $(this).find('#sp_id').text();
+                $('#edit_sp_description').val($(this).find('#sp_description').text());
+                $('#edit_sp_price').val($(this).find('#sp_price').text());
+                let warranty = $(this).find('#sp_warranty').text();
+                $(`#edit_sp_warranty option:contains(${warranty})`).prop('selected', true);
+
+                $('#new_sp_form').hide();
+                $('#edit_sp_form').prop('hidden', false);
+
+
+                $('#save_edit_sp_button').off().on('click', async function (){
+
+                    let new_sp = {
+                    'name': $('#edit_sp_description').val(),
+                    'price': $('#edit_sp_price').val(),
+                    'warranty': $('#edit_sp_warranty').find(":selected").text(),
+
+                }
+
+                    await addSP(remove_item, new_sp);
                 });
 
-
-                // await addSP(remove_item);
+                $('#cancel_edit_sp_button').off().on('click', async function (){
+                    editSpFormClean();
+                })
             })
         }
 
         await createSPTable();
 
-        async function addSP(remove_item = null) {
+        async function addSP(remove_item = null, new_sp) {
             let order = await getOrder();
 
             let matrix = [];
@@ -343,14 +370,10 @@ $(document).ready(function () {
             }
 
             if (remove_item) {
+                remove_item = parseInt(remove_item);
                 let index = matrix.indexOf(remove_item);
-                delete matrix[index];
-            }
+                matrix.splice(index, 1);
 
-            let new_sp = {
-                'name': $('#new_sp_description').val(),
-                'price': $('#new_sp_price').val(),
-                'warranty': $('#new_sp_warranty').find(":selected").text(),
             }
 
             let options = {
@@ -362,11 +385,9 @@ $(document).ready(function () {
                 body: JSON.stringify(new_sp)
             }
 
-
             let resp = await fetch(`/api/v1/services-and-parst/`, options);
             let sp = await resp.json();
             matrix.push(sp.id);
-
 
             let sp_list = {'sp': matrix};
             options.body = JSON.stringify(sp_list);
@@ -374,10 +395,16 @@ $(document).ready(function () {
 
             let response = await fetch(`/api/v1/orders/${order_id}/`, options);
             if (response.status === 200) {
-                $('#add_sp').text('Create');
+
+                $('#new_sp_form').show();
                 newSpFormClean();
-            } else {
+            }
+
+            else {
+
+                $('#new_sp_form').show();
                 alert(response.status);
+                newSpFormClean();
             }
             await createSPTable();
         }

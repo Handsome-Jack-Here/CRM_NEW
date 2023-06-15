@@ -60,7 +60,7 @@
                 <button class="btn btn-outline-success stage_buttons">Closed</button>
             </div>
 
-            <div  class="row-12" >
+            <div class="row-12">
                 <div class="col-12 order_detail_services_and_parts_field">
 
                     <table data-editable="true" id="snp" class="table table-sm" style="border: solid white 3px">
@@ -89,14 +89,34 @@
 
                         <input id="new_sp_description" placeholder="Description" type="text" class="form-control">
                         <input id="new_sp_price" placeholder="Price" type="text" class="form-control">
-                        <select style="border: solid rgba(173,181,189,0.64) 1px" id="new_sp_warranty" class="custom-select">
+                        <select style="border: solid rgba(173,181,189,0.64) 1px" id="new_sp_warranty"
+                                class="custom-select">
                             <option selected>No warranty</option>
                             <option value="1">1 Month</option>
                             <option value="2">3 Month</option>
                             <option value="3">6 Month</option>
                         </select>
 
-                        <button style="width: 80px"  id="add_sp" class="btn btn-outline-primary" type="button">Create</button>
+                        <button style="width: 80px" id="add_sp_button" class="btn btn-outline-primary" type="button">
+                            Create
+                        </button>
+                    </div>
+
+                    <div id="edit_sp_form" class="input-group">
+
+                        <input id="edit_sp_description" placeholder="Description" type="text" class="form-control">
+                        <input id="edit_sp_price" placeholder="Price" type="text" class="form-control">
+                        <select style="border: solid rgba(173,181,189,0.64) 1px" id="edit_sp_warranty"
+                                class="custom-select">
+                            <option selected>No warranty</option>
+                            <option value="1">1 Month</option>
+                            <option value="2">3 Month</option>
+                            <option value="3">6 Month</option>
+                        </select>
+
+                        <button style="width: 80px" id="save_edit_sp_button" class="btn btn-outline-success" type="button">Save</button>
+                        <button style="width: 80px" id="cancel_edit_sp_button" class="btn btn-outline-danger" type="button">Cancel</button>
+
                     </div>
                 </div>
             </div>
