@@ -18,6 +18,7 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='orders')
     client = models.ForeignKey('Client', on_delete=models.PROTECT, related_name='orders')
     unit = models.ForeignKey('Unit', on_delete=models.PROTECT, related_name='orders')
+    sp = models.ManyToManyField('ServiceAndPart', related_name='sp', null=True, blank=True)
 
     def save(self, *args, **kwargs):
         user = self.user
@@ -80,6 +81,8 @@ class Unit(models.Model):
 class UnitType(models.Model):
     name = models.CharField(max_length=21)
 
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='unit_types')
+
 
 class Brand(models.Model):
     name = models.CharField(max_length=28)
@@ -136,7 +139,7 @@ class Payment(models.Model):
     order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name='payments', null=True, blank=True)
 
     def __str__(self):
-        return f'{self.payment_value} {self.payment_detail} {self.money_total} Created at: {self.created}'
+        return f'Value: {self.payment_value} Detail: {self.payment_detail} Money now: {self.money_total} Order: {self.order.pk} Created at: {self.created} '
 
     def increase(self):
 
@@ -159,5 +162,23 @@ class Payment(models.Model):
         if self.order:
             self.order_preview = 'Payment from order: ' + str(self.order.order_id)
 
-
         return super(Payment, self).save(*args, **kwargs)
+
+
+class ServiceAndPart(models.Model):
+    name = models.CharField(max_length=84)
+    price = models.IntegerField(default=0)
+    warranty = models.CharField(max_length=21)
+
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='sp', null=True)
+
+    def __str__(self):
+        return f'{self.name} {self.price} {self.warranty}'
+
+    def save(self, *args, **kwargs):
+        if self.user.sp.filter(name=self.name, price=self.price, warranty=self.warranty):
+            sp = self.user.sp.get(name=self.name, price=self.price, warranty=self.warranty)
+            self.pk = sp.pk
+            return sp
+        else:
+            return super(ServiceAndPart, self).save(*args, **kwargs)

@@ -187,7 +187,7 @@ $(document).ready(function () {
             })
     }
 
-    async function getOrderList(search = '', elem_per_page = '&page_size=1', current_page = 'page=1') {
+    async function getOrderList(search = '', elem_per_page = '&page_size=10', current_page = 'page=1') {
 
         releaseActions();
         $('#order_list').hide();
@@ -238,6 +238,7 @@ $(document).ready(function () {
     async function getOrderDetail(order_id) {
 
         holdActions();
+        newSpFormClean();
         $('#order_list').hide();
 
         const order_detail = await fetch(`/api/v1/orders/${order_id}/`);
@@ -265,6 +266,123 @@ $(document).ready(function () {
         $('#brand').val(brand.name);
         $('#model').val(model.name);
         $('#serial_number').val(unit.serial_number);
+
+
+        async function getOrder() {
+            let order_detail = await fetch(`/api/v1/orders/${order_id}/`);
+            let order = await order_detail.json();
+            return order;
+
+        }
+
+        function newSpFormClean() {
+            $('#new_sp_description').val('');
+            $('#new_sp_price').val('');
+            $('#new_sp_warranty option:first').prop('selected', true);
+        }
+
+        async function createSPTable() {
+            let order = await getOrder();
+            $('#sp_id_header').hide()
+
+            let snp_table = $('#snp');
+            snp_table.hide();
+            $('#snp tbody *').each(function () {
+                $(this).remove();
+            })
+
+            for (let num of order.sp) {
+                let resp = await fetch(`/api/v1/services-and-parst/${num}/`);
+                let sp = await resp.json();
+
+                $('#snp tbody').append(
+                    `<tr>
+                            <td hidden id="sp_id">${sp.id}</td>
+                            <td id="sp_description">${sp.name}</td>
+                            <td id="sp_price">${sp.price}</td>
+                            <td id="sp_warranty">${sp.warranty}</td>
+                            <td><a style="text-decoration: none" href="">Delete</a></td>
+                    </tr>`)
+            }
+            snp_table.fadeIn(140);
+
+
+            $('#add_sp').off().on('click', async function() {
+
+                await addSP();
+            });
+
+            $('#snp tr').off().on('click', async function (e) {
+                e.preventDefault();
+                let remove_item = $(this).find('#sp_id').text();
+                $('#new_sp_description').val($(this).find('#sp_description').text());
+                $('#new_sp_price').val($(this).find('#sp_price').text());
+                let a = $(this).find('#sp_warranty').text();
+                $(`#new_sp_warranty option:contains(${a})`).prop('selected', true);
+                let sp_button = $('#add_sp');
+                sp_button.text('Change');
+
+                sp_button.off().on('click', async function (){
+                    alert('change');
+                    await addSP(remove_item);
+                });
+
+
+                // await addSP(remove_item);
+            })
+        }
+
+        await createSPTable();
+
+        async function addSP(remove_item = null) {
+            let order = await getOrder();
+
+            let matrix = [];
+            for (let sp of order.sp) {
+                matrix.push(sp);
+            }
+
+            if (remove_item) {
+                let index = matrix.indexOf(remove_item);
+                delete matrix[index];
+            }
+
+            let new_sp = {
+                'name': $('#new_sp_description').val(),
+                'price': $('#new_sp_price').val(),
+                'warranty': $('#new_sp_warranty').find(":selected").text(),
+            }
+
+            let options = {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    'X-CSRFToken': csrftoken,
+                },
+                body: JSON.stringify(new_sp)
+            }
+
+
+            let resp = await fetch(`/api/v1/services-and-parst/`, options);
+            let sp = await resp.json();
+            matrix.push(sp.id);
+
+
+            let sp_list = {'sp': matrix};
+            options.body = JSON.stringify(sp_list);
+            options.method = 'PATCH';
+
+            let response = await fetch(`/api/v1/orders/${order_id}/`, options);
+            if (response.status === 200) {
+                $('#add_sp').text('Create');
+                newSpFormClean();
+            } else {
+                alert(response.status);
+            }
+            await createSPTable();
+        }
+
+
 
         $('.text-end').hide();
 
@@ -330,7 +448,7 @@ $(document).ready(function () {
 
         clear();
 
-        // holdActions();
+        holdActions();
         const response = await fetch(`/api/v1/payments/`);
         let payments = await response.json();
         let summary = 0
@@ -389,8 +507,7 @@ $(document).ready(function () {
             getPaymentList();
 
         } catch (error) {
-            $('#payment_value_error').append('The expense cannot exceed the amount in cashbox');
-
+            $('#payment_value_error').append(`<p>The expense cannot exceed the amount in cashbox</p>`);
         }
     }
 
@@ -430,6 +547,7 @@ $(document).ready(function () {
     $('#add').off().on('click', function () {
         let item = $('#add_payment_page, #add_payment_page *');
         hideAndShow(item);
+        $('#payment_value_error p').remove()
 
         $('#payment_discard').off().on('click', function () {
             getPaymentList();
@@ -446,6 +564,7 @@ $(document).ready(function () {
     $('#expense').off().on('click', function () {
         let item = $('#add_payment_page, #add_payment_page *');
         hideAndShow(item);
+        $('#payment_value_error p').remove()
 
         $('#payment_discard').off().on('click', function () {
             getPaymentList();

@@ -1,10 +1,11 @@
 from rest_framework import serializers
-from .models import Order, Client, Unit, Brand, Model, Payment
+from .models import Order, Client, Unit, Brand, Model, Payment, ServiceAndPart
 
 
 class OrderListSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     order_id = serializers.ReadOnlyField()
+    # client = serializers.HiddenField(default=None)
 
     class Meta:
         model = Order
@@ -13,6 +14,7 @@ class OrderListSerializer(serializers.ModelSerializer):
 
 class ClientListSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
 
     class Meta:
         model = Client
@@ -49,4 +51,12 @@ class PaymentListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Payment
+        fields = '__all__'
+
+
+class ServiceAndPartListSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = ServiceAndPart
         fields = '__all__'

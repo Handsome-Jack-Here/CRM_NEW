@@ -4,7 +4,7 @@ from django.views import View
 from django.views.generic import ListView
 from rest_framework import viewsets
 from .serializers import OrderListSerializer, ClientListSerializer, UnitListSerializer, BrandListSerializer, \
-    ModelListSerializer, PaymentListSerializer
+    ModelListSerializer, PaymentListSerializer, ServiceAndPartListSerializer
 from .models import Order, Client, User, Unit, Brand
 from django.views.generic import View, TemplateView
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -53,7 +53,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderListSerializer
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = ['defect', 'order_id', 'client_image', 'unit_image']
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated,)
     pagination_class = OrderPagination
 
 
@@ -67,6 +67,7 @@ class ClientViewSet(viewsets.ModelViewSet):
     search_fields = ['first_name', 'last_name', 'phone', 'address', ]
 
     serializer_class = ClientListSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 class UnitViewSet(viewsets.ModelViewSet):
@@ -76,6 +77,7 @@ class UnitViewSet(viewsets.ModelViewSet):
         return user.units.all()
 
     serializer_class = UnitListSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 class BrandViewSet(viewsets.ModelViewSet):
@@ -85,6 +87,7 @@ class BrandViewSet(viewsets.ModelViewSet):
         return user.brands.all()
 
     serializer_class = BrandListSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 class ModelViewSet(viewsets.ModelViewSet):
@@ -94,6 +97,7 @@ class ModelViewSet(viewsets.ModelViewSet):
         return user.models.all()
 
     serializer_class = ModelListSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 class PaymentViewSet(viewsets.ModelViewSet):
@@ -103,4 +107,14 @@ class PaymentViewSet(viewsets.ModelViewSet):
         return user.payments.all()
 
     serializer_class = PaymentListSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class ServiceAndPartViewSet(viewsets.ModelViewSet):
+
+    def get_queryset(self):
+        user = User.objects.get(id=self.request.user.id)
+        return user.sp.all()
+
+    serializer_class = ServiceAndPartListSerializer
     permission_classes = (permissions.IsAuthenticated,)

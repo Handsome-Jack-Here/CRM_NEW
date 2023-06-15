@@ -51,7 +51,7 @@
                 <button id="discard" type="button" class="btn btn-danger">Discard</button>
             </div>
         </div>
-        <div style="height: 60px;" class="col-6">
+        <div style="height: 60px; background: white" class="col-6">
             <div>
                 <button class="btn btn-success stage_buttons">Diagnostic</button>
                 <button class="btn btn-outline-success stage_buttons">Diagnostic done</button>
@@ -59,64 +59,47 @@
                 <button class="btn btn-outline-success stage_buttons">Repair complete</button>
                 <button class="btn btn-outline-success stage_buttons">Closed</button>
             </div>
-            <div class="row-12" style="height: 250px;">
+
+            <div  class="row-12" >
                 <div class="col-12 order_detail_services_and_parts_field">
 
-
-
-                    <table class="table table-sm">
+                    <table data-editable="true" id="snp" class="table table-sm" style="border: solid white 3px">
                         <thead>
                         <tr>
+                            <th id="sp_id_header">ID</th>
                             <th scope="col">Description</th>
                             <th scope="col">Price</th>
                             <th scope="col">Warranty</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr>
-                            <td>Diagnostic</td>
-                            <td>10</td>
-                            <td>No warranty</td>
-                            <td><a href="">Edit</a> <a href="">Delete</a></td>
-                        </tr>
-                        <tr>
-                            <td>BGA rework</td>
-                            <td>10</td>
-                            <td>3 mouth</td>
-                            <td><a href="">Edit</a> <a href="">Delete</a></td>
-                        </tr>
-                        <tr>
-                            <td>GPU RTX 2080</td>
-                            <td>10</td>
-                            <td>3 mouth</td>
-                            <td><a href="">Edit</a> <a href="">Delete</a></td>
-                        </tr>
+                        <tbody class="sp_table_elem">
+
                         </tbody>
                     </table>
                 </div>
             </div>
             <div class="row-12">
-                <div class="col-12 order_detail_comment_field">
-                    <div class="input-group">
+                <div class="col-12 order_detail_new_sp_field">
+                    <div style="margin-bottom: 14px; float: right;" class="row-12">
+                        <div id="order_detail_summary" class="col-12">
+                            Summary:
+                        </div>
+                    </div>
+                    <div id="new_sp_form" class="input-group">
 
-                        <input placeholder="Description" type="text" class="form-control">
-                        <input placeholder="Price" type="text" class="form-control">
-
-                        <select class="custom-select">
+                        <input id="new_sp_description" placeholder="Description" type="text" class="form-control">
+                        <input id="new_sp_price" placeholder="Price" type="text" class="form-control">
+                        <select style="border: solid rgba(173,181,189,0.64) 1px" id="new_sp_warranty" class="custom-select">
                             <option selected>No warranty</option>
-                            <option value="1">1 month</option>
-                            <option value="2">3 month</option>
-                            <option value="3">6 month</option>
+                            <option value="1">1 Month</option>
+                            <option value="2">3 Month</option>
+                            <option value="3">6 Month</option>
                         </select>
 
-                        <button class="btn btn-outline-secondary" type="button">Add</button>
-
+                        <button style="width: 80px"  id="add_sp" class="btn btn-outline-primary" type="button">Create</button>
                     </div>
                 </div>
             </div>
         </div>
-
-
     </div>
-
 </div>
