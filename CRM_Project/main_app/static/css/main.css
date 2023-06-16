@@ -178,12 +178,11 @@ label.error {
 
 .sp_table_elem  tr:hover {
 
-    background: rgba(44, 154, 194, 0.78);
-    color: white;
+    background: rgba(15, 111, 145, 0.25);
 }
 
 .sp_table_elem tr a:hover {
-    color: white;
+    color: red;
 }
 
 

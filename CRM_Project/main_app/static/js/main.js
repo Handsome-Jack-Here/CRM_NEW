@@ -3,6 +3,11 @@ import {getCookie} from "./get_CSRF.js";
 
 $(document).ready(function () {
 
+
+    // $('#snp tr *').hover(async function (){
+    //             alert('hover');
+    //         });
+
     const csrftoken = getCookie('csrftoken');
 
 
@@ -238,7 +243,7 @@ $(document).ready(function () {
     async function getOrderDetail(order_id) {
 
         holdActions();
-        newSpFormClean();
+        await newSpFormShow();
         $('#order_list').hide();
 
         const order_detail = await fetch(`/api/v1/orders/${order_id}/`);
@@ -275,28 +280,34 @@ $(document).ready(function () {
 
         }
 
-        function newSpFormClean() {
+        async function newSpFormShow() {
+            $('#edit_sp_form').prop('hidden', true);
+            $('#new_sp_form').prop('hidden', false);
 
             $('#new_sp_description').val('');
             $('#new_sp_price').val('');
             $('#new_sp_warranty option:first').prop('selected', true);
         }
 
-        function editSpFormClean() {
+        async function editSpFormShow() {
+            $('#edit_sp_form').prop('hidden', false);
+            $('#new_sp_form').prop('hidden', true);
+
             $('#edit_sp_description').val('');
             $('#edit_sp_price').val('');
             $('#edit_sp_warranty option:first').prop('selected', true);
         }
 
         async function createSPTable() {
+
+            let snp_table = $('#snp');
+            snp_table.hide();
+            $('#sp_id_header').hide()
             
             $('#edit_sp_form').prop('hidden', true);
 
             let order = await getOrder();
-            $('#sp_id_header').hide()
 
-            let snp_table = $('#snp');
-            snp_table.hide();
             $('#snp tbody *').each(function () {
                 $(this).remove();
             })
@@ -311,7 +322,7 @@ $(document).ready(function () {
                             <td id="sp_description">${sp.name}</td>
                             <td id="sp_price">${sp.price}</td>
                             <td id="sp_warranty">${sp.warranty}</td>
-                            <td><a style="text-decoration: none" href="">Delete</a></td>
+                            <td><a hidden id="delete" style="text-decoration: none;" href="">Delete</a></td>
                     </tr>`)
             }
             snp_table.fadeIn(140);
@@ -323,13 +334,25 @@ $(document).ready(function () {
                     'price': $('#new_sp_price').val(),
                     'warranty': $('#new_sp_warranty').find(":selected").text(),
 
-                }
+                    }
 
                 await addSP(null, new_sp);
             });
 
-            $('#snp tr').off().on('click', async function (e) {
+            let table_item = $('#snp tr');
+
+            table_item.off().on('click', async function (e) {
                 e.preventDefault();
+                await editSpFormShow();
+
+                $('.sp_table_elem *').each(function (){
+                    let all_delete_items = $(this).find('#delete');
+                    all_delete_items.prop('hidden', true);
+                });
+
+
+                let del = $(this).find('#delete');
+                del.prop('hidden', false);
 
                 let remove_item = $(this).find('#sp_id').text();
                 $('#edit_sp_description').val($(this).find('#sp_description').text());
@@ -337,8 +360,6 @@ $(document).ready(function () {
                 let warranty = $(this).find('#sp_warranty').text();
                 $(`#edit_sp_warranty option:contains(${warranty})`).prop('selected', true);
 
-                $('#new_sp_form').hide();
-                $('#edit_sp_form').prop('hidden', false);
 
 
                 $('#save_edit_sp_button').off().on('click', async function (){
@@ -348,15 +369,20 @@ $(document).ready(function () {
                     'price': $('#edit_sp_price').val(),
                     'warranty': $('#edit_sp_warranty').find(":selected").text(),
 
-                }
+                    }
 
                     await addSP(remove_item, new_sp);
                 });
 
                 $('#cancel_edit_sp_button').off().on('click', async function (){
-                    editSpFormClean();
+                    await newSpFormShow();
+                })
+
+                $('a').off().on('click', async function () {
+                    await addSP(remove_item);
                 })
             })
+            await newSpFormShow();
         }
 
         await createSPTable();
@@ -385,9 +411,11 @@ $(document).ready(function () {
                 body: JSON.stringify(new_sp)
             }
 
-            let resp = await fetch(`/api/v1/services-and-parst/`, options);
-            let sp = await resp.json();
-            matrix.push(sp.id);
+            if (new_sp) {
+                let resp = await fetch(`/api/v1/services-and-parst/`, options);
+                let sp = await resp.json();
+                matrix.push(sp.id);
+            }
 
             let sp_list = {'sp': matrix};
             options.body = JSON.stringify(sp_list);
@@ -396,17 +424,17 @@ $(document).ready(function () {
             let response = await fetch(`/api/v1/orders/${order_id}/`, options);
             if (response.status === 200) {
 
-                $('#new_sp_form').show();
-                newSpFormClean();
+                await createSPTable();
+                //await  newSpFormShow();
             }
 
             else {
 
                 $('#new_sp_form').show();
                 alert(response.status);
-                newSpFormClean();
+                await newSpFormShow();
             }
-            await createSPTable();
+            // await createSPTable();
         }
 
 
