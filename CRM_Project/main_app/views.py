@@ -37,7 +37,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = User.objects.get(id=self.request.user.id)
         for order in user.orders.all():
-            client_actual = f'{order.client.first_name} {order.client.last_name}'
+            client_actual = f'{order.client.first_name} {order.client.last_name} {order.client.phone}'
             client_image = order.client_image
             unit_actual = f'{order.unit.brand} {order.unit.model}'
             unit_image = order.unit_image

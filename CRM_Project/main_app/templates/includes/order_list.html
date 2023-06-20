@@ -1,30 +1,36 @@
-<div id="order_list" hidden="">
-    <div id="list_header">
-        <button id="new_order_button" class="btn btn-primary">New order</button>
-        <div id="pagination_bar">
-            <ul class="pagination pagination-sm">
-                <li class="page-item"><a class="page-link" href="#">10</a></li>
-                <li class="page-item"><a class="page-link" href="#">20</a></li>
-                <li class="page-item"><a class="page-link" href="#">30</a></li>
-            </ul>
+<div id="order_list_page" hidden="">
+    <div class="row" style="padding-top: 8px">
+        <div class="col-12" style="height: 40px">
+            <div id="list_header" class="">
+                <button id="new_order_button" class="btn btn-primary">New order</button>
+                <div id="pagination_bar">
+                    <ul class="pagination pagination-sm">
+                        <li class="page-item"><a class="page-link" href="#">10</a></li>
+                        <li class="page-item"><a class="page-link" href="#">20</a></li>
+                        <li class="page-item"><a class="page-link" href="#">30</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
-    <table class="table caption-top data-sticky-header">
-        <caption>Order List</caption>
-        <thead id="list_head">
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Client</th>
-            <th scope="col">Unit</th>
-            <th scope="col">Defect</th>
-            <th scope="col">Stage</th>
-            <th scope="col">Empty</th>
-        </tr>
-        </thead>
-        <tbody id="orders">
-        </tbody>
+    <div class="row" style="border: solid rgba(0,0,0,0.14) 1px; border-radius: 6px; margin-top: 23px">
+        <div class="col-12" id="order_list_field">
+            <table id="order_list_table" class="table table-sm">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Client</th>
+                    <th scope="col">Contact</th>
+                    <th scope="col">Unit</th>
+                    <th scope="col">Defect</th>
+                    <th scope="col">Stage</th>
+                    <th scope="col">Empty</th>
+                </tr>
+                </thead>
+                <tbody id="orders">
+                </tbody>
 
-    </table>
-
-
+            </table>
+        </div>
+    </div>
 </div>

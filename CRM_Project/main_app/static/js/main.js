@@ -3,16 +3,11 @@ import {getCookie} from "./get_CSRF.js";
 
 $(document).ready(function () {
 
-
-    // $('#snp tr *').hover(async function (){
-    //             alert('hover');
-    //         });
-
     const csrftoken = getCookie('csrftoken');
 
 
     async function newOrderSave() {
-        $('#new_order').attr('hidden', true);
+        $('#new_order_page').attr('hidden', true);
 
 
         // client
@@ -117,18 +112,11 @@ $(document).ready(function () {
 
 
         if (response.status === 201) {
-            $('#new_order_form').each(function () {
-                this.reset()
-                getOrderList().then($('#order_list').fadeIn(200));
-            })
-
-            $('#order_list').prop('hidden', false);
-            $('#order_list *').prop('hidden', false);
-
-
+            resetNewOrder();
+            getOrderList();
         } else {
             alert(response.status)
-            $('#new_order').removeAttr('hidden');
+            $('#new_order_page').removeAttr('hidden');
         }
     }
 
@@ -195,7 +183,7 @@ $(document).ready(function () {
     async function getOrderList(search = '', elem_per_page = '&page_size=10', current_page = 'page=1') {
 
         releaseActions();
-        $('#order_list').hide();
+        $('#order_list_page').hide();
 
         // search filter
         $('.form-control-dark').off().on('input', function (e) {
@@ -220,7 +208,7 @@ $(document).ready(function () {
 
 
         async function clear() {
-            $('#order_list tbody *').remove();
+            $('#order_list_page tbody *').remove();
         }
 
         clear().then(function () {
@@ -232,9 +220,17 @@ $(document).ready(function () {
             let orders = await response.json();
             for (let order of orders['results']) {
                 let client_image = order.client_image.split(' ')
-                $('#order_list tbody').append(`<tr><td><a href="" style="text-decoration: none" ">${order.order_id}</a></td><td>${client_image[0]} ${client_image[1]} </td><td>${order.unit_image}</td><td>${order.defect}</td><td>Stage none</td></tr>`)
+                $('#order_list_page tbody').append(
+                    `<tr>
+                        <td><a href="" style="text-decoration: none" ">${order.order_id}</a></td>
+                        <td>${client_image[0]} ${client_image[1]}</td>
+                        <td>${client_image[2]}${client_image[3]}${client_image[4]}</td>
+                        <td>${order.unit_image}</td>
+                        <td>${order.defect}</td>
+                        <td>Stage none</td>
+                    </tr>`)
             }
-            let item = $('#order_list, #order_list *');
+            let item = $('#order_list_page, #order_list_page *');
             hideAndShow(item);
         }
     }
@@ -244,7 +240,7 @@ $(document).ready(function () {
 
         holdActions();
         await newSpFormShow();
-        $('#order_list').hide();
+        $('#order_list_page').hide();
 
         const order_detail = await fetch(`/api/v1/orders/${order_id}/`);
         const order = await order_detail.json();
@@ -303,7 +299,7 @@ $(document).ready(function () {
             let snp_table = $('#snp');
             snp_table.hide();
             $('#sp_id_header').hide()
-            
+
             $('#edit_sp_form').prop('hidden', true);
 
             let order = await getOrder();
@@ -328,15 +324,19 @@ $(document).ready(function () {
             snp_table.fadeIn(140);
 
 
-            $('#add_sp_button').off().on('click', async function() {
+            $('#add_sp_button').off().on('click', async function () {
                 let new_sp = {
                     'name': $('#new_sp_description').val(),
                     'price': $('#new_sp_price').val(),
                     'warranty': $('#new_sp_warranty').find(":selected").text(),
 
-                    }
+                }
+                validator();
+                if ($('#nf').valid()) {
 
-                await addSP(null, new_sp);
+                    await addSP(null, new_sp);
+                } else {
+                }
             });
 
             let table_item = $('#snp tr');
@@ -345,7 +345,7 @@ $(document).ready(function () {
                 e.preventDefault();
                 await editSpFormShow();
 
-                $('.sp_table_elem *').each(function (){
+                $('.sp_table_elem *').each(function () {
                     let all_delete_items = $(this).find('#delete');
                     all_delete_items.prop('hidden', true);
                 });
@@ -361,24 +361,24 @@ $(document).ready(function () {
                 $(`#edit_sp_warranty option:contains(${warranty})`).prop('selected', true);
 
 
-
-                $('#save_edit_sp_button').off().on('click', async function (){
+                $('#save_edit_sp_button').off().on('click', async function () {
+                    validator();
 
                     let new_sp = {
-                    'name': $('#edit_sp_description').val(),
-                    'price': $('#edit_sp_price').val(),
-                    'warranty': $('#edit_sp_warranty').find(":selected").text(),
+                        'name': $('#edit_sp_description').val(),
+                        'price': $('#edit_sp_price').val(),
+                        'warranty': $('#edit_sp_warranty').find(":selected").text(),
 
                     }
 
                     await addSP(remove_item, new_sp);
                 });
 
-                $('#cancel_edit_sp_button').off().on('click', async function (){
+                $('#cancel_edit_sp_button').off().on('click', async function () {
                     await newSpFormShow();
                 })
 
-                $('a').off().on('click', async function () {
+                $('.sp_table_elem a').off().on('click', async function () {
                     await addSP(remove_item);
                 })
             })
@@ -425,18 +425,12 @@ $(document).ready(function () {
             if (response.status === 200) {
 
                 await createSPTable();
-                //await  newSpFormShow();
-            }
+            } else {
 
-            else {
-
-                $('#new_sp_form').show();
                 alert(response.status);
-                await newSpFormShow();
+                await createSPTable();
             }
-            // await createSPTable();
         }
-
 
 
         $('.text-end').hide();
@@ -496,6 +490,8 @@ $(document).ready(function () {
         let item = $('#payments_page ,#payments_page *');
         hideAndShow(item);
 
+        // holdActions();
+
         function clear() {
             $('#payments_list tbody *').remove();
             $('#payments_list_summary span *').remove();
@@ -503,7 +499,7 @@ $(document).ready(function () {
 
         clear();
 
-        holdActions();
+
         const response = await fetch(`/api/v1/payments/`);
         let payments = await response.json();
         let summary = 0
@@ -580,10 +576,20 @@ $(document).ready(function () {
 
 
     $('#new_order_button').on('click', function () {
+
+        $('#new_unit_type').on('click', function () {
+            // $(this).hide();
+        });
+
         holdActions();
-        let item = $('#new_order, #new_order *');
+        let item = $('#new_order_page, #new_order_page *');
         hideAndShow(item);
     });
+
+    $('#discard_new_order').on('click', function () {
+        resetNewOrder();
+        getOrderList();
+    })
 
 
     $('#payments a').click(function () {
@@ -591,7 +597,7 @@ $(document).ready(function () {
     });
 
     $('#orders_list_link a').on('click', function () {
-        let item = $('#order_list, #order_list *');
+        let item = $('#order_list_page, #order_list_page *');
         hideAndShow(item);
         resetPagination();
         getOrderList();
@@ -648,6 +654,14 @@ $(document).ready(function () {
         });
     }
 
+    function resetNewOrder() {
+        $('#new_order_form').each(function () {
+            this.reset()
+            getOrderList().then($('#order_list_page').fadeIn(200));
+        })
+
+    }
+
     // validation
     $('#create_order').on('click', function () {
         validator();
@@ -664,8 +678,10 @@ $(document).ready(function () {
     }
 
     getOrderList().then(function () {
-        $('#order_list').fadeIn(140);
+        $('#order_list_page').fadeIn(140);
     });
+
+
 });
 
 

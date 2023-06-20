@@ -1,4 +1,4 @@
-<div class="container" id="order_detail" hidden="">
+<div id="order_detail" hidden="">
     <div class="row">
         <div class="col-6">
             <div class="time_field">
@@ -21,28 +21,42 @@
                 <hr>
             </div>
 
-            <div id="unit_edit_form">
-                <label for="brand">Brand</label>
-                <input class="form-control" type="text" id="brand">
-                <label for="model">Model</label>
-                <input class="form-control" type="text" id="model">
-                <label for="serial_number">Serial number</label>
-                <input class="form-control" type="text" id="serial_number">
+            <div class="row">
+                <div class="col-6">
+                    <div id="unit_edit_form">
+                        <label for="brand">Brand</label>
+                        <input class="form-control" type="text" id="brand">
+                        <label for="model">Model</label>
+                        <input class="form-control" type="text" id="model">
+                        <label for="serial_number">Serial number</label>
+                        <input class="form-control" type="text" id="serial_number">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <label for="unit_type">Unit type</label>
+                    <select class="form-control" name="" id="unit_type">
+                        <option value="">Laptop</option>
+                        <option value="">Desktop</option>
+                    </select>
+
+
+
+                        <label for="unit_condition">Unit condition</label>
+                        <input class="form-control" type="text" id="unit_condition">
+                        <label for="unit_notes">Notes</label>
+                        <input class="form-control" type="text" id="unit_notes">
+                </div>
             </div>
+            <hr>
+
 
             <div class="order_edit_form">
-                <p>
-                    <label for="defect">Defect</label>
-                    <textarea class="form-control" type="text" id="defect" rows="2"></textarea>
-                </p>
-                <p>
-                    <label for="diagnostic_result">Diagnostic result</label>
-                    <textarea class="form-control" type="text" id="diagnostic_result" rows="2"></textarea>
-                </p>
-                <p>
-                    <label for="required_works">Required works</label>
-                    <textarea class="form-control" type="text" id="required_works" rows="2"></textarea>
-                </p>
+                <label for="defect">Defect</label>
+                <textarea class="form-control" type="text" id="defect" rows="2"></textarea>
+                <label for="diagnostic_result">Diagnostic result</label>
+                <textarea class="form-control" type="text" id="diagnostic_result" rows="2"></textarea>
+                <label for="required_works">Required works</label>
+                <textarea class="form-control" type="text" id="required_works" rows="2"></textarea>
                 <hr>
             </div>
 
@@ -60,10 +74,10 @@
                 <button class="btn btn-outline-success stage_buttons">Closed</button>
             </div>
 
-            <div class="row-12">
-                <div class="col-12 order_detail_services_and_parts_field">
+            <div class="row" style="border: solid rgba(0,0,0,0.14) 1px; border-radius: 6px; margin-top: 23px">
 
-                    <table data-editable="true" id="snp" class="table table-sm" style="border: solid white 3px">
+                <div class="col-12 order_detail_services_and_parts_field">
+                    <table id="snp" class="table table-sm">
                         <thead>
                         <tr>
                             <th id="sp_id_header">ID</th>
@@ -88,25 +102,39 @@
                     </div>
                     <div id="new_sp_form" class="input-group">
 
-                        <input id="new_sp_description" placeholder="Description" type="text" class="form-control">
-                        <input id="new_sp_price" placeholder="Price" type="text" class="form-control">
-                        <select style="border: solid rgba(173,181,189,0.64) 1px" id="new_sp_warranty"
-                                class="custom-select">
-                            <option selected>No warranty</option>
-                            <option value="1">1 Month</option>
-                            <option value="2">3 Month</option>
-                            <option value="3">6 Month</option>
-                        </select>
 
-                        <button style="width: 80px" id="add_sp_button" class="btn btn-outline-primary" type="button">
-                            Create
-                        </button>
+                        <form class="input-group" id="nf">
+
+                            <input id="new_sp_description" placeholder="Description" type="text" class="form-control"
+                                   name="sp_description">
+
+                            <input id="new_sp_price" placeholder="Price" type="text" class="form-control"
+                                   name="sp_price">
+
+                            <select style="border: solid rgba(173,181,189,0.64) 1px" id="new_sp_warranty"
+                                    class="custom-select">
+                                <option selected>No warranty</option>
+                                <option value="1">1 Month</option>
+                                <option value="2">3 Month</option>
+                                <option value="3">6 Month</option>
+                            </select>
+
+                            <button style="width: 80px" id="add_sp_button" class="btn btn-outline-primary"
+                                    type="button">Create
+                            </button>
+                        </form>
+                        <div class="row-12">
+                            <div class="col-12">
+                                <span class="error" style="color: red"></span>
+                            </div>
+                        </div>
                     </div>
 
                     <div id="edit_sp_form" class="input-group">
-
-                        <input id="edit_sp_description" placeholder="Description" type="text" class="form-control">
-                        <input id="edit_sp_price" placeholder="Price" type="text" class="form-control">
+                        <span class="error" style="color: red;"></span>
+                        <input id="edit_sp_description" placeholder="Description" type="text" class="form-control"
+                               name="sp_description">
+                        <input id="edit_sp_price" placeholder="Price" type="text" class="form-control" name="sp_price">
                         <select style="border: solid rgba(173,181,189,0.64) 1px" id="edit_sp_warranty"
                                 class="custom-select">
                             <option selected>No warranty</option>
@@ -115,8 +143,12 @@
                             <option value="3">6 Month</option>
                         </select>
 
-                        <button style="width: 55px" id="save_edit_sp_button" class="btn btn-outline-success" type="button">Save</button>
-                        <button style="width: 75px" id="cancel_edit_sp_button" class="btn btn-outline-danger" type="button">Cancel</button>
+                        <button style="width: 55px" id="save_edit_sp_button" class="btn btn-outline-success"
+                                type="button">Save
+                        </button>
+                        <button style="width: 75px" id="cancel_edit_sp_button" class="btn btn-outline-danger"
+                                type="button">Cancel
+                        </button>
 
                     </div>
                 </div>

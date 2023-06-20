@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet"  href="{% static '/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static '/css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <script src="{% static 'js/jquery-3.6.4.js' %}"></script>
     <script src="{% static 'js/bootstrap.js' %}"></script>
@@ -15,10 +15,6 @@
     <title>{% block title %} {% endblock %}</title>
 </head>
 <body>
-<div class="wrap">
-    {% block content %} {% endblock %}
-</div>
-
-
+            {% block content %} {% endblock %}
 </body>
 </html>

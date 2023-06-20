@@ -89,6 +89,36 @@ function validator() {
             },
         }
     })
+
+    $('#nf').validate({
+
+        rules: {
+            sp_description: {
+                required: true,
+                minlength: 2,
+            },
+            sp_price: {
+                digits: true,
+                required: true,
+
+            }
+        },
+
+        messages: {
+            sp_description: {
+                required: 'Description field is required',
+                minlength: 'Description field mest be at least 2 characters',
+
+            },
+            sp_price: {
+                required: 'Price field is required',
+                digits: 'Price field must be digit'
+            }
+        },
+        errorElement : 'span',
+        errorLabelContainer: '.error',
+
+    })
 }
 
     export {validator}

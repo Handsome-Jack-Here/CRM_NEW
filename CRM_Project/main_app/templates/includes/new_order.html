@@ -1,37 +1,57 @@
-<div id="new_order" hidden>
+<div id="new_order_page" hidden>
 
+    <span><h1>New order</h1></span>
     <form name="form_validate" id="new_order_form">
-        <p>
-            <label for="first_name">First name</label>
-            <input class="form-control" type="text" id="first_name" name="first_name" placeholder="Input first name">
-        </p>
-        <p>
-            <label for="last_name">Last name</label>
-            <input class="form-control" type="text" id="last_name" name="last_name" placeholder="Input last name">
-        </p>
-        <p>
-            <label for="phone_number">Phone number</label>
-            <input class="form-control" type="tel" data-tel-input id="phone_number" name="phone_number"
-                   placeholder="+7(000)000-00-00">
-        </p>
-        <p>
-            <label for="address">Address</label>
-            <input class="form-control" type="text" id="address" name="address" placeholder="Input address">
-        </p>
-<!--        -->
-        <p>
-            <label for="brand">Brand</label>
-            <input class="form-control" type="text" id="brand" name="brand" placeholder="Brand">
-        </p>
-        <p>
-            <label for="model">Model</label>
-            <input class="form-control" type="text" id="model" name="model" placeholder="Model">
-        </p>
-        <p>
-            <label for="serial_number">Serial number</label>
-            <input class="form-control" type="text" id="serial_number" name="serial_number" placeholder="Serial number">
-        </p>
-<!--        -->
+        <div class="row">
+            <div class="col-6">
+                <p>
+                    <label for="first_name">First name</label>
+                    <input class="form-control" type="text" id="first_name" name="first_name"
+                           placeholder="Input first name">
+                </p>
+                <p>
+                    <label for="last_name">Last name</label>
+                    <input class="form-control" type="text" id="last_name" name="last_name"
+                           placeholder="Input last name">
+                </p>
+                <p>
+                    <label for="phone_number">Phone number</label>
+                    <input class="form-control" type="tel" data-tel-input id="phone_number" name="phone_number"
+                           placeholder="+7(000)000-00-00">
+                </p>
+                <p>
+                    <label for="address">Address</label>
+                    <input class="form-control" type="text" id="address" name="address" placeholder="Input address">
+                </p>
+                <hr>
+            </div>
+            <div class="col-6">
+                <p>
+                    <label for="new_unit_type">Unit type</label>
+                    <select class="form-select" name="new_unit_type" id="new_unit_type">
+                        <option value="Laptop">Laptop</option>
+                        <option value="Desktop">Desktop</option>
+                        <option value="TV">TV</option>
+                    </select>
+                </p>
+                <p>
+                    <label for="brand">Brand</label>
+                    <input class="form-control" type="text" id="brand" name="brand" placeholder="Brand">
+                </p>
+                <p>
+                    <label for="model">Model</label>
+                    <input class="form-control" type="text" id="model" name="model" placeholder="Model">
+                </p>
+                <p>
+                    <label for="serial_number">Serial number</label>
+                    <input class="form-control" type="text" id="serial_number" name="serial_number"
+                           placeholder="Serial number">
+                </p>
+                <hr>
+            </div>
+        </div>
+
+
         <p>
             <label for="defect">Defect description</label>
             <textarea class="form-control" name="defect" id="defect" rows="3"></textarea>
@@ -42,7 +62,7 @@
 
     <div id="order_create_buttons">
         <button id="create_order" class="btn btn-success">Create order</button>
-        <button id="discard" type="button" class="btn btn-danger">Discard</button>
+        <button id="discard_new_order" type="button" class="btn btn-danger">Discard</button>
     </div>
 
 

@@ -59,12 +59,13 @@ class Client(models.Model):
 
 class Unit(models.Model):
     serial_number = models.CharField(max_length=35)
+    condition = models.CharField(max_length=120, default='Used ')
 
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='units')
     brand = models.ForeignKey('Brand', on_delete=models.PROTECT, related_name='units')
     model = models.ForeignKey('Model', on_delete=models.PROTECT, related_name='units')
 
-    # type = models.ForeignKey('UnitType', on_delete=models.PROTECT, related_name='units')
+    type = models.ForeignKey('UnitType', on_delete=models.PROTECT, related_name='units')
 
     def save(self, *args, **kwargs):
         if self.user.units.filter(brand=self.brand, model=self.model, serial_number=self.serial_number):
@@ -80,6 +81,7 @@ class Unit(models.Model):
 
 class UnitType(models.Model):
     name = models.CharField(max_length=21)
+
 
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='unit_types')
 
