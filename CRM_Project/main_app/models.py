@@ -82,8 +82,18 @@ class Unit(models.Model):
 class UnitType(models.Model):
     name = models.CharField(max_length=21)
 
-
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='unit_types')
+
+    def save(self, *args, **kwargs):
+        if self.user.unit_types.filter(name=self.name):
+            unit_type = self.user.unit_types.get(name=self.name)
+            self.pk = unit_type.pk
+            return unit_type
+        else:
+            return super(UnitType, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.name}'
 
 
 class Brand(models.Model):

@@ -4,7 +4,7 @@ from django.views import View
 from django.views.generic import ListView
 from rest_framework import viewsets
 from .serializers import OrderListSerializer, ClientListSerializer, UnitListSerializer, BrandListSerializer, \
-    ModelListSerializer, PaymentListSerializer, ServiceAndPartListSerializer
+    ModelListSerializer, PaymentListSerializer, ServiceAndPartListSerializer, UnitTypeSerializer
 from .models import Order, Client, User, Unit, Brand
 from django.views.generic import View, TemplateView
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -118,3 +118,13 @@ class ServiceAndPartViewSet(viewsets.ModelViewSet):
 
     serializer_class = ServiceAndPartListSerializer
     permission_classes = (permissions.IsAuthenticated,)
+
+
+class UnitTypeViewSet(viewsets.ModelViewSet):
+
+    def get_queryset(self):
+        user = User.objects.get(id=self.request.user.id)
+        return user.unit_types.all()
+
+    serializer_class = UnitTypeSerializer
+    permission_classes = (permissions.IsAuthenticated, )

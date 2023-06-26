@@ -133,3 +133,8 @@ label.error {
     top: 0;
     background: white;
 }
+
+.error {
+    height: 1em;
+    color: red;
+}

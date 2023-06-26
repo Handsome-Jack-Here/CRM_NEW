@@ -62,6 +62,8 @@ function validator() {
                 required: 'This field is required',
                 minlength: 'This field mest be at least 7 characters'
             },
+            errorElement: 'span',
+            errorLabelContainer: '.error',
         }
     })
 
@@ -87,6 +89,8 @@ function validator() {
                 required: 'This field is required',
                 min: 'This value mest be at least 0',
             },
+            errorElement: 'span',
+            errorLabelContainer: '.error',
         }
     })
 
@@ -115,7 +119,7 @@ function validator() {
                 digits: 'Price field must be digit'
             }
         },
-        errorElement : 'span',
+        errorElement: 'span',
         errorLabelContainer: '.error',
 
     })

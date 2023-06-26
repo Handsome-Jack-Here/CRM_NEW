@@ -182,8 +182,6 @@ $(document).ready(function () {
 
     async function getOrderList(search = '', elem_per_page = '&page_size=10', current_page = 'page=1') {
 
-        releaseActions();
-        $('#order_list_page').hide();
 
         // search filter
         $('.form-control-dark').off().on('input', function (e) {
@@ -201,19 +199,20 @@ $(document).ready(function () {
 
 
         $('#pagination_bar a').off().click(function () {
-            resetPagination()
+            resetPagination();
             $(this).css('background-color', '#e3f6f5');
             getOrderList(search = '', elem_per_page = '&page_size=' + $(this).text());
         });
 
 
+        await clear().then(function () {
+            listCreate();
+        });
+
         async function clear() {
             $('#order_list_page tbody *').remove();
         }
 
-        clear().then(function () {
-            listCreate();
-        });
 
         async function listCreate() {
             const response = await fetch(`/api/v1/orders/?` + current_page + search + elem_per_page);
@@ -230,8 +229,9 @@ $(document).ready(function () {
                         <td>Stage none</td>
                     </tr>`)
             }
-            let item = $('#order_list_page, #order_list_page *');
+            let item = $('#order_list_page');
             hideAndShow(item);
+            releaseActions();
         }
     }
 
@@ -469,7 +469,7 @@ $(document).ready(function () {
                 hideAndShow(item);
 
                 $('#return').off().on('click', function () {
-                    let item = $('#order_detail, #order_detail *');
+                    let item = $('#order_detail');
                     hideAndShow(item);
 
                 })
@@ -487,7 +487,7 @@ $(document).ready(function () {
 
     async function getPaymentList() {
 
-        let item = $('#payments_page ,#payments_page *');
+        let item = $('#payments_page');
         hideAndShow(item);
 
         // holdActions();
@@ -552,7 +552,7 @@ $(document).ready(function () {
             $('#new_payment_form').each(function () {
                 this.reset();
             })
-            let item = $('#payments_page ,#payments_page *');
+            let item = $('#payments_page');
             hideAndShow(item);
 
             getPaymentList();
@@ -567,102 +567,172 @@ $(document).ready(function () {
 
         e.preventDefault();
         let order_id = $(this).text();
-        let item = $('#order_detail, #order_detail *');
+        let item = $('#order_detail');
 
-        hideAndShow(item)
-        getOrderDetail(order_id = order_id).then(function () {
-        })
+        hideAndShow(item);
+        getOrderDetail(order_id).then(function () {
+        });
     });
 
 
-    $('#new_order_button').on('click', function () {
+    $('#new_order_button').off().on('click', function () {
 
-        $('#new_unit_type').on('click', function () {
-            // $(this).hide();
+        $('#add_new_type').click(function () {
+            showNewType().then();
         });
 
-        holdActions();
-        let item = $('#new_order_page, #new_order_page *');
+        $('#new_type_discard').on('click', function () {
+            showTypes().then();
+        });
+
+        $('#new_type_save').on('click', async function () {
+            let new_type_name = {
+                'name': $('#new_type_name').val(),
+            }
+
+            let options = {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    'X-CSRFToken': csrftoken,
+                },
+                body: JSON.stringify(new_type_name)
+            }
+
+            let response = await fetch('/api/v1/unit-types/', options);
+            let data = await response.json();
+            if (response.status === 201) {
+                await showSelectField('/api/v1/unit-types/', `#unit_type select`, JSON.stringify(data.name));
+            } else {
+                alert(response.status);
+            }
+
+        });
+
+
+        showSelectField('/api/v1/unit-types/', `#unit_type select`, false).then();
+
+        let item = $('#new_order_page');
         hideAndShow(item);
+        holdActions();
+
+
     });
 
-    $('#discard_new_order').on('click', function () {
+    $('#discard_new_order').off().on('click', function () {
         resetNewOrder();
-        getOrderList();
+        getOrderList().then();
     })
 
 
     $('#payments a').click(function () {
-        getPaymentList();
+        getPaymentList().then();
     });
 
     $('#orders_list_link a').on('click', function () {
-        let item = $('#order_list_page, #order_list_page *');
+        let item = $('#order_list_page');
         hideAndShow(item);
         resetPagination();
-        getOrderList();
+        getOrderList().then();
 
     });
 
 
     $('#add').off().on('click', function () {
-        let item = $('#add_payment_page, #add_payment_page *');
+        let item = $('#add_payment_page');
         hideAndShow(item);
         $('#payment_value_error p').remove()
 
         $('#payment_discard').off().on('click', function () {
-            getPaymentList();
+            getPaymentList().then();
         });
 
         $('#payment_save').off().on('click', function () {
             validator();
             if ($('#new_payment_form').valid()) {
-                newPaymentSave(NaN, true);
+                newPaymentSave(NaN, true).then();
             }
         });
     });
 
     $('#expense').off().on('click', function () {
-        let item = $('#add_payment_page, #add_payment_page *');
+        let item = $('#add_payment_page');
         hideAndShow(item);
         $('#payment_value_error p').remove()
 
         $('#payment_discard').off().on('click', function () {
-            getPaymentList();
+            getPaymentList().then();
         });
 
         $('#payment_save').off().on('click', function () {
             validator();
             if ($('#new_payment_form').valid()) {
-                newPaymentSave(NaN, false);
+                newPaymentSave(NaN, false).then();
             }
         });
     })
 
 
+    async function showSelectField(url, fieldSelector = null, selectedItemName = null) {
+
+        let toRemove = fieldSelector + ' *'
+        $(toRemove).each(function () {
+            $(this).remove();
+        });
+        $(fieldSelector).append(`<option>Select unit type</option>`);
+
+
+        let response = await fetch(url);
+        let data = await response.json();
+
+        for (let item of data) {
+            $(fieldSelector).append(`<option>${item.name}</option>`);
+        }
+
+        if (selectedItemName) {
+            $('#unit_type option').each(function () {
+                if (JSON.stringify($(this).text()) === selectedItemName) {
+                    $(this).attr('selected', 'selected');
+                    return false;
+                }
+            });
+        }
+        showTypes().then();
+    }
+
+    async function showNewType() {
+        $('#new_type_name').val('');
+        $('#new_order_unit_group').prop('hidden', true);
+        $('#create_new_unit_type').prop('hidden', false);
+    }
+
+    async function showTypes(new_item = null) {
+        $('#new_type_name').val('');
+        $('#new_order_unit_group').prop('hidden', false);
+        $('#create_new_unit_type').prop('hidden', true);
+    }
+
     function holdActions() {
-        $('.static_content').fadeTo(200, 0.9).css('pointer-events', 'none');
+        $('.static_content').fadeTo(100, 0.9).css('pointer-events', 'none');
     }
 
     function releaseActions() {
-        $('.static_content').css('pointer-events', 'auto').fadeTo(200, 1);
+        $('.static_content').css('pointer-events', 'auto').fadeTo(100, 1);
     }
 
     function resetPagination() {
         $('#pagination_bar a').each(function () {
-            $(this).css('background-color', 'white')
+            $(this).css('background-color', 'white');
         });
     }
 
     function resetNewOrder() {
         $('#new_order_form').each(function () {
-            this.reset()
-            getOrderList().then($('#order_list_page').fadeIn(200));
+            this.reset();
         })
-
     }
 
-    // validation
+// validation
     $('#create_order').on('click', function () {
         validator();
         if ($('#new_order_form').valid()) {
@@ -672,16 +742,14 @@ $(document).ready(function () {
 
     function hideAndShow(item = NaN) {
 
-        $('.right_side div *').prop('hidden', true).hide();
-        $('.right_side').prop('hidden', false).show(140);
+        $('.dynamic_content').prop('hidden', true).hide();
         item.prop('hidden', false).fadeIn(140);
+
     }
 
-    getOrderList().then(function () {
-        $('#order_list_page').fadeIn(140);
-    });
+    getOrderList().then();
 
-
-});
+})
+;
 
 

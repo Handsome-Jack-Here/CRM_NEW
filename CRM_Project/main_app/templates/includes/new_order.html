@@ -1,50 +1,78 @@
-<div id="new_order_page" hidden>
-
+<div id="new_order_page" class="dynamic_content" hidden>
     <span><h1>New order</h1></span>
     <form name="form_validate" id="new_order_form">
         <div class="row">
             <div class="col-6">
-                <p>
-                    <label for="first_name">First name</label>
-                    <input class="form-control" type="text" id="first_name" name="first_name"
-                           placeholder="Input first name">
-                </p>
-                <p>
-                    <label for="last_name">Last name</label>
-                    <input class="form-control" type="text" id="last_name" name="last_name"
-                           placeholder="Input last name">
-                </p>
-                <p>
-                    <label for="phone_number">Phone number</label>
-                    <input class="form-control" type="tel" data-tel-input id="phone_number" name="phone_number"
-                           placeholder="+7(000)000-00-00">
-                </p>
-                <p>
-                    <label for="address">Address</label>
-                    <input class="form-control" type="text" id="address" name="address" placeholder="Input address">
-                </p>
+
+                <label for="first_name">First name</label>
+                <input class="form-control" type="text" id="first_name" name="first_name"
+                       placeholder="Input first name" autocomplete="off">
+                <div class="error"></div>
+
+
+                <label for="last_name">Last name</label>
+                <input autocomplete="off" class="form-control" type="text" id="last_name" name="last_name"
+                       placeholder="Input last name">
+                <div class="error"></div>
+
+                <label for="phone_number">Phone number</label>
+                <input autocomplete="off" class="form-control" type="tel" data-tel-input id="phone_number"
+                       name="phone_number"
+                       placeholder="+7(000)000-00-00">
+                <div class="error"></div>
+
+                <label for="address">Address</label>
+                <input autocomplete="off" class="form-control" type="text" id="address" name="address"
+                       placeholder="Input address">
+                <div class="error"></div>
+
                 <hr>
+
             </div>
+
+
             <div class="col-6">
-                <p>
-                    <label for="new_unit_type">Unit type</label>
-                    <select class="form-select" name="new_unit_type" id="new_unit_type">
-                        <option value="Laptop">Laptop</option>
-                        <option value="Desktop">Desktop</option>
-                        <option value="TV">TV</option>
-                    </select>
-                </p>
+
+                <div id="new_order_unit_group">
+                    <label for="unit_type">Unit type</label>
+                    <div class="input-group" id="unit_type">
+                        <select class="form-select">
+                            <option>Select type</option>
+                        </select>
+                        <button type="button" id="add_new_type" class="btn btn-outline-primary">
+                            Add new type
+                        </button>
+                    </div>
+                    <div class="error"></div>
+                </div>
+
+
+                <div id="create_new_unit_type" hidden>
+                    <label for="new_type_name">New type create</label>
+                    <div class="input-group">
+                        <input id="new_type_name" type="text" class="form-control" placeholder="Input type name">
+                        <button class="btn btn-success" type="button" id="new_type_save">Create</button>
+                        <button class="btn btn-danger" type="button" id="new_type_discard">Discard</button>
+                    </div>
+                    <div class="error">
+
+                    </div>
+                </div>
+
+
                 <p>
                     <label for="brand">Brand</label>
-                    <input class="form-control" type="text" id="brand" name="brand" placeholder="Brand">
+                    <input autocomplete="off" class="form-control" type="text" id="brand" name="brand"
+                           placeholder="Brand">
                 </p>
                 <p>
                     <label for="model">Model</label>
-                    <input class="form-control" type="text" id="model" name="model" placeholder="Model">
+                    <input autocomplete="off" class="form-control" type="text" id="model" name="model"
+                           placeholder="Model">
                 </p>
                 <p>
                     <label for="serial_number">Serial number</label>
-                    <input class="form-control" type="text" id="serial_number" name="serial_number"
+                    <input autocomplete="off" class="form-control" type="text" id="serial_number" name="serial_number"
                            placeholder="Serial number">
                 </p>
                 <hr>
@@ -64,6 +92,5 @@
         <button id="create_order" class="btn btn-success">Create order</button>
         <button id="discard_new_order" type="button" class="btn btn-danger">Discard</button>
     </div>
-
 
 </div>
