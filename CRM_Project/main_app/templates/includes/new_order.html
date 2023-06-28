@@ -31,52 +31,87 @@
             </div>
 
 
-            <div class="col-6">
+            <div class="col-6" style="z-index: 1">
 
-                <div id="new_order_unit_group">
-                    <label for="unit_type">Unit type</label>
-                    <div class="input-group" id="unit_type">
-                        <select class="form-select">
-                            <option>Select type</option>
-                        </select>
-                        <button type="button" id="add_new_type" class="btn btn-outline-primary">
-                            Add new type
-                        </button>
+                <section id="type">
+                    <div id="new_order_unit_type_group" url="/api/v1/unit-types/">
+                        <label for="unit_type">Unit type</label>
+                        <div class="input-group" id="new_order_unit_type">
+                            <select class="form-select" name="unit_type">
+                                <option>Select type</option>
+                            </select>
+                            <button type="button" class="btn btn-outline-primary add_new">
+                                Add new
+                            </button>
+                        </div>
+                        <div class="error"></div>
                     </div>
-                    <div class="error"></div>
-                </div>
 
 
-                <div id="create_new_unit_type" hidden>
-                    <label for="new_type_name">New type create</label>
-                    <div class="input-group">
-                        <input id="new_type_name" type="text" class="form-control" placeholder="Input type name">
-                        <button class="btn btn-success" type="button" id="new_type_save">Create</button>
-                        <button class="btn btn-danger" type="button" id="new_type_discard">Discard</button>
+                    <div id="new_order_create_new_unit_type_group" hidden>
+                        <label for="new_order_new_type_name">Add new</label>
+                        <div class="input-group">
+                            <input id="new_order_new_type_name" type="text" class="form-control"
+                                   placeholder="Input type name">
+                            <button class="btn btn-success save_new_item" type="button">
+                                Create
+                            </button>
+                            <button class="btn btn-outline-danger add_discard" type="button">
+                                Discard
+                            </button>
+                        </div>
+                        <div class="error">
+                        </div>
                     </div>
-                    <div class="error">
+                </section>
 
+                <section id="brand">
+                    <div id="new_order_brand_group" url="/api/v1/brands/">
+                        <label for="brand">Brand</label>
+                        <div class="input-group" id="new_order_brand">
+                            <select class="form-select" name="brand">
+                                <option>Select brand</option>
+                            </select>
+                            <button type="button" class="btn btn-outline-primary add_new">
+                                Add new
+                            </button>
+                        </div>
+                        <div class="error"></div>
                     </div>
-                </div>
 
+                    <div id="new_order_create_new_brand_group" hidden>
+                        <label for="new_order_new_brand_name">Add new</label>
+                        <div class="input-group">
+                            <input id="new_order_new_brand_name" type="text" class="form-control"
+                                   placeholder="Input brand name">
+                            <button class="btn btn-success save_new_item" type="button">
+                                Create
+                            </button>
+                            <button class="btn btn-outline-danger add_discard" type="button">
+                                Discard
+                            </button>
+                        </div>
+                        <div class="error"></div>
+                    </div>
+                </section>
 
-                <p>
-                    <label for="brand">Brand</label>
-                    <input autocomplete="off" class="form-control" type="text" id="brand" name="brand"
-                           placeholder="Brand">
-                </p>
-                <p>
+                <section id="model">
                     <label for="model">Model</label>
                     <input autocomplete="off" class="form-control" type="text" id="model" name="model"
                            placeholder="Model">
-                </p>
-                <p>
+                    <div class="error"></div>
+                </section>
+
+                <section id="serial_number">
                     <label for="serial_number">Serial number</label>
-                    <input autocomplete="off" class="form-control" type="text" id="serial_number" name="serial_number"
+                    <input autocomplete="off" class="form-control" type="text" id="serial_number"
+                           name="serial_number"
                            placeholder="Serial number">
-                </p>
+                    <div class="error"></div>
+                </section>
                 <hr>
             </div>
+
         </div>
 
 

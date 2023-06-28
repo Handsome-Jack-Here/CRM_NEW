@@ -84,7 +84,7 @@ class BrandViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = User.objects.get(id=self.request.user.id)
-        return user.brands.all()
+        return user.brands.all().order_by('name')
 
     serializer_class = BrandListSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -94,7 +94,7 @@ class ModelViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = User.objects.get(id=self.request.user.id)
-        return user.models.all()
+        return user.models.all().order_by('name')
 
     serializer_class = ModelListSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -124,7 +124,7 @@ class UnitTypeViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = User.objects.get(id=self.request.user.id)
-        return user.unit_types.all()
+        return user.unit_types.all().order_by('name')
 
     serializer_class = UnitTypeSerializer
     permission_classes = (permissions.IsAuthenticated, )

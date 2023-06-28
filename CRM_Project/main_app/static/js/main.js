@@ -252,7 +252,12 @@ $(document).ready(function () {
         const brand = await brand_detail.json();
         const model_detail = await fetch(`/api/v1/models/${unit.model}/`);
         const model = await model_detail.json().then($('#order_detail').removeAttr('hidden'));
+        const unit_type_detail = await fetch(`/api/v1/unit-types/${JSON.stringify(unit.type)}`);
+        const unit_type = await unit_type_detail.json();
 
+
+        await createSelectField('/api/v1/unit-types/', '#order_detail_unit_type', JSON.stringify(unit_type.name));
+        // await createSelectField('/api/v1/brands/', '#order_detail_unit_type', JSON.stringify(unit_type.name));
 
         $('#order_id').text('Order# ' + order_id);
 
@@ -563,7 +568,19 @@ $(document).ready(function () {
     }
 
 
-    $('#orders').on('click', 'a', function (e) {
+    let newOrderButton = $('#new_order_button');
+    let newOrderDiscardButton = $('#discard_new_order');
+
+    let getOrder = $('#orders');
+
+    let getPaymentsList = $('#payments a');
+
+    let newOrderAddNewButton = $('.add_new');
+    let newOrderAddNewDiscardButton = $('.add_discard');
+    let newOrderAddNewSaveButton = $('.save_new_item');
+
+
+    getOrder.on('click', 'a', function (e) {
 
         e.preventDefault();
         let order_id = $(this).text();
@@ -574,58 +591,29 @@ $(document).ready(function () {
         });
     });
 
+    newOrderButton.off().on('click', function () {
 
-    $('#new_order_button').off().on('click', function () {
+        let url = '/api/v1/unit-types/';
+        let selectElementId = '#new_order_unit_type';
+        createSelectField(url, selectElementId).then();
 
-        $('#add_new_type').click(function () {
-            showNewType().then();
-        });
-
-        $('#new_type_discard').on('click', function () {
-            showTypes().then();
-        });
-
-        $('#new_type_save').on('click', async function () {
-            let new_type_name = {
-                'name': $('#new_type_name').val(),
-            }
-
-            let options = {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                    'X-CSRFToken': csrftoken,
-                },
-                body: JSON.stringify(new_type_name)
-            }
-
-            let response = await fetch('/api/v1/unit-types/', options);
-            let data = await response.json();
-            if (response.status === 201) {
-                await showSelectField('/api/v1/unit-types/', `#unit_type select`, JSON.stringify(data.name));
-            } else {
-                alert(response.status);
-            }
-
-        });
-
-
-        showSelectField('/api/v1/unit-types/', `#unit_type select`, false).then();
+        url = '/api/v1/brands/';
+        selectElementId = '#new_order_brand';
+        createSelectField(url, selectElementId).then();
 
         let item = $('#new_order_page');
         hideAndShow(item);
         holdActions();
-
-
     });
 
-    $('#discard_new_order').off().on('click', function () {
+
+    newOrderDiscardButton.off().on('click', function () {
         resetNewOrder();
         getOrderList().then();
-    })
+    });
 
 
-    $('#payments a').click(function () {
+    getPaymentsList.click(function () {
         getPaymentList().then();
     });
 
@@ -638,10 +626,10 @@ $(document).ready(function () {
     });
 
 
-    $('#add').off().on('click', function () {
+    $('#add_payment').off().on('click', function () {
         let item = $('#add_payment_page');
         hideAndShow(item);
-        $('#payment_value_error p').remove()
+        $('#payment_value_error p').remove();
 
         $('#payment_discard').off().on('click', function () {
             getPaymentList().then();
@@ -670,47 +658,94 @@ $(document).ready(function () {
                 newPaymentSave(NaN, false).then();
             }
         });
-    })
+    });
 
 
-    async function showSelectField(url, fieldSelector = null, selectedItemName = null) {
+    newOrderAddNewButton.off().on('click', function () {
+        let url = $(this).parent().parent().attr('url')
+        let sectionIdName = $(this).closest('section').attr('id');
+        let selectItself = '#' + $(this).parent().parent().attr('id');
+        let inputItself = '#' + $(selectItself).next().attr('id');
+        let inputValue = inputItself + ' :input';
 
-        let toRemove = fieldSelector + ' *'
-        $(toRemove).each(function () {
+
+        $(inputValue).val('');
+        hideAndShowSelectGroup(selectItself, inputItself, selectItself).then();
+
+        newOrderAddNewDiscardButton.off().on('click', function () {
+            hideAndShowSelectGroup(inputItself, selectItself, selectItself).then();
+        });
+
+        newOrderAddNewSaveButton.off().on('click', async function () {
+
+            let new_type_name = {
+                'name': $(inputValue).val(),
+            }
+            let options = {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    'X-CSRFToken': csrftoken,
+                },
+                body: JSON.stringify(new_type_name)
+            }
+            let response = await fetch(url, options);
+            let data = await response.json();
+            if (response.status === 201) {
+                await createSelectField(url, selectItself, JSON.stringify(data.name), inputItself, selectItself);
+            } else {
+                alert(response.status);
+            }
+        });
+
+        $('.dynamic_content').off().on('mouseup', function (e) {
+            let eventSectionIdName = $('#' + e.target.id).closest('section').attr('id');
+            if (sectionIdName !==  eventSectionIdName) {
+                hideAndShowSelectGroup(inputItself, selectItself, selectItself).then();
+            }
+        });
+    });
+
+    async function createSelectField(url, selectElementId = null, selectedItemName = null, groupHide = null, groupShow = null) {
+
+
+        $(selectElementId + ' select *').each(function () {
             $(this).remove();
         });
-        $(fieldSelector).append(`<option>Select unit type</option>`);
-
+        $(selectElementId + ' select').append(`<option value="false">Select unit type</option>`);
 
         let response = await fetch(url);
         let data = await response.json();
 
         for (let item of data) {
-            $(fieldSelector).append(`<option>${item.name}</option>`);
+            $(selectElementId + ' select').append(`<option>${item.name}</option>`);
         }
 
         if (selectedItemName) {
-            $('#unit_type option').each(function () {
+            $(selectElementId + ' option').each(function () {
                 if (JSON.stringify($(this).text()) === selectedItemName) {
                     $(this).attr('selected', 'selected');
                     return false;
                 }
             });
         }
-        showTypes().then();
+        hideAndShowSelectGroup(groupHide, groupShow , groupShow).then();
     }
 
-    async function showNewType() {
-        $('#new_type_name').val('');
-        $('#new_order_unit_group').prop('hidden', true);
-        $('#create_new_unit_type').prop('hidden', false);
+
+
+    async function hideAndShowSelectGroup(toHide, toShow, instanceForShow=null) {
+
+        if (instanceForShow === toShow) {
+            newOrderAddNewButton.prop('disabled', false).fadeTo(10, 1);
+        }
+        else {
+            newOrderAddNewButton.prop('disabled', true).fadeTo(10, 0.2);
+        }
+        $(toHide).prop('hidden', true);
+        $(toShow).prop('hidden', false);
     }
 
-    async function showTypes(new_item = null) {
-        $('#new_type_name').val('');
-        $('#new_order_unit_group').prop('hidden', false);
-        $('#create_new_unit_type').prop('hidden', true);
-    }
 
     function holdActions() {
         $('.static_content').fadeTo(100, 0.9).css('pointer-events', 'none');

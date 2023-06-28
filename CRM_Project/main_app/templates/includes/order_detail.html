@@ -33,11 +33,31 @@
                     </div>
                 </div>
                 <div class="col-6">
+
+                    <div id="order_detail_unit_type_group">
                     <label for="unit_type">Unit type</label>
-                    <select class="form-control" name="" id="unit_type">
-                        <option value="">Laptop</option>
-                        <option value="">Desktop</option>
-                    </select>
+                    <div class="input-group" id="order_detail_unit_type">
+                        <select class="form-select" name="unit_type">
+                            <option>Select type</option>
+                        </select>
+                        <button type="button" id="order_detail_add_new_type" class="btn btn-outline-primary">
+                            Add type
+                        </button>
+                    </div>
+                    <div class="error"></div>
+                </div>
+
+
+                <div id="order_detail_create_new_unit_type_group" hidden>
+                    <label for="new_type_name">New type create</label>
+                    <div class="input-group">
+                        <input id="order_detail_new_type_name" type="text" class="form-control" placeholder="Input type name">
+                        <button class="btn btn-success" type="button" id="order_detail_new_type_save">Create</button>
+                        <button class="btn btn-danger" type="button" id="order_detail_new_type_discard">Discard</button>
+                    </div>
+                    <div class="error">
+                    </div>
+                </div>
 
 
                     <label for="unit_condition">Unit condition</label>
