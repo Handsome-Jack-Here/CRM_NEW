@@ -4,128 +4,238 @@
         <div class="row">
             <div class="col-6">
 
-                <label for="first_name">First name</label>
-                <input class="form-control" type="text" id="first_name" name="first_name"
-                       placeholder="Input first name" autocomplete="off">
-                <div class="error"></div>
+                <div class="row">
+                    <div class="col-6 line_input">
+                        <label for="first_name">First name</label>
+                        <input class="form-control" type="text" id="first_name" name="first_name"
+                               placeholder="Input first name" autocomplete="off">
+
+                    </div>
+                    <div class="col-6 line_input">
+                        <label for="last_name">Last name</label>
+                        <input autocomplete="off" class="form-control" type="text" id="last_name" name="last_name"
+                               placeholder="Input last name">
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6 line_input">
+                        <label for="phone_number">Phone number</label>
+                        <input autocomplete="off" class="form-control" type="tel" data-tel-input id="phone_number"
+                               name="phone_number"
+                               placeholder="+7(000)000-00-00">
+
+                    </div>
+                    <div class="col-6 line_input">
+                        <label for="new_order_email">Email</label>
+                        <input class="form-control" type="email" id="new_order_email" placeholder="mail@domain.com">
+
+                    </div>
+                </div>
 
 
-                <label for="last_name">Last name</label>
-                <input autocomplete="off" class="form-control" type="text" id="last_name" name="last_name"
-                       placeholder="Input last name">
-                <div class="error"></div>
+                <div class="col-12 line_input">
+                    <label for="address">Address</label>
+                    <input autocomplete="off" class="form-control" type="text" id="address" name="address"
+                           placeholder="Input address">
+                </div>
 
-                <label for="phone_number">Phone number</label>
-                <input autocomplete="off" class="form-control" type="tel" data-tel-input id="phone_number"
-                       name="phone_number"
-                       placeholder="+7(000)000-00-00">
-                <div class="error"></div>
-
-                <label for="address">Address</label>
-                <input autocomplete="off" class="form-control" type="text" id="address" name="address"
-                       placeholder="Input address">
-                <div class="error"></div>
-
-                <hr>
+                <div class="col-12">
+                    <label for="new_order_client_comments">Client comments</label>
+                    <textarea class="form-control" name="" id="new_order_client_comments" rows="4">
+                    </textarea>
+                </div>
 
             </div>
 
 
-            <div class="col-6" style="z-index: 1">
+            <div class="col-6 " style="z-index: 1">
 
-                <section id="type">
-                    <div id="new_order_unit_type_group" url="/api/v1/unit-types/">
-                        <label for="unit_type">Unit type</label>
-                        <div class="input-group" id="new_order_unit_type">
-                            <select class="form-select" name="unit_type">
-                                <option>Select type</option>
-                            </select>
-                            <button type="button" class="btn btn-outline-primary add_new">
-                                Add new
-                            </button>
-                        </div>
-                        <div class="error"></div>
+                <div class="row">
+                    <div class="col-12 line_input">
+                        <section id="type">
+                            <div id="new_order_unit_type_group" url="/api/v1/unit-types/">
+                                <label for="unit_type" id="shit">Unit type</label>
+                                <div class="input-group" id="new_order_unit_type">
+                                    <select class="form-select" name="unit_type">
+                                        <option>Select type</option>
+                                    </select>
+                                    <button type="button" class="btn btn-outline-primary add_new">
+                                        Add new
+                                    </button>
+                                </div>
+                            </div>
+
+
+                            <div id="new_order_create_new_unit_type_group" hidden>
+                                <label for="new_order_new_type_name">Add new</label>
+                                <div class="input-group">
+                                    <input id="new_order_new_type_name" type="text" class="form-control"
+                                           placeholder="Input type name">
+                                    <button class="btn btn-success save_new_item" type="button">
+                                        Create
+                                    </button>
+                                    <button class="btn btn-outline-danger add_discard" type="button">
+                                        Discard
+                                    </button>
+                                </div>
+
+                            </div>
+                        </section>
+
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-6 line_input">
+                        <section id="brand">
+                            <div id="new_order_brand_group" url="/api/v1/brands/">
+                                <label for="brand">Brand</label>
+                                <div class="input-group" id="new_order_brand">
+                                    <select class="form-select" name="brand">
+                                        <option>Select brand</option>
+                                    </select>
+                                    <button type="button" class="btn btn-outline-primary add_new">
+                                        Add new
+                                    </button>
+                                </div>
+
+                            </div>
+
+
+                            <div id="new_order_create_new_brand_group" hidden>
+                                <label for="new_order_new_brand_name">Add new</label>
+                                <div class="input-group">
+                                    <input id="new_order_new_brand_name" type="text" class="form-control"
+                                           placeholder="Input brand name">
+                                    <button class="btn btn-success save_new_item" type="button">
+                                        Create
+                                    </button>
+                                    <button class="btn btn-outline-danger add_discard" type="button">
+                                        Discard
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
+
                     </div>
 
+                    <div class="col-6 line_input">
+                        <section id="model">
+                            <label for="model">Model</label>
+                            <input autocomplete="off" class="form-control" type="text" id="model" name="model"
+                                   placeholder="Input model">
+                        </section>
 
-                    <div id="new_order_create_new_unit_type_group" hidden>
-                        <label for="new_order_new_type_name">Add new</label>
-                        <div class="input-group">
-                            <input id="new_order_new_type_name" type="text" class="form-control"
-                                   placeholder="Input type name">
-                            <button class="btn btn-success save_new_item" type="button">
-                                Create
-                            </button>
-                            <button class="btn btn-outline-danger add_discard" type="button">
-                                Discard
-                            </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 ">
+                        <div class="row">
+                            <div class="col-12 line_input">
+                                <section id="serial_number">
+                                    <label for="serial_number">Serial number</label>
+                                    <input autocomplete="off" class="form-control" type="text" id="serial_number"
+                                           name="serial_number"
+                                           placeholder="Input serial number">
+                                </section>
+
+                            </div>
                         </div>
-                        <div class="error">
+                        <div class="row">
+                            <div class="col-12 line_input">
+                                <section id="new_order_os_password">
+                                    <label for="new_order_os_password">OS password</label>
+                                    <input autocomplete="off" class="form-control" type="text"
+                                           id="new_order_os_password"
+                                           name="new_order_os_password">
+
+                                </section>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 line_input">
+                                <section id="new_order_bios_password">
+                                    <label for="new_order_bios_password">BIOS password</label>
+                                    <input autocomplete="off" class="form-control" type="text"
+                                           id="new_order_bios_password"
+                                           name="new_order_bios_password">
+                                </section>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-6">
+                        <label for="new_order_condition">Unit visual condition:</label>
+
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" value="1" id="">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Liquid spill
+                            </label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" value="2" id="">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Body damage
+                            </label>
+                        </div>
+
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" value="3" id="">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Broken display
+                            </label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" value="4" id="">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Broken connectors
+                            </label>
+                        </div>
+
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" value="5" id="">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Signs of wear and abrasions
+                            </label>
+
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" value="6" id="">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Missing some components
+                            </label>
+
                         </div>
                     </div>
-                </section>
-
-                <section id="brand">
-                    <div id="new_order_brand_group" url="/api/v1/brands/">
-                        <label for="brand">Brand</label>
-                        <div class="input-group" id="new_order_brand">
-                            <select class="form-select" name="brand">
-                                <option>Select brand</option>
-                            </select>
-                            <button type="button" class="btn btn-outline-primary add_new">
-                                Add new
-                            </button>
-                        </div>
-                        <div class="error"></div>
-                    </div>
-
-                    <div id="new_order_create_new_brand_group" hidden>
-                        <label for="new_order_new_brand_name">Add new</label>
-                        <div class="input-group">
-                            <input id="new_order_new_brand_name" type="text" class="form-control"
-                                   placeholder="Input brand name">
-                            <button class="btn btn-success save_new_item" type="button">
-                                Create
-                            </button>
-                            <button class="btn btn-outline-danger add_discard" type="button">
-                                Discard
-                            </button>
-                        </div>
-                        <div class="error"></div>
-                    </div>
-                </section>
-
-                <section id="model">
-                    <label for="model">Model</label>
-                    <input autocomplete="off" class="form-control" type="text" id="model" name="model"
-                           placeholder="Model">
-                    <div class="error"></div>
-                </section>
-
-                <section id="serial_number">
-                    <label for="serial_number">Serial number</label>
-                    <input autocomplete="off" class="form-control" type="text" id="serial_number"
-                           name="serial_number"
-                           placeholder="Serial number">
-                    <div class="error"></div>
-                </section>
-                <hr>
+                </div>
             </div>
 
         </div>
-
-
-        <p>
-            <label for="defect">Defect description</label>
-            <textarea class="form-control" name="defect" id="defect" rows="3"></textarea>
-        </p>
+        <hr>
+        <div class="row">
+            <div class="col-12">
+                <label for="defect">Defect description</label>
+                <textarea class="form-control" name="defect" id="new_order_defect" rows="3"></textarea>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-12">
+                <div id="order_create_buttons">
+                    <button id="create_order" class="btn btn-success">Create order</button>
+                    <button id="discard_new_order" type="button" class="btn btn-danger">Discard</button>
+                </div>
+            </div>
+        </div>
 
 
     </form>
 
-    <div id="order_create_buttons">
-        <button id="create_order" class="btn btn-success">Create order</button>
-        <button id="discard_new_order" type="button" class="btn btn-danger">Discard</button>
-    </div>
 
 </div>

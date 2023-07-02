@@ -4,33 +4,30 @@
 
 
 {% block content %}
-    <div class="container" style="max-width: 1600px">
+    <div class="container-fluid">
 
         <div class="row">
-            <div class="col-12" style="height: 72px; position: fixed">
+            <div class="col-12" style="height: 72px; position: fixed; margin-bottom: 77px">
                 <div class="header">
                     {% include 'includes/header.html' %}
                 </div>
             </div>
         </div>
 
-        <div class="row" style="height: 900px; padding-top: 8px">
-
+        <div class="row" style="margin-top: 10px">
             <div class="col-2" style="min-width: 300px; position: fixed; margin-top: 70px">
                 <div class="left_side">
                     {% include 'includes/left_side.html' %}
                 </div>
             </div>
 
-            <div class="col-10" style="min-width: 300px; margin-left: 300px; margin-top: 70px">
+            <div class="col-10" style="min-width: 300px; margin-left: 310px; margin-top: 70px">
                 <div class="right_side">
                     {% include 'includes/right_side.html' %}
                     {% include 'includes/save_message.html' %}
                 </div>
             </div>
-
         </div>
-
     </div>
 
 

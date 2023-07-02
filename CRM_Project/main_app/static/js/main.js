@@ -323,7 +323,7 @@ $(document).ready(function () {
                             <td id="sp_description">${sp.name}</td>
                             <td id="sp_price">${sp.price}</td>
                             <td id="sp_warranty">${sp.warranty}</td>
-                            <td><a hidden id="delete" style="text-decoration: none;" href="">Delete</a></td>
+                            <td><a hidden id="delete" style=" text-decoration: none;" href="">Delete</a></td>
                     </tr>`)
             }
             snp_table.fadeIn(140);
@@ -567,6 +567,7 @@ $(document).ready(function () {
         }
     }
 
+    let staticContent = $('.static_content');
 
     let newOrderButton = $('#new_order_button');
     let newOrderDiscardButton = $('#discard_new_order');
@@ -578,6 +579,8 @@ $(document).ready(function () {
     let newOrderAddNewButton = $('.add_new');
     let newOrderAddNewDiscardButton = $('.add_discard');
     let newOrderAddNewSaveButton = $('.save_new_item');
+
+    let newOrderCreateButton = $('#create_order');
 
 
     getOrder.on('click', 'a', function (e) {
@@ -600,6 +603,9 @@ $(document).ready(function () {
         url = '/api/v1/brands/';
         selectElementId = '#new_order_brand';
         createSelectField(url, selectElementId).then();
+
+        //make function for conditions creation and call em
+
 
         let item = $('#new_order_page');
         hideAndShow(item);
@@ -700,7 +706,7 @@ $(document).ready(function () {
 
         $('.dynamic_content').off().on('mouseup', function (e) {
             let eventSectionIdName = $('#' + e.target.id).closest('section').attr('id');
-            if (sectionIdName !==  eventSectionIdName) {
+            if (sectionIdName !== eventSectionIdName) {
                 hideAndShowSelectGroup(inputItself, selectItself, selectItself).then();
             }
         });
@@ -712,7 +718,7 @@ $(document).ready(function () {
         $(selectElementId + ' select *').each(function () {
             $(this).remove();
         });
-        $(selectElementId + ' select').append(`<option value="false">Select unit type</option>`);
+        $(selectElementId + ' select').append(`<option value="" hidden></option>`);
 
         let response = await fetch(url);
         let data = await response.json();
@@ -729,17 +735,15 @@ $(document).ready(function () {
                 }
             });
         }
-        hideAndShowSelectGroup(groupHide, groupShow , groupShow).then();
+        hideAndShowSelectGroup(groupHide, groupShow, groupShow).then();
     }
 
 
-
-    async function hideAndShowSelectGroup(toHide, toShow, instanceForShow=null) {
+    async function hideAndShowSelectGroup(toHide, toShow, instanceForShow = null) {
 
         if (instanceForShow === toShow) {
             newOrderAddNewButton.prop('disabled', false).fadeTo(10, 1);
-        }
-        else {
+        } else {
             newOrderAddNewButton.prop('disabled', true).fadeTo(10, 0.2);
         }
         $(toHide).prop('hidden', true);
@@ -748,11 +752,14 @@ $(document).ready(function () {
 
 
     function holdActions() {
-        $('.static_content').fadeTo(100, 0.9).css('pointer-events', 'none');
+
+        staticContent.fadeTo(100, 0.7).css('pointer-events', 'none');
+        staticContent.parent().css('background', 'black');
     }
 
     function releaseActions() {
-        $('.static_content').css('pointer-events', 'auto').fadeTo(100, 1);
+
+        staticContent.css('pointer-events', 'auto').fadeTo(100, 1);
     }
 
     function resetPagination() {
@@ -767,11 +774,15 @@ $(document).ready(function () {
         })
     }
 
-// validation
-    $('#create_order').on('click', function () {
+    function createConditionsField() {
+
+    }
+
+
+    newOrderCreateButton.on('click', function () {
         validator();
         if ($('#new_order_form').valid()) {
-            newOrderSave();
+            newOrderSave().then();
         }
     });
 
@@ -779,12 +790,19 @@ $(document).ready(function () {
 
         $('.dynamic_content').prop('hidden', true).hide();
         item.prop('hidden', false).fadeIn(140);
+        removeErrors();
+    }
 
+    function removeErrors(){
+        $('.error').each(function () {
+            if ($(this).is('label')) {
+                $(this).remove();
+            }
+        });
     }
 
     getOrderList().then();
 
-})
-;
+});
 
 

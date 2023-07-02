@@ -10,7 +10,8 @@ router.register(r'brands', views.BrandViewSet, basename='brands')
 router.register(r'models', views.ModelViewSet, basename='models')
 router.register(r'payments', views.PaymentViewSet, basename='payments')
 router.register(r'services-and-parst', views.ServiceAndPartViewSet, basename='sp')
-router.register(r'unit-types', views.UnitTypeViewSet, basename='UnitType')
+router.register(r'unit-types', views.UnitTypeViewSet, basename='unit_types')
+router.register(r'unit-conditions', views.UnitConditionViewSet, basename='unit_conditions')
 
 urlpatterns = [
     path('', include(router.urls)),

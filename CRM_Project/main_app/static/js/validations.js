@@ -14,17 +14,20 @@ function validator() {
                 required: true,
                 minlength: 10,
             },
+            unit_type: {
+                required: true,
+            },
             brand: {
                 required: true,
-                minlength: 1,
+
             },
             model: {
                 required: true,
-                minlength: 1,
+
             },
             serial_number: {
                 required: true,
-                minlength: 1,
+
             },
             defect: {
                 required: true,
@@ -36,34 +39,45 @@ function validator() {
         messages: {
             first_name: {
                 required: 'This field is required',
-                minlength: 'This field mest be at least 2 characters',
+                minlength: 'Minimum 2 characters',
             },
             last_name: {
                 required: 'This field is required',
-                minlength: 'This field mest be at least 2 characters',
+                minlength: 'Minimum 2 characters',
             },
             phone_number: {
                 required: 'This field is required',
-                minlength: 'This field mest be at least 10 characters',
+                minlength: 'Minimum 10 characters',
+            },
+            unit_type: {
+                required: 'Please select unit type',
             },
             brand: {
-                required: 'This field is required',
-                minlength: 'This field mest be at least 10 characters',
+                required: 'Please select unit brand',
+
             },
             model: {
                 required: 'This field is required',
-                minlength: 'This field mest be at least 10 characters',
+
             },
             serial_number: {
                 required: 'This field is required',
-                minlength: 'This field mest be at least 10 characters',
+
             },
             defect: {
                 required: 'This field is required',
-                minlength: 'This field mest be at least 7 characters'
-            },
-            errorElement: 'span',
-            errorLabelContainer: '.error',
+                minlength: 'Minimum 7 characters'
+            }
+
+        },
+        errorPlacement: function (error, element) {
+            if ($(element).text()){
+                error.insertBefore(element.parent());
+            }
+            else {
+                error.insertBefore(element);
+            }
+
         }
     })
 
@@ -83,11 +97,11 @@ function validator() {
         messages: {
             payment_comment: {
                 required: 'This field is required',
-                minlength: 'This field mest be at least 2 characters',
+                minlength: 'This field must be at least 2 characters',
             },
             payment_value: {
                 required: 'This field is required',
-                min: 'This value mest be at least 0',
+                min: 'This value must be at least 0',
             },
             errorElement: 'span',
             errorLabelContainer: '.error',
@@ -111,7 +125,7 @@ function validator() {
         messages: {
             sp_description: {
                 required: 'Description field is required',
-                minlength: 'Description field mest be at least 2 characters',
+                minlength: 'Description field must be at least 2 characters',
 
             },
             sp_price: {
@@ -119,10 +133,8 @@ function validator() {
                 digits: 'Price field must be digit'
             }
         },
-        errorElement: 'span',
-        errorLabelContainer: '.error',
 
     })
 }
 
-    export {validator}
+export {validator}

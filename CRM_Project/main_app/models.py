@@ -9,6 +9,7 @@ class Order(models.Model):
     defect = models.CharField(max_length=150)
     diagnostic_result = models.CharField(max_length=250, blank=True)
     required_works = models.CharField(max_length=250, blank=True)
+    client_comments = models.CharField(max_length=400, blank=True)
 
     created = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
@@ -18,7 +19,7 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='orders')
     client = models.ForeignKey('Client', on_delete=models.PROTECT, related_name='orders')
     unit = models.ForeignKey('Unit', on_delete=models.PROTECT, related_name='orders')
-    sp = models.ManyToManyField('ServiceAndPart', related_name='sp', null=True, blank=True)
+    sp = models.ManyToManyField('ServiceAndPart', related_name='sp', blank=True)
 
     def save(self, *args, **kwargs):
         user = self.user
@@ -41,6 +42,7 @@ class Client(models.Model):
     last_name = models.CharField(max_length=28)
     phone = models.CharField(max_length=21)
     address = models.CharField(max_length=42, default='No address')
+    mail = models.EmailField(max_length=42, null=True)
 
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='clients')
 
@@ -59,13 +61,15 @@ class Client(models.Model):
 
 class Unit(models.Model):
     serial_number = models.CharField(max_length=35)
-    condition = models.CharField(max_length=120, default='Used ')
+
+    os_password = models.CharField(max_length=42, null=True)
+    bios_password = models.CharField(max_length=42, null=True)
 
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='units')
     brand = models.ForeignKey('Brand', on_delete=models.PROTECT, related_name='units')
     model = models.ForeignKey('Model', on_delete=models.PROTECT, related_name='units')
-
     type = models.ForeignKey('UnitType', on_delete=models.PROTECT, related_name='units')
+    condition = models.ManyToManyField('UnitCondition',  blank=True, related_name='units')
 
     def save(self, *args, **kwargs):
         if self.user.units.filter(brand=self.brand, model=self.model, serial_number=self.serial_number):
@@ -91,6 +95,24 @@ class UnitType(models.Model):
             return unit_type
         else:
             return super(UnitType, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.name}'
+
+
+class UnitCondition(models.Model):
+    name = models.CharField(max_length=42)
+    visible = models.BooleanField(default=True)
+
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='unit_conditions')
+
+    def save(self, *args, **kwargs):
+        if self.user.unit_conditions.filter(name=self.name):
+            unit_conditions = self.user.unit_conditions.get(name=self.name)
+            self.pk = unit_conditions.pk
+            return unit_conditions
+        else:
+            return super(UnitCondition, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.name}'
