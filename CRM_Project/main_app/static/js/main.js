@@ -580,7 +580,7 @@ $(document).ready(function () {
     let newOrderAddNewDiscardButton = $('.add_discard');
     let newOrderAddNewSaveButton = $('.save_new_item');
 
-    let newOrderCreateButton = $('#create_order');
+    let newOrderSaveButton = $('#create_order');
 
 
     getOrder.on('click', 'a', function (e) {
@@ -604,7 +604,7 @@ $(document).ready(function () {
         selectElementId = '#new_order_brand';
         createSelectField(url, selectElementId).then();
 
-        //make function for conditions creation and call em
+        createConditionsField('#new_order_conditions_field', '/api/v1/unit-conditions/');
 
 
         let item = $('#new_order_page');
@@ -771,15 +771,32 @@ $(document).ready(function () {
     function resetNewOrder() {
         $('#new_order_form').each(function () {
             this.reset();
-        })
+        });
     }
 
-    function createConditionsField() {
+    async function createConditionsField(placeSelectorName, url, selected=null) {
+        $(placeSelectorName + ' div').each(function () {
+            $(this).remove();
+        });
+
+        let response = await fetch(url);
+        let data = await response.json();
+        for (let condition of data) {
+            let item = `<div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" value="${condition.id}" id="">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                ${condition.name}
+                            </label>
+                        </div>`
+
+            $(placeSelectorName).append(item);
+        }
+
 
     }
 
 
-    newOrderCreateButton.on('click', function () {
+    newOrderSaveButton.on('click', function () {
         validator();
         if ($('#new_order_form').valid()) {
             newOrderSave().then();
@@ -793,7 +810,7 @@ $(document).ready(function () {
         removeErrors();
     }
 
-    function removeErrors(){
+    function removeErrors() {
         $('.error').each(function () {
             if ($(this).is('label')) {
                 $(this).remove();

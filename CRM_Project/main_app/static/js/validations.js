@@ -39,15 +39,15 @@ function validator() {
         messages: {
             first_name: {
                 required: 'This field is required',
-                minlength: 'Minimum 2 characters',
+                minlength: 'Minimum 2 letters',
             },
             last_name: {
                 required: 'This field is required',
-                minlength: 'Minimum 2 characters',
+                minlength: 'Minimum 2 letters',
             },
             phone_number: {
                 required: 'This field is required',
-                minlength: 'Minimum 10 characters',
+                minlength: 'Minimum 10 letters',
             },
             unit_type: {
                 required: 'Please select unit type',
@@ -66,7 +66,7 @@ function validator() {
             },
             defect: {
                 required: 'This field is required',
-                minlength: 'Minimum 7 characters'
+                minlength: 'Minimum 7 letters'
             }
 
         },
