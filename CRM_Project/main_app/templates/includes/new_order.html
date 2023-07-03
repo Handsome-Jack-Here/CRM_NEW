@@ -1,19 +1,20 @@
 <div id="new_order_page" class="dynamic_content" hidden>
     <span><h1>New order</h1></span>
-    <form name="form_validate" id="new_order_form">
+    <form autocomplete='off' name="form_validate" id="new_order_form">
         <div class="row">
             <div class="col-6">
 
                 <div class="row">
                     <div class="col-6 line_input">
                         <label for="first_name">First name</label>
-                        <input class="form-control" type="text" id="first_name" name="first_name"
+                        <input class="form-control" type="text" id="new_order_first_name" name="first_name"
                                placeholder="Input first name" autocomplete="off">
 
                     </div>
                     <div class="col-6 line_input">
-                        <label for="last_name">Last name</label>
-                        <input autocomplete="off" class="form-control" type="text" id="last_name" name="last_name"
+                        <label for="new_order_last_name">Last name</label>
+                        <input autocomplete="false" class="form-control" type="text" id="new_order_last_name"
+                               name="last_name"
                                placeholder="Input last name">
 
                     </div>
@@ -21,23 +22,23 @@
 
                 <div class="row">
                     <div class="col-6 line_input">
-                        <label for="phone_number">Phone number</label>
-                        <input autocomplete="off" class="form-control" type="tel" data-tel-input id="phone_number"
+                        <label for="new_order_phone_number">Phone number</label>
+                        <input autocomplete="off" class="form-control" type="tel" data-tel-input
+                               id="new_order_phone_number"
                                name="phone_number"
                                placeholder="+7(000)000-00-00">
-
                     </div>
+
                     <div class="col-6 line_input">
                         <label for="new_order_email">Email</label>
                         <input class="form-control" type="email" id="new_order_email" placeholder="mail@domain.com">
-
                     </div>
                 </div>
 
 
                 <div class="col-12 line_input">
-                    <label for="address">Address</label>
-                    <input autocomplete="off" class="form-control" type="text" id="address" name="address"
+                    <label for="new_order_address">Address</label>
+                    <input autocomplete="off" class="form-control" type="text" id="new_order_address" name="address"
                            placeholder="Input address">
                 </div>
 
@@ -54,6 +55,7 @@
 
                 <div class="row">
                     <div class="col-12 line_input">
+
                         <section id="type">
                             <div id="new_order_unit_type_group" url="/api/v1/unit-types/">
                                 <label for="unit_type" id="shit">Unit type</label>
@@ -61,7 +63,7 @@
                                     <select class="form-select" name="unit_type">
                                         <option>Select type</option>
                                     </select>
-                                    <button type="button" class="btn btn-outline-primary add_new">
+                                    <button type="button" class="btn btn-primary add_new_select_item">
                                         Add new
                                     </button>
                                 </div>
@@ -69,14 +71,14 @@
 
 
                             <div id="new_order_create_new_unit_type_group" hidden>
-                                <label for="new_order_new_type_name">Add new</label>
+                                <label for="new_order_new_type_name">Add new unit type</label>
                                 <div class="input-group">
                                     <input id="new_order_new_type_name" type="text" class="form-control"
                                            placeholder="Input type name">
                                     <button class="btn btn-success save_new_item" type="button">
                                         Create
                                     </button>
-                                    <button class="btn btn-outline-danger add_discard" type="button">
+                                    <button class="btn btn-danger add_discard" type="button">
                                         Discard
                                     </button>
                                 </div>
@@ -97,7 +99,7 @@
                                     <select class="form-select" name="brand">
                                         <option>Select brand</option>
                                     </select>
-                                    <button type="button" class="btn btn-outline-primary add_new">
+                                    <button type="button" class="btn btn-primary add_new_select_item">
                                         Add new
                                     </button>
                                 </div>
@@ -106,26 +108,25 @@
 
 
                             <div id="new_order_create_new_brand_group" hidden>
-                                <label for="new_order_new_brand_name">Add new</label>
+                                <label for="new_order_new_brand_name">Add new brand</label>
                                 <div class="input-group">
                                     <input id="new_order_new_brand_name" type="text" class="form-control"
                                            placeholder="Input brand name">
                                     <button class="btn btn-success save_new_item" type="button">
                                         Create
                                     </button>
-                                    <button class="btn btn-outline-danger add_discard" type="button">
+                                    <button class="btn btn-danger add_discard" type="button">
                                         Discard
                                     </button>
                                 </div>
                             </div>
                         </section>
-
                     </div>
 
                     <div class="col-6 line_input">
                         <section id="model">
-                            <label for="model">Model</label>
-                            <input autocomplete="off" class="form-control" type="text" id="model" name="model"
+                            <label for="new_order_model">Model</label>
+                            <input autocomplete="off" class="form-control" type="text" id="new_order_model" name="model"
                                    placeholder="Input model">
                         </section>
 
@@ -136,8 +137,8 @@
                         <div class="row">
                             <div class="col-12 line_input">
                                 <section id="serial_number">
-                                    <label for="serial_number">Serial number</label>
-                                    <input autocomplete="off" class="form-control" type="text" id="serial_number"
+                                    <label for="new_order_serial_number">Serial number</label>
+                                    <input autocomplete="off" class="form-control" type="text" id="new_order_serial_number"
                                            name="serial_number"
                                            placeholder="Input serial number">
                                 </section>
@@ -172,14 +173,14 @@
                     <div class="col-6">
                         <div class="row">
                             <div class="col-6">
-                                <label for="">Unit condition</label>
+                                <label for="" style="font-weight: bold">Unit condition</label>
                             </div>
                             <div class="col-6 d-flex justify-content-end">
-                                <a class="a_general" href="#">Edit</a>
+                                <a class="a_general" href="#">Manage</a>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12">
+                            <div class="col-12" style="height: 180px; border: solid white 1px; overflow: auto">
                                 <div id="new_order_conditions_field">
 
                                 </div>
@@ -193,7 +194,7 @@
         <hr>
         <div class="row">
             <div class="col-12">
-                <label for="defect">Defect description</label>
+                <label for="new_order_defect">Defect description</label>
                 <textarea class="form-control" name="defect" id="new_order_defect" rows="3"></textarea>
             </div>
         </div>
@@ -201,7 +202,7 @@
         <div class="row">
             <div class="col-12">
                 <div id="order_create_buttons">
-                    <button id="create_order" class="btn btn-success">Create order</button>
+                    <button id="create_order" type="button" class="btn btn-success">Create order</button>
                     <button id="discard_new_order" type="button" class="btn btn-danger">Discard</button>
                 </div>
             </div>

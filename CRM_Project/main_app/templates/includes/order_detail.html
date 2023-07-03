@@ -1,63 +1,130 @@
 <div id="order_detail" class="dynamic_content" hidden="">
     <div class="row">
         <div class="col-6">
-            <div class="time_field">
-                Created at: <span id="creation_date"> </span> <span id="creation_time"> | </span>
-                <br>
-                Updated at: <span id="update_date"> </span> <span id="update_time"> | </span>
+            <div class="row">
+                <div class="col-6">
+                    <h3 id="order_detail_number">
+                        <span id="order_id"> </span>
+                    </h3>
+                </div>
+                <div class="col-6">
+                    <div class="time_field">
+                        Created at: <span id="creation_date"> </span> <span id="creation_time"> | </span>
+                        <br>
+                        Updated at: <span id="update_date"> </span> <span id="update_time"> | </span>
+                    </div>
+                </div>
             </div>
 
-            <h3 id="order_detail_number">
-                <span id="order_id"> </span>
-            </h3>
 
             <div id="client_edit_form">
-                <label for="first_name">First name</label>
-                <input class="form-control" type="text" id="first_name">
-                <label for="last_name">Last name</label>
-                <input class="form-control" type="text" id="last_name">
-                <label for="phone_number">Phone number</label>
-                <input class="form-control" type="text" data-tel-input id="phone_number">
+                <div class="row">
+                    <div class="col-6">
+                        <label for="first_name">First name</label>
+                        <input class="form-control" type="text" id="first_name">
+                    </div>
+                    <div class="col-6">
+                        <label for="last_name">Last name</label>
+                        <input class="form-control" type="text" id="last_name">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <label for="phone_number">Phone number</label>
+                        <input class="form-control" type="text" data-tel-input id="phone_number">
+                    </div>
+                    <div class="col-6">
+                        <label for="email">Email</label>
+                        <input class="form-control" type="text" id="email">
+                    </div>
+                </div>
+
                 <hr>
             </div>
 
             <div class="row">
                 <div class="col-6">
+
                     <div id="unit_edit_form">
-                        <label for="brand">Brand</label>
-                        <input class="form-control" type="text" id="brand">
+
+                        <div class="row">
+
+                            <div class="col-12">
+
+                                <section id="brand">
+                                    <div id="order_detail_brand_group" url="/api/v1/brands/">
+                                        <label for="brand" id="shit">Brand</label>
+                                        <div class="input-group" id="order_detail_brand">
+                                            <select class="form-select" name="order_detail_brand">
+                                                <option>Select brand</option>
+                                            </select>
+                                            <button type="button" class="btn btn-primary add_new_select_item">
+                                                Add new
+                                            </button>
+                                        </div>
+                                    </div>
+
+
+                                    <div id="order_detail_create_new_brand_group" hidden>
+                                        <label for="order_detail_new_brand_name">Add new brand</label>
+                                        <div class="input-group">
+                                            <input id="order_detail_brand_name" type="text" class="form-control"
+                                                   placeholder="Input brand name">
+
+                                            <button class="btn btn-success save_new_item" type="button">
+                                                Create
+                                            </button>
+                                            <button class="btn btn-danger add_discard" type="button">
+                                                Discard
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </section>
+
+                            </div>
+                        </div>
+
+
                         <label for="model">Model</label>
                         <input class="form-control" type="text" id="model">
                         <label for="serial_number">Serial number</label>
                         <input class="form-control" type="text" id="serial_number">
                     </div>
+
                 </div>
                 <div class="col-6">
 
-                    <div id="order_detail_unit_type_group">
-                    <label for="unit_type">Unit type</label>
-                    <div class="input-group" id="order_detail_unit_type">
-                        <select class="form-select" name="unit_type">
-                            <option>Select type</option>
-                        </select>
-                        <button type="button" id="order_detail_add_new_type" class="btn btn-outline-primary">
-                            Add type
-                        </button>
-                    </div>
-                    <div class="error"></div>
-                </div>
+                    <section id="type">
+                        <div id="order_detail_unit_type_group" url="/api/v1/unit-types/">
+                            <label for="unit_type" id="shit">Unit type</label>
+                            <div class="input-group" id="order_detail_unit_type">
+                                <select class="form-select" name="order_detail_unit_type">
+                                    <option>Select type</option>
+                                </select>
+                                <button type="button" class="btn btn-primary add_new_select_item">
+                                    Add new
+                                </button>
+                            </div>
+                        </div>
 
 
-                <div id="order_detail_create_new_unit_type_group" hidden>
-                    <label for="new_type_name">New type create</label>
-                    <div class="input-group">
-                        <input id="order_detail_new_type_name" type="text" class="form-control" placeholder="Input type name">
-                        <button class="btn btn-success" type="button" id="order_detail_new_type_save">Create</button>
-                        <button class="btn btn-danger" type="button" id="order_detail_new_type_discard">Discard</button>
-                    </div>
-                    <div class="error">
-                    </div>
-                </div>
+                        <div id="order_detail_create_new_unit_type_group" hidden>
+                            <label for="order_detail_new_type_name">Add new unit type</label>
+                            <div class="input-group">
+                                <input id="order_detail_new_type_name" type="text" class="form-control"
+                                       placeholder="Input type name">
+                                <button class="btn btn-success save_new_item" type="button">
+                                    Create
+                                </button>
+                                <button class="btn btn-danger add_discard" type="button">
+                                    Discard
+                                </button>
+                            </div>
+
+                        </div>
+                    </section>
 
 
                     <label for="unit_condition">Unit condition</label>
@@ -86,11 +153,12 @@
         </div>
         <div style="height: 60px; background: white" class="col-6">
             <div>
-                <button class="btn btn-success stage_buttons">Diagnostic</button>
-                <button class="btn btn-outline-success stage_buttons">Diagnostic done</button>
-                <button class="btn btn-outline-success stage_buttons">Repair</button>
-                <button class="btn btn-outline-success stage_buttons">Repair complete</button>
-                <button class="btn btn-outline-success stage_buttons">Closed</button>
+                <button class="btn btn-primary stage_buttons">Diagnostic</button>
+                <button class="btn btn-warning stage_buttons">Diagnostic done</button>
+                <button class="btn btn-info stage_buttons">Repair</button>
+                <button class="btn btn-success stage_buttons">Repair complete</button>
+                <button class="btn btn-secondary stage_buttons">Complete</button>
+                <button class="btn btn-danger stage_buttons">Fail</button>
             </div>
 
             <div class="row" style="border: solid rgba(0,0,0,0.14) 1px; border-radius: 6px; margin-top: 23px">
@@ -138,7 +206,7 @@
                                 <option value="3">6 Month</option>
                             </select>
 
-                            <button style="width: 80px" id="add_sp_button" class="btn btn-outline-primary"
+                            <button style="width: 80px" id="add_sp_button" class="btn btn-primary"
                                     type="button">Create
                             </button>
                         </form>
@@ -162,10 +230,10 @@
                             <option value="3">6 Month</option>
                         </select>
 
-                        <button style="width: 55px" id="save_edit_sp_button" class="btn btn-outline-success"
+                        <button style="width: 55px" id="save_edit_sp_button" class="btn btn-success"
                                 type="button">Save
                         </button>
-                        <button style="width: 75px" id="cancel_edit_sp_button" class="btn btn-outline-danger"
+                        <button style="width: 75px" id="cancel_edit_sp_button" class="btn btn-danger"
                                 type="button">Cancel
                         </button>
 

@@ -41,8 +41,8 @@ class Client(models.Model):
     first_name = models.CharField(max_length=21)
     last_name = models.CharField(max_length=28)
     phone = models.CharField(max_length=21)
-    address = models.CharField(max_length=42, default='No address')
-    mail = models.EmailField(max_length=42, null=True)
+    address = models.CharField(max_length=42, default='No address', blank=True, null=True)
+    mail = models.EmailField(max_length=42, null=True, blank=True)
 
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='clients')
 
@@ -61,7 +61,6 @@ class Client(models.Model):
 
 class Unit(models.Model):
     serial_number = models.CharField(max_length=35)
-
     os_password = models.CharField(max_length=42, null=True)
     bios_password = models.CharField(max_length=42, null=True)
 

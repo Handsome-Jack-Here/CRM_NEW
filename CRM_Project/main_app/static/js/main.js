@@ -7,18 +7,18 @@ $(document).ready(function () {
 
 
     async function newOrderSave() {
-        $('#new_order_page').attr('hidden', true);
 
 
         // client
         let client_fields = {
-            'first_name': $('#new_order_form #first_name').val(),
-            'last_name': $('#new_order_form #last_name').val(),
-            'phone': $('#new_order_form #phone_number').val(),
-            'address': $('#new_order_form #address').val(),
-
+            'first_name': $('#new_order_first_name').val(),
+            'last_name': $('#new_order_last_name').val(),
+            'phone': $('#new_order_phone_number').val(),
+            'address': $('#new_order_address').val(),
+            'mail': $('#new_order_email').val(),
         }
-        let options = {
+
+        let client_options = {
 
             method: 'POST',
             headers: {
@@ -28,34 +28,23 @@ $(document).ready(function () {
             body: JSON.stringify(client_fields)
         }
 
-        const response = await fetch(`/api/v1/clients/`, options)
-        let data = await response.json()
-        let client_id = parseInt(JSON.stringify(data.id))
+        //
+        const client_response = await fetch(`/api/v1/clients/`, client_options);
+        let client_data = await client_response.json();
+        let client_id = parseInt(JSON.stringify(client_data.id));
+
         // end client
 
-        // brand
-        let brand_fields = {
-            'name': $('#new_order_form #brand').val(),
-        }
 
-        let brand_options = {
+        let brand_id = $('#new_order_brand').find(":selected").val();
+        let unit_type_id = $('#new_order_unit_type').find(":selected").val();
+        // alert(unit_type_id)
 
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-                'X-CSRFToken': csrftoken,
-            },
-            body: JSON.stringify(brand_fields)
-        }
-
-        const brand_response = await fetch(`/api/v1/brands/`, brand_options)
-        let brand_data = await brand_response.json()
-        let brand_id = JSON.stringify(brand_data.id)
-        // end brand
 
         // model
+
         let model_fields = {
-            'name': $('#new_order_form #model').val(),
+            'name': $('#new_order_model').val(),
         }
         let model_options = {
 
@@ -67,17 +56,24 @@ $(document).ready(function () {
             body: JSON.stringify(model_fields)
         }
 
-        const model_response = await fetch(`/api/v1/models/`, model_options)
+        const model_response = await fetch(`/api/v1/models/`, model_options);
         let model_data = await model_response.json()
         let model_id = parseInt(JSON.stringify(model_data.id))
+
+
         // end model
+
 
         // unit
         let unit_fields = {
-            'serial_number': $('#new_order_form #serial_number').val(),
+            'serial_number': $('#new_order_serial_number').val(),
             'brand': brand_id,
-            'model': model_id
+            'model': model_id,
+            'type': unit_type_id,
         }
+
+        alert(JSON.stringify(unit_fields))
+
         let unit_options = {
 
             method: 'POST',
@@ -95,11 +91,15 @@ $(document).ready(function () {
 
 
         let order_fields = {
-            'defect': $('#new_order_form #defect').val(),
+            'defect': $('#new_order_defect').val(),
             'client': client_id,
             'unit': unit_id,
+            'client_comments': $('#new_order_client_comments').val(),
+
         }
-        options = {
+
+
+        let order_options = {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -108,14 +108,14 @@ $(document).ready(function () {
             body: JSON.stringify(order_fields)
         }
 
-        await fetch(`/api/v1/orders/`, options)
+        let order_response = await fetch(`/api/v1/orders/`, order_options)
 
 
-        if (response.status === 201) {
+        if (order_response.status === 201) {
             resetNewOrder();
-            getOrderList();
+            await getOrderList().then();
         } else {
-            alert(response.status)
+            alert(order_response.status)
             $('#new_order_page').removeAttr('hidden');
         }
     }
@@ -256,8 +256,8 @@ $(document).ready(function () {
         const unit_type = await unit_type_detail.json();
 
 
-        await createSelectField('/api/v1/unit-types/', '#order_detail_unit_type', JSON.stringify(unit_type.name));
-        // await createSelectField('/api/v1/brands/', '#order_detail_unit_type', JSON.stringify(unit_type.name));
+        await createSelectField('/api/v1/unit-types/', '#order_detail_unit_type', parseInt(unit_type.id));
+        await createSelectField('/api/v1/brands/', '#order_detail_brand', parseInt(brand.id));
 
         $('#order_id').text('Order# ' + order_id);
 
@@ -576,7 +576,7 @@ $(document).ready(function () {
 
     let getPaymentsList = $('#payments a');
 
-    let newOrderAddNewButton = $('.add_new');
+    let addNewSelectItemButton = $('.add_new_select_item');
     let newOrderAddNewDiscardButton = $('.add_discard');
     let newOrderAddNewSaveButton = $('.save_new_item');
 
@@ -594,7 +594,7 @@ $(document).ready(function () {
         });
     });
 
-    newOrderButton.off().on('click', function () {
+    newOrderButton.off().on('click', async function () {
 
         let url = '/api/v1/unit-types/';
         let selectElementId = '#new_order_unit_type';
@@ -604,7 +604,7 @@ $(document).ready(function () {
         selectElementId = '#new_order_brand';
         createSelectField(url, selectElementId).then();
 
-        createConditionsField('#new_order_conditions_field', '/api/v1/unit-conditions/');
+        await createConditionsField('#new_order_conditions_field', '/api/v1/unit-conditions/').then();
 
 
         let item = $('#new_order_page');
@@ -667,52 +667,42 @@ $(document).ready(function () {
     });
 
 
-    newOrderAddNewButton.off().on('click', function () {
-        let url = $(this).parent().parent().attr('url')
+    addNewSelectItemButton.off().on('click', function () {
+        let focused = true
+        let url = $(this).parent().parent().attr('url');
         let sectionIdName = $(this).closest('section').attr('id');
         let selectItself = '#' + $(this).parent().parent().attr('id');
         let inputItself = '#' + $(selectItself).next().attr('id');
-        let inputValue = inputItself + ' :input';
+        let inputValueSelector = inputItself + ' :input';
+        hideAndShowSelectGroup(selectItself, inputItself, selectItself).then($(inputValueSelector).val(''));
 
 
-        $(inputValue).val('');
-        hideAndShowSelectGroup(selectItself, inputItself, selectItself).then();
-
-        newOrderAddNewDiscardButton.off().on('click', function () {
-            hideAndShowSelectGroup(inputItself, selectItself, selectItself).then();
+        newOrderAddNewDiscardButton.off().on('click', async function () {
+            await hideAndShowSelectGroup(inputItself, selectItself, selectItself);
+            $(inputValueSelector).removeClass('new_item_danger');
+            focused = false;
         });
 
         newOrderAddNewSaveButton.off().on('click', async function () {
-
-            let new_type_name = {
-                'name': $(inputValue).val(),
-            }
-            let options = {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                    'X-CSRFToken': csrftoken,
-                },
-                body: JSON.stringify(new_type_name)
-            }
-            let response = await fetch(url, options);
-            let data = await response.json();
-            if (response.status === 201) {
-                await createSelectField(url, selectItself, JSON.stringify(data.name), inputItself, selectItself);
-            } else {
-                alert(response.status);
-            }
+            await saveNewItem(url, selectItself, inputValueSelector, inputItself, selectItself);
+            $(inputValueSelector).removeClass('new_item_danger');
+            focused = false;
         });
 
-        $('.dynamic_content').off().on('mouseup', function (e) {
+        // Lost focus
+        $('.dynamic_content').off().on('click', async function (e) {
             let eventSectionIdName = $('#' + e.target.id).closest('section').attr('id');
-            if (sectionIdName !== eventSectionIdName) {
-                hideAndShowSelectGroup(inputItself, selectItself, selectItself).then();
+            if (sectionIdName !== eventSectionIdName && focused === true) {
+                $(inputValueSelector).focus();
+                $(inputValueSelector).addClass('new_item_danger');
+                e.stop()
+                await hideAndShowSelectGroup(inputItself, selectItself, selectItself).then();
             }
         });
     });
 
-    async function createSelectField(url, selectElementId = null, selectedItemName = null, groupHide = null, groupShow = null) {
+
+    async function createSelectField(url, selectElementId = null, selectedItemValue = null, groupHide = null, groupShow = null) {
 
 
         $(selectElementId + ' select *').each(function () {
@@ -724,12 +714,13 @@ $(document).ready(function () {
         let data = await response.json();
 
         for (let item of data) {
-            $(selectElementId + ' select').append(`<option>${item.name}</option>`);
+            $(selectElementId + ' select').append(`<option value="${item.id}">${item.name}</option>`);
         }
 
-        if (selectedItemName) {
+        if (selectedItemValue) {
             $(selectElementId + ' option').each(function () {
-                if (JSON.stringify($(this).text()) === selectedItemName) {
+
+                if (parseInt($(this).val()) === selectedItemValue) {
                     $(this).attr('selected', 'selected');
                     return false;
                 }
@@ -742,12 +733,34 @@ $(document).ready(function () {
     async function hideAndShowSelectGroup(toHide, toShow, instanceForShow = null) {
 
         if (instanceForShow === toShow) {
-            newOrderAddNewButton.prop('disabled', false).fadeTo(10, 1);
+            addNewSelectItemButton.prop('disabled', false).fadeTo(10, 1);
         } else {
-            newOrderAddNewButton.prop('disabled', true).fadeTo(10, 0.2);
+            addNewSelectItemButton.prop('disabled', true).fadeTo(10, 0.2);
         }
         $(toHide).prop('hidden', true);
         $(toShow).prop('hidden', false);
+    }
+
+    async function saveNewItem(url, selectItself, newItemSelector, toHide, toShow) {
+        let new_type_name = {
+            'name': $(newItemSelector).val(),
+        }
+        let options = {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify(new_type_name)
+        }
+        let response = await fetch(url, options);
+        let data = await response.json();
+
+        if (response.status === 201) {
+            await createSelectField(url, selectItself, parseInt(data.id), toHide, toShow);
+        } else {
+            alert(response.status);
+        }
     }
 
 
@@ -774,7 +787,7 @@ $(document).ready(function () {
         });
     }
 
-    async function createConditionsField(placeSelectorName, url, selected=null) {
+    async function createConditionsField(placeSelectorName, url, selected = null) {
         $(placeSelectorName + ' div').each(function () {
             $(this).remove();
         });
@@ -788,18 +801,15 @@ $(document).ready(function () {
                                 ${condition.name}
                             </label>
                         </div>`
-
             $(placeSelectorName).append(item);
         }
-
-
     }
 
 
-    newOrderSaveButton.on('click', function () {
+    newOrderSaveButton.off().on('click', async function () {
         validator();
         if ($('#new_order_form').valid()) {
-            newOrderSave().then();
+            await newOrderSave().then();
         }
     });
 
@@ -818,7 +828,7 @@ $(document).ready(function () {
         });
     }
 
-    getOrderList().then();
+    getOrderList();
 
 });
 

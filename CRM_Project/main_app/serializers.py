@@ -5,6 +5,7 @@ from .models import Order, Client, Unit, Brand, Model, Payment, ServiceAndPart, 
 class OrderListSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     order_id = serializers.ReadOnlyField()
+
     # client = serializers.HiddenField(default=None)
 
     class Meta:
@@ -14,7 +15,6 @@ class OrderListSerializer(serializers.ModelSerializer):
 
 class ClientListSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-
 
     class Meta:
         model = Client
@@ -47,6 +47,7 @@ class ModelListSerializer(BrandListSerializer):
 
 class PaymentListSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     # order = serializers.HiddenField(default='Cash')
 
     class Meta:
