@@ -179,10 +179,13 @@ $(document).ready(function () {
     }
 
 
-    async function getOrderList(search = '', elementsPerPage, currentPage = 'page=1') {
+    async function getOrderList(search = '', elementsPerPage=lastPagesCount, currentPage = 'page=1') {
+
 
         let showBySelectField = $('#show_by_select')
         let showBySelectFieldOptions = $('#show_by_select option')
+
+
 
         // search filter
         $('.form-control-dark').off().on('input', function (e) {
@@ -192,9 +195,8 @@ $(document).ready(function () {
                 search = `search=` + `${search}`;
             }
 
-            getOrderList(search, elementsPerPage);
+            getOrderList(search, lastPagesCount);
         });
-
         if (search) {
             currentPage = '';
         }
@@ -204,9 +206,7 @@ $(document).ready(function () {
             getOrderList(search = '', $(this).val());
         });
 
-        async function listClear() {
-            $('#order_list_page tbody *').remove();
-        }
+
 
         async function listCreate() {
             const response = await fetch(`/api/v1/orders/?` + currentPage + search + '&page_size=' + elementsPerPage);
@@ -231,7 +231,6 @@ $(document).ready(function () {
         }
 
         function createPaginationSize(max, current){
-
             showBySelectFieldOptions.each(function (){
                 $(this).remove()
             });
@@ -244,9 +243,14 @@ $(document).ready(function () {
                 .append(`<option value="50">50</option>`)
                 .append(`<option value="${max}">All</option>`);
             showBySelectField.val(current);
+            lastPagesCount = current
         }
 
-        await listClear().then(async function () {
+        async function orderListClear() {
+            $('#order_list_page tbody *').remove();
+        }
+
+        await orderListClear().then(async function () {
             await listCreate();
         });
     }
@@ -647,8 +651,7 @@ $(document).ready(function () {
 
     getOrdersList.off().on('click', async function () {
         let item = $('#order_list_page');
-        await resetPagination();
-        await getOrderList();
+        await getOrderList('', startElementsCount);
         hideAndShow(item);
 
     });
@@ -844,17 +847,18 @@ $(document).ready(function () {
         });
     }
 
-    function listElementCount(val = screen.width) {
+     function listElementCount(val = screen.width) {
         if (val < 1920) {
-            return '10'
+            return '11'
         }
         return '18'
     }
 
-    let startElementsCount = listElementCount()
+    let lastPagesCount = null;
+    let startElementsCount = listElementCount();
+
 
     getOrderList('', startElementsCount).then();
-
 });
 
 
