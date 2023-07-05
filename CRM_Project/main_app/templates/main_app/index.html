@@ -6,22 +6,22 @@
 {% block content %}
     <div class="container-fluid">
 
-        <div class="row">
-            <div class="col-12" style="height: 72px; position: fixed; margin-bottom: 77px; z-index: 3">
+        <div class="row" style="height: 72px">
+            <div class="col-12" style="position: fixed; z-index: 4">
                 <div class="header">
                     {% include 'includes/header.html' %}
                 </div>
             </div>
         </div>
 
-        <div class="row" style="margin-top: 10px">
-            <div class="col-1" style="min-width: 240px; position: fixed; margin-top: 70px">
+        <div class="row">
+            <div class="col-1" style="min-width: 240px; position: fixed; margin-top: 10px">
                 <div class="left_side">
                     {% include 'includes/left_side.html' %}
                 </div>
             </div>
 
-            <div class="col-10" style="min-width: 300px; margin-left: 230px; margin-top: 70px">
+            <div class="col-10" style="min-width: 300px; margin-left: 230px;">
                 <div class="right_side">
                     {% include 'includes/right_side.html' %}
 
@@ -29,8 +29,5 @@
             </div>
         </div>
     </div>
-
-
-
 
 {% endblock %}

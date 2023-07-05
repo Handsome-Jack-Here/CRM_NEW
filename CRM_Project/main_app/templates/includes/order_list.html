@@ -1,24 +1,40 @@
 <div id="order_list_page" class="dynamic_content">
-    <div class="row" style="padding-top: 8px; height: 40px" >
+    <div class="row sticky-top sticky_header align-items-center">
         <div class="col-6">
-            <div id="list_header">
-                <button id="new_order_button" class="btn btn-primary">New order</button>
-            </div>
+
+            <button id="new_order_button" class="btn btn-primary">New order</button>
+
         </div>
-        <div class="col-6 d-flex justify-content-end">
+        <div class="col-6 d-flex justify-content-end" style="padding-top: 14px">
             <div id="pagination_bar">
-                    <ul class="pagination pagination-sm">
-                        <li class="page-item"><a class="page-link" href="#">10</a></li>
-                        <li class="page-item"><a class="page-link" href="#">20</a></li>
-                        <li class="page-item"><a class="page-link" href="#">30</a></li>
-                    </ul>
+                <div class="row">
+                    <div class="col-6">
+                        <label for="show_by_select" style="font-weight: normal">Show by:</label>
+                        <select class="form-select form-select-sm" id="show_by_select">
+
+                        </select>
+                    </div>
+
+                    <div class="col-6">
+                        <label for="current_page" style="font-weight: normal">Page</label>
+                        <ul class="pagination pagination-sm" id="current_page">
+                            <li class="page-item"><a class="page-link" href="#">18</a></li>
+                            <li class="page-item"><a class="page-link" href="#">36</a></li>
+                            <li class="page-item"><a class="page-link" href="#">72</a></li>
+                        </ul>
+                    </div>
                 </div>
+
+
+            </div>
+
         </div>
     </div>
-    <div class="row" style="border: solid rgba(0,0,0,0.14) 1px; border-radius: 6px; margin-top: 23px">
+    <div class="row">
         <div class="col-12" id="order_list_field">
-            <table id="order_list_table" class="table table-striped">
-                <thead>
+            <table id="order_list_table" class="table table-striped table-hover">
+
+                <thead style="position: sticky; top: 142px; z-index: 2; box-shadow: 0 4px 4px -2px rgba(97,164,209,0.64);">
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Client</th>
@@ -29,7 +45,7 @@
                     <th scope="col">Empty</th>
                 </tr>
                 </thead>
-                <tbody id="orders">
+                <tbody id="orders" style="overflow: auto; height: 50px">
                 </tbody>
 
             </table>

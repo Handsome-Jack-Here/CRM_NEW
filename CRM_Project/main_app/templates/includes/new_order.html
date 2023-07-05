@@ -6,13 +6,13 @@
 
                 <div class="row">
                     <div class="col-6 line_input">
-                        <label for="first_name">First name</label>
+                        <label for="first_name" class="required">First name</label>
                         <input class="form-control" type="text" id="new_order_first_name" name="first_name"
                                placeholder="Input first name" autocomplete="off">
 
                     </div>
                     <div class="col-6 line_input">
-                        <label for="new_order_last_name">Last name</label>
+                        <label for="new_order_last_name" class="required">Last name</label>
                         <input autocomplete="false" class="form-control" type="text" id="new_order_last_name"
                                name="last_name"
                                placeholder="Input last name">
@@ -22,7 +22,7 @@
 
                 <div class="row">
                     <div class="col-6 line_input">
-                        <label for="new_order_phone_number">Phone number</label>
+                        <label for="new_order_phone_number" class="required">Phone number</label>
                         <input autocomplete="off" class="form-control" type="tel" data-tel-input
                                id="new_order_phone_number"
                                name="phone_number"
@@ -58,7 +58,7 @@
 
                         <section id="type">
                             <div id="new_order_unit_type_group" url="/api/v1/unit-types/">
-                                <label for="unit_type" id="shit">Unit type</label>
+                                <label for="unit_type" class="required">Unit type</label>
                                 <div class="input-group" id="new_order_unit_type">
                                     <select class="form-select" name="unit_type">
                                         <option>Select type</option>
@@ -94,7 +94,7 @@
                     <div class="col-6 line_input">
                         <section id="brand">
                             <div id="new_order_brand_group" url="/api/v1/brands/">
-                                <label for="brand">Brand</label>
+                                <label for="brand" class="required">Brand</label>
                                 <div class="input-group" id="new_order_brand">
                                     <select class="form-select" name="brand">
                                         <option>Select brand</option>
@@ -125,7 +125,7 @@
 
                     <div class="col-6 line_input">
                         <section id="model">
-                            <label for="new_order_model">Model</label>
+                            <label for="new_order_model" class="required">Model</label>
                             <input autocomplete="off" class="form-control" type="text" id="new_order_model" name="model"
                                    placeholder="Input model">
                         </section>
@@ -137,7 +137,7 @@
                         <div class="row">
                             <div class="col-12 line_input">
                                 <section id="serial_number">
-                                    <label for="new_order_serial_number">Serial number</label>
+                                    <label for="new_order_serial_number" class="required">Serial number</label>
                                     <input autocomplete="off" class="form-control" type="text" id="new_order_serial_number"
                                            name="serial_number"
                                            placeholder="Input serial number">
@@ -194,7 +194,7 @@
         <hr>
         <div class="row">
             <div class="col-12">
-                <label for="new_order_defect">Defect description</label>
+                <label for="new_order_defect" class="required">Defect description</label>
                 <textarea class="form-control" name="defect" id="new_order_defect" rows="3"></textarea>
             </div>
         </div>

@@ -72,8 +72,6 @@ $(document).ready(function () {
             'type': unit_type_id,
         }
 
-        alert(JSON.stringify(unit_fields))
-
         let unit_options = {
 
             method: 'POST',
@@ -180,8 +178,11 @@ $(document).ready(function () {
             })
     }
 
-    async function getOrderList(search = '', elem_per_page = '&page_size=10', current_page = 'page=1') {
 
+    async function getOrderList(search = '', elementsPerPage, currentPage = 'page=1') {
+
+        let showBySelectField = $('#show_by_select')
+        let showBySelectFieldOptions = $('#show_by_select option')
 
         // search filter
         $('.form-control-dark').off().on('input', function (e) {
@@ -191,31 +192,24 @@ $(document).ready(function () {
                 search = `search=` + `${search}`;
             }
 
-            getOrderList(search);
+            getOrderList(search, elementsPerPage);
         });
+
         if (search) {
-            current_page = '';
+            currentPage = '';
         }
 
-
-        $('#pagination_bar a').off().click(function () {
-            resetPagination();
-            $(this).css('background-color', '#e3f6f5');
-            getOrderList(search = '', elem_per_page = '&page_size=' + $(this).text());
+        // shown elements count
+        showBySelectField.off().on('change', function () {
+            getOrderList(search = '', $(this).val());
         });
 
-
-        await clear().then(function () {
-            listCreate();
-        });
-
-        async function clear() {
+        async function listClear() {
             $('#order_list_page tbody *').remove();
         }
 
-
         async function listCreate() {
-            const response = await fetch(`/api/v1/orders/?` + current_page + search + elem_per_page);
+            const response = await fetch(`/api/v1/orders/?` + currentPage + search + '&page_size=' + elementsPerPage);
             let orders = await response.json();
             for (let order of orders['results']) {
                 let client_image = order.client_image.split(' ')
@@ -226,13 +220,35 @@ $(document).ready(function () {
                         <td>${client_image[2]}${client_image[3]}${client_image[4]}</td>
                         <td>${order.unit_image}</td>
                         <td>${order.defect}</td>
-                        <td>Stage none</td>
+                        <td>Stage</td>
                     </tr>`)
             }
+
+            createPaginationSize(orders.count, elementsPerPage);
             let item = $('#order_list_page');
-            hideAndShow(item);
+            await hideAndShow(item);
             releaseActions();
         }
+
+        function createPaginationSize(max, current){
+
+            showBySelectFieldOptions.each(function (){
+                $(this).remove()
+            });
+
+            showBySelectField
+                .append(`<option value="${startElementsCount}">${startElementsCount}</option>`)
+                .append(`<option value="20">20</option>`)
+                .append(`<option value="30">30</option>`)
+                .append(`<option value="40">40</option>`)
+                .append(`<option value="50">50</option>`)
+                .append(`<option value="${max}">All</option>`);
+            showBySelectField.val(current);
+        }
+
+        await listClear().then(async function () {
+            await listCreate();
+        });
     }
 
 
@@ -492,17 +508,12 @@ $(document).ready(function () {
 
     async function getPaymentList() {
 
-        let item = $('#payments_page');
-        hideAndShow(item);
-
-        // holdActions();
-
-        function clear() {
+        function paymentsClear() {
             $('#payments_list tbody *').remove();
             $('#payments_list_summary span *').remove();
         }
 
-        clear();
+        paymentsClear();
 
 
         const response = await fetch(`/api/v1/payments/`);
@@ -573,6 +584,7 @@ $(document).ready(function () {
     let newOrderDiscardButton = $('#discard_new_order');
 
     let getOrder = $('#orders');
+    let getOrdersList = $('#orders_list_link a');
 
     let getPaymentsList = $('#payments a');
 
@@ -583,16 +595,24 @@ $(document).ready(function () {
     let newOrderSaveButton = $('#create_order');
 
 
-    getOrder.on('click', 'a', function (e) {
-
+    getOrder.off().on('click', 'a', async function (e) {
         e.preventDefault();
         let order_id = $(this).text();
         let item = $('#order_detail');
 
+        await getOrderDetail(order_id);
         hideAndShow(item);
-        getOrderDetail(order_id).then(function () {
-        });
     });
+
+    getOrder.on('dblclick', 'tr', async function (e) {
+        e.preventDefault();
+        let order_id = $(this).find('a').text();
+        let item = $('#order_detail');
+
+        await getOrderDetail(order_id);
+        hideAndShow(item);
+    })
+
 
     newOrderButton.off().on('click', async function () {
 
@@ -606,7 +626,6 @@ $(document).ready(function () {
 
         await createConditionsField('#new_order_conditions_field', '/api/v1/unit-conditions/').then();
 
-
         let item = $('#new_order_page');
         hideAndShow(item);
         holdActions();
@@ -619,15 +638,18 @@ $(document).ready(function () {
     });
 
 
-    getPaymentsList.click(function () {
-        getPaymentList().then();
+    getPaymentsList.click(async function () {
+        let item = $('#payments_page');
+        await getPaymentList();
+
+        hideAndShow(item);
     });
 
-    $('#orders_list_link a').on('click', function () {
+    getOrdersList.off().on('click', async function () {
         let item = $('#order_list_page');
+        await resetPagination();
+        await getOrderList();
         hideAndShow(item);
-        resetPagination();
-        getOrderList().then();
 
     });
 
@@ -766,7 +788,7 @@ $(document).ready(function () {
 
     function holdActions() {
 
-        staticContent.fadeTo(100, 0.7).css('pointer-events', 'none');
+        staticContent.fadeTo(100, 0.5).css('pointer-events', 'none');
         staticContent.parent().css('background', 'black');
     }
 
@@ -775,11 +797,6 @@ $(document).ready(function () {
         staticContent.css('pointer-events', 'auto').fadeTo(100, 1);
     }
 
-    function resetPagination() {
-        $('#pagination_bar a').each(function () {
-            $(this).css('background-color', 'white');
-        });
-    }
 
     function resetNewOrder() {
         $('#new_order_form').each(function () {
@@ -814,10 +831,9 @@ $(document).ready(function () {
     });
 
     function hideAndShow(item = NaN) {
-
         $('.dynamic_content').prop('hidden', true).hide();
-        item.prop('hidden', false).fadeIn(140);
         removeErrors();
+        item.prop('hidden', false).fadeIn(100);
     }
 
     function removeErrors() {
@@ -828,7 +844,16 @@ $(document).ready(function () {
         });
     }
 
-    getOrderList();
+    function listElementCount(val = screen.width) {
+        if (val < 1920) {
+            return '10'
+        }
+        return '18'
+    }
+
+    let startElementsCount = listElementCount()
+
+    getOrderList('', startElementsCount).then();
 
 });
 

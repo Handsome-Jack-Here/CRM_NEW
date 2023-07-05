@@ -1,20 +1,31 @@
 <div id="order_detail" class="dynamic_content" hidden="">
     <div class="row">
-        <div class="col-6">
-            <div class="row">
-                <div class="col-6">
-                    <h3 id="order_detail_number">
-                        <span id="order_id"> </span>
-                    </h3>
-                </div>
-                <div class="col-6">
-                    <div class="time_field">
-                        Created at: <span id="creation_date"> </span> <span id="creation_time"> | </span>
-                        <br>
-                        Updated at: <span id="update_date"> </span> <span id="update_time"> | </span>
-                    </div>
+        <div class="row sticky-top sticky_header" style="padding-top: 10px;">
+
+            <div class="col-2 d-flex">
+                <h3 id="order_detail_number">
+                    <span id="order_id"> </span>
+                </h3>
+            </div>
+            <div class="col-7">
+                <div>
+                    <button class="btn btn-primary stage_buttons">Diagnostic</button>
+                    <button class="btn btn-warning stage_buttons">Diagnostic done</button>
+                    <button class="btn btn-info stage_buttons">Repair</button>
+                    <button class="btn btn-success stage_buttons">Repair complete</button>
+                    <button class="btn btn-secondary stage_buttons">Complete</button>
+                    <button class="btn btn-danger stage_buttons">Fail</button>
                 </div>
             </div>
+            <div class="col-3 d-flex justify-content-end">
+                <div class="time_field">
+                    Created at: <span id="creation_date"> </span> <span id="creation_time"> | </span>
+                    <br>
+                    Updated at: <span id="update_date"> </span> <span id="update_time"> | </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
 
 
             <div id="client_edit_form">
@@ -59,7 +70,7 @@
                                             <select class="form-select" name="order_detail_brand">
                                                 <option>Select brand</option>
                                             </select>
-                                            <button type="button" class="btn btn-primary add_new_select_item">
+                                            <button type="button" class="btn btn-outline-primary add_new_select_item">
                                                 Add new
                                             </button>
                                         </div>
@@ -103,7 +114,7 @@
                                 <select class="form-select" name="order_detail_unit_type">
                                     <option>Select type</option>
                                 </select>
-                                <button type="button" class="btn btn-primary add_new_select_item">
+                                <button type="button" class="btn btn-outline-primary add_new_select_item">
                                     Add new
                                 </button>
                             </div>
@@ -151,20 +162,13 @@
                 <button id="discard" type="button" class="btn btn-danger">Discard</button>
             </div>
         </div>
-        <div style="height: 60px; background: white" class="col-6">
-            <div>
-                <button class="btn btn-primary stage_buttons">Diagnostic</button>
-                <button class="btn btn-warning stage_buttons">Diagnostic done</button>
-                <button class="btn btn-info stage_buttons">Repair</button>
-                <button class="btn btn-success stage_buttons">Repair complete</button>
-                <button class="btn btn-secondary stage_buttons">Complete</button>
-                <button class="btn btn-danger stage_buttons">Fail</button>
-            </div>
 
-            <div class="row" style="border: solid rgba(0,0,0,0.14) 1px; border-radius: 6px; margin-top: 23px">
+        <div id="snp_section" class="col-6" style="background: white">
+            <label for="">Services and parts</label>
+            <div class="row" style="border: solid rgba(255,255,255,0.14) 1px; border-radius: 3px;">
 
                 <div class="col-12 order_detail_services_and_parts_field">
-                    <table id="snp" class="table table-sm ">
+                    <table id="snp" class="table table-sm table-hover ">
                         <thead>
                         <tr>
                             <th id="sp_id_header">ID</th>
@@ -207,7 +211,7 @@
                             </select>
 
                             <button style="width: 80px" id="add_sp_button" class="btn btn-primary"
-                                    type="button">Create
+                                    type="button">Add
                             </button>
                         </form>
                         <div class="row-12">
