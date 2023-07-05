@@ -121,7 +121,7 @@ $(document).ready(function () {
     async function saveOrder(order_num, client_num, unit_num) {
         $('#order_detail').attr('hidden', true);
 
-        let order = {
+        let data = {
             'defect': $('#defect').val(),
             'diagnostic_result': $('#diagnostic_result').val(),
             'required_works': $('#required_works').val(),
@@ -139,52 +139,59 @@ $(document).ready(function () {
                 "Content-Type": "application/json",
                 'X-CSRFToken': csrftoken,
             },
-            body: JSON.stringify(order)
+            body: JSON.stringify(data)
         }
 
 
-        await fetch(`/api/v1/clients/${client_num}/`, options)
-            .then(async function () { // model save
-                order["name"] = $('#model').val();
-                options.body = JSON.stringify(order);
-                options.method = 'POST';
+        const clientRequest = await fetch(`/api/v1/clients/${client_num}/`, options);
+        const clientResponse = await clientRequest.json();
+        let clientId = JSON.stringify(clientResponse.id);
+        if (client_num !== clientId) {
+            data['client'] = clientId;
+            options.body = JSON.stringify(data);
+            options.method = 'PATCH';
+            await fetch(`/api/v1/orders/${order_num}/`, options);
+        }
 
-                const model_response = await fetch(`/api/v1/models/`, options);
-                const model_data = await model_response.json();
+        data["name"] = $('#model').val();
+        options.body = JSON.stringify(data);
+        options.method = 'POST';
 
-                order['model'] = model_data.id;
-                options.body = JSON.stringify(order);
-                options.method = 'PATCH';
+        const model_response = await fetch(`/api/v1/models/`, options);
+        const model_data = await model_response.json();
 
-                await fetch(`/api/v1/units/${unit_num}/`, options);
-            })
-            .then(async function () { // brand save
-                order["name"] = $('#brand').val();
-                options.body = JSON.stringify(order);
-                options.method = 'POST';
+        data['model'] = model_data.id;
+        options.body = JSON.stringify(data);
+        options.method = 'PATCH';
 
-                const brand_response = await fetch(`/api/v1/brands/`, options);
-                const brand_data = await brand_response.json();
+        await fetch(`/api/v1/units/${unit_num}/`, options);
 
-                order['brand'] = brand_data.id;
-                options.body = JSON.stringify(order);
-                options.method = 'PATCH';
 
-                await fetch(`/api/v1/units/${unit_num}/`, options);
-            })
-            .then(async function () { // order save
-                options.method = 'PATCH'
-                await fetch(`/api/v1/orders/${order_num}/`, options)
-            })
+        data["name"] = $('#brand').val();
+        options.body = JSON.stringify(data);
+        options.method = 'POST';
+
+        const brand_response = await fetch(`/api/v1/brands/`, options);
+        const brand_data = await brand_response.json();
+
+        data['brand'] = brand_data.id;
+        options.body = JSON.stringify(data);
+        options.method = 'PATCH';
+
+        await fetch(`/api/v1/units/${unit_num}/`, options);
+
+
+        options.method = 'PATCH'
+        await fetch(`/api/v1/orders/${order_num}/`, options)
+
     }
 
 
-    async function getOrderList(search = '', elementsPerPage=lastPagesCount, currentPage = 'page=1') {
+    async function getOrderList(search = '', elementsPerPage = lastPagesCount, currentPage = 'page=1') {
 
 
         let showBySelectField = $('#show_by_select')
         let showBySelectFieldOptions = $('#show_by_select option')
-
 
 
         // search filter
@@ -205,7 +212,6 @@ $(document).ready(function () {
         showBySelectField.off().on('change', function () {
             getOrderList(search = '', $(this).val());
         });
-
 
 
         async function listCreate() {
@@ -230,8 +236,8 @@ $(document).ready(function () {
             releaseActions();
         }
 
-        function createPaginationSize(max, current){
-            showBySelectFieldOptions.each(function (){
+        function createPaginationSize(max, current) {
+            showBySelectFieldOptions.each(function () {
                 $(this).remove()
             });
 
@@ -847,7 +853,7 @@ $(document).ready(function () {
         });
     }
 
-     function listElementCount(val = screen.width) {
+    function listElementCount(val = screen.width) {
         if (val < 1920) {
             return '11'
         }
