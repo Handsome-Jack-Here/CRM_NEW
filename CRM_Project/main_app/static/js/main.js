@@ -129,12 +129,13 @@ $(document).ready(function () {
             'first_name': $('#first_name').val(),
             'last_name': $('#last_name').val(),
             'phone': $('#phone_number').val(),
+            'mail': $('#email').val(),
 
             'serial_number': $('#serial_number').val(),
 
         }
         let options = {
-            method: 'PATCH',
+            method: 'POST',
             headers: {
                 "Content-Type": "application/json",
                 'X-CSRFToken': csrftoken,
@@ -143,15 +144,13 @@ $(document).ready(function () {
         }
 
 
-        const clientRequest = await fetch(`/api/v1/clients/${client_num}/`, options);
+        const clientRequest = await fetch(`/api/v1/clients/`, options);
         const clientResponse = await clientRequest.json();
-        let clientId = JSON.stringify(clientResponse.id);
-        if (client_num !== clientId) {
-            data['client'] = clientId;
-            options.body = JSON.stringify(data);
-            options.method = 'PATCH';
-            await fetch(`/api/v1/orders/${order_num}/`, options);
-        }
+        data['client'] = JSON.stringify(clientResponse.id);
+        options.body = JSON.stringify(data);
+        options.method = 'PATCH';
+        await fetch(`/api/v1/orders/${order_num}/`, options);
+
 
         data["name"] = $('#model').val();
         options.body = JSON.stringify(data);
@@ -181,8 +180,8 @@ $(document).ready(function () {
         await fetch(`/api/v1/units/${unit_num}/`, options);
 
 
-        options.method = 'PATCH'
-        await fetch(`/api/v1/orders/${order_num}/`, options)
+        options.method = 'PATCH';
+        await fetch(`/api/v1/orders/${order_num}/`, options);
 
     }
 

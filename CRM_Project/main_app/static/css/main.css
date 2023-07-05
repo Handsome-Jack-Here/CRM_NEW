@@ -182,5 +182,6 @@ label {
 
 .sticky-top {
     z-index: 3;
-    /*padding-top: 10px;*/
+    margin-right: 0;
+    padding-right: 4px;
 }
