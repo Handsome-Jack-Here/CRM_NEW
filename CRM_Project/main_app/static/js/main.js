@@ -8,6 +8,7 @@ $(document).ready(function () {
     let hashGlobal = []
     let pageItem = null;
     const staticContent = $('.static_content');
+    const savePage = 'save_page'
 
 
     const newOrderButton = $('#new_order_button');
@@ -25,6 +26,9 @@ $(document).ready(function () {
     const getPaymentsList = $('#payments a');
     const paymentAddButton = $('#add_payment');
     const paymentExpenseButton = $('#expense');
+
+    const returnToEditButton = $('#return_to_edit');
+    const discardChangesButton = $('#discard_changes')
 
     async function newOrderSave() {
 
@@ -57,7 +61,6 @@ $(document).ready(function () {
 
         let brand_id = $('#new_order_brand').find(":selected").val();
         let unit_type_id = $('#new_order_unit_type').find(":selected").val();
-        // alert(unit_type_id)
 
 
         // model
@@ -504,28 +507,25 @@ $(document).ready(function () {
 
 
         orderDetailCloseButton.off().on('click', async function () {
-
             let checked = await hashCheck(pageItem);
-
             if (checked === false) {
-                pageItem = 'save_page';
-                hideAndShow(pageItem);
-
-                $('#return').off().on('click', function () {
-                    pageItem = 'order_detail';
-                    hideAndShow(pageItem);
-
-                });
-
-                $('#cancel').off().on('click', function () {
-                    getOrderList();
-                });
+                hideAndShow(savePage);
 
             } else {
                 getOrderList().then();
             }
-        })
+        });
     }
+
+    returnToEditButton.off().on('click', function () {
+        hideAndShow(pageItem);
+
+    });
+
+    discardChangesButton.off().on('click', function () {
+        resetNewOrder();
+        getOrderList().then();
+    });
 
 
     async function getPaymentList() {
@@ -642,9 +642,14 @@ $(document).ready(function () {
 
 
     newOrderDiscardButton.off().on('click', async function () {
-        await hashCheck(pageItem);
-        resetNewOrder();
-        getOrderList().then();
+        let checked = await hashCheck(pageItem);
+        if (checked === false) {
+            hideAndShow(savePage);
+        } else {
+            resetNewOrder();
+            getOrderList().then();
+        }
+
     });
 
     newOrderSaveButton.off().on('click', async function () {
@@ -839,10 +844,10 @@ $(document).ready(function () {
         }
     }
 
-    function hideAndShow(itSelf) {
+    function hideAndShow(pageIdName) {
         $('.dynamic_content').prop('hidden', true).hide();
         removeErrors();
-        $('#' + itSelf).prop('hidden', false).fadeIn(100);
+        $('#' + pageIdName).prop('hidden', false).fadeIn(100);
     }
 
     function removeErrors() {
