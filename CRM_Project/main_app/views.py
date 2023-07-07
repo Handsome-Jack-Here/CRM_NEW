@@ -105,7 +105,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = User.objects.get(id=self.request.user.id)
-        return user.payments.all()
+        return user.payments.all().order_by('-created')
 
     serializer_class = PaymentListSerializer
     permission_classes = (permissions.IsAuthenticated,)

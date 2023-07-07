@@ -5,9 +5,28 @@ $(document).ready(function () {
 
     const csrftoken = getCookie('csrftoken');
 
+    let hashGlobal = []
+    let pageItem = null;
+    const staticContent = $('.static_content');
+
+
+    const newOrderButton = $('#new_order_button');
+    const newOrderDiscardButton = $('#discard_new_order');
+
+    const getOrder = $('#orders');
+    const getOrdersList = $('#orders_list_link a');
+
+    const addNewSelectItemButton = $('.add_new_select_item');
+    const newOrderAddNewDiscardButton = $('.add_discard');
+    const newOrderAddNewSaveButton = $('.save_new_item');
+
+    const newOrderSaveButton = $('#create_order');
+
+    const getPaymentsList = $('#payments a');
+    const paymentAddButton = $('#add_payment');
+    const paymentExpenseButton = $('#expense');
 
     async function newOrderSave() {
-
 
         // client
         let client_fields = {
@@ -230,8 +249,8 @@ $(document).ready(function () {
             }
 
             createPaginationSize(orders.count, elementsPerPage);
-            let item = $('#order_list_page');
-            await hideAndShow(item);
+            pageItem = 'order_list_page'
+            hideAndShow(pageItem);
             releaseActions();
         }
 
@@ -262,6 +281,9 @@ $(document).ready(function () {
 
 
     async function getOrderDetail(order_id) {
+
+        let orderDetailCloseButton = $('#order_detail_close');
+        let orderDetailSaveButton = $('#order_detail_save');
 
         holdActions();
         await newSpFormShow();
@@ -462,9 +484,6 @@ $(document).ready(function () {
             }
         }
 
-
-        $('.text-end').hide();
-
         $('.time_field span').empty();
         $('#creation_date').append(order.created.slice(0, 10));
         $('#creation_time').append(order.created.slice(11, 16));
@@ -472,14 +491,10 @@ $(document).ready(function () {
         $('#update_time').append(order.edited.slice(11, 16));
 
 
-        let hash = [];
-
-        $('#order_detail *').each(function () {
-            hash += $(this).val();
-        });
+        hashGlobal = await getPageHash(pageItem);
 
 
-        $('#save').off().on('click', async function (e) {
+        orderDetailSaveButton.off().on('click', async function (e) {
             e.preventDefault();
             saveOrder(order_id, order.client, order.unit)
                 .then(function () {
@@ -487,29 +502,27 @@ $(document).ready(function () {
                 });
         });
 
-        $('#discard').off().on('click', function () {
-            let current = [];
 
-            $('#order_detail *').each(function () {
-                current += $(this).val();
-            })
+        orderDetailCloseButton.off().on('click', async function () {
 
-            if (hash !== current) {
-                let item = $('#save_page, #save_page *');
-                hideAndShow(item);
+            let checked = await hashCheck(pageItem);
+
+            if (checked === false) {
+                pageItem = 'save_page';
+                hideAndShow(pageItem);
 
                 $('#return').off().on('click', function () {
-                    let item = $('#order_detail');
-                    hideAndShow(item);
+                    pageItem = 'order_detail';
+                    hideAndShow(pageItem);
 
-                })
+                });
 
                 $('#cancel').off().on('click', function () {
                     getOrderList();
-                })
+                });
 
             } else {
-                getOrderList();
+                getOrderList().then();
             }
         })
     }
@@ -577,8 +590,8 @@ $(document).ready(function () {
             $('#new_payment_form').each(function () {
                 this.reset();
             })
-            let item = $('#payments_page');
-            hideAndShow(item);
+            pageItem = 'payments_page';
+            hideAndShow(pageItem);
 
             getPaymentList();
 
@@ -587,39 +600,23 @@ $(document).ready(function () {
         }
     }
 
-    let staticContent = $('.static_content');
-
-    let newOrderButton = $('#new_order_button');
-    let newOrderDiscardButton = $('#discard_new_order');
-
-    let getOrder = $('#orders');
-    let getOrdersList = $('#orders_list_link a');
-
-    let getPaymentsList = $('#payments a');
-
-    let addNewSelectItemButton = $('.add_new_select_item');
-    let newOrderAddNewDiscardButton = $('.add_discard');
-    let newOrderAddNewSaveButton = $('.save_new_item');
-
-    let newOrderSaveButton = $('#create_order');
-
 
     getOrder.off().on('click', 'a', async function (e) {
         e.preventDefault();
         let order_id = $(this).text();
-        let item = $('#order_detail');
+        pageItem = 'order_detail';
 
         await getOrderDetail(order_id);
-        hideAndShow(item);
+        hideAndShow(pageItem);
     });
 
     getOrder.on('dblclick', 'tr', async function (e) {
         e.preventDefault();
         let order_id = $(this).find('a').text();
-        let item = $('#order_detail');
+        pageItem = 'order_detail';
 
         await getOrderDetail(order_id);
-        hideAndShow(item);
+        hideAndShow(pageItem);
     })
 
 
@@ -627,44 +624,55 @@ $(document).ready(function () {
 
         let url = '/api/v1/unit-types/';
         let selectElementId = '#new_order_unit_type';
-        createSelectField(url, selectElementId).then();
+        await createSelectField(url, selectElementId).then();
 
         url = '/api/v1/brands/';
         selectElementId = '#new_order_brand';
-        createSelectField(url, selectElementId).then();
+        await createSelectField(url, selectElementId).then();
 
         await createConditionsField('#new_order_conditions_field', '/api/v1/unit-conditions/').then();
 
-        let item = $('#new_order_page');
-        hideAndShow(item);
+        pageItem = 'new_order_page';
+
+        hideAndShow(pageItem);
+        hashGlobal = await getPageHash(pageItem);
+
         holdActions();
     });
 
 
-    newOrderDiscardButton.off().on('click', function () {
+    newOrderDiscardButton.off().on('click', async function () {
+        await hashCheck(pageItem);
         resetNewOrder();
         getOrderList().then();
     });
 
+    newOrderSaveButton.off().on('click', async function () {
+        validator();
+        if ($('#new_order_form').valid()) {
+            await newOrderSave().then();
+        }
+    });
+
 
     getPaymentsList.click(async function () {
-        let item = $('#payments_page');
+        pageItem = 'payments_page';
         await getPaymentList();
 
-        hideAndShow(item);
+        hideAndShow(pageItem);
     });
 
     getOrdersList.off().on('click', async function () {
-        let item = $('#order_list_page');
+        pageItem = 'order_list_page';
         await getOrderList('', startElementsCount);
-        hideAndShow(item);
+        hideAndShow(pageItem);
 
     });
 
 
-    $('#add_payment').off().on('click', function () {
-        let item = $('#add_payment_page');
-        hideAndShow(item);
+    paymentAddButton.off().on('click', function () {
+        pageItem = 'add_payment_page';
+        hideAndShow(pageItem);
         $('#payment_value_error p').remove();
 
         $('#payment_discard').off().on('click', function () {
@@ -679,9 +687,9 @@ $(document).ready(function () {
         });
     });
 
-    $('#expense').off().on('click', function () {
-        let item = $('#add_payment_page');
-        hideAndShow(item);
+    paymentExpenseButton.off().on('click', function () {
+        pageItem = 'add_payment_page';
+        hideAndShow(pageItem);
         $('#payment_value_error p').remove()
 
         $('#payment_discard').off().on('click', function () {
@@ -698,12 +706,16 @@ $(document).ready(function () {
 
 
     addNewSelectItemButton.off().on('click', function () {
+
         let focused = true
         let url = $(this).parent().parent().attr('url');
         let sectionIdName = $(this).closest('section').attr('id');
         let selectItself = '#' + $(this).parent().parent().attr('id');
         let inputItself = '#' + $(selectItself).next().attr('id');
         let inputValueSelector = inputItself + ' :input';
+
+        $('.dynamic_content *').not($(inputItself + ' *')).prop('disabled', true);
+
         hideAndShowSelectGroup(selectItself, inputItself, selectItself).then($(inputValueSelector).val(''));
 
 
@@ -734,7 +746,6 @@ $(document).ready(function () {
 
     async function createSelectField(url, selectElementId = null, selectedItemValue = null, groupHide = null, groupShow = null) {
 
-
         $(selectElementId + ' select *').each(function () {
             $(this).remove();
         });
@@ -743,8 +754,8 @@ $(document).ready(function () {
         let response = await fetch(url);
         let data = await response.json();
 
-        for (let item of data) {
-            $(selectElementId + ' select').append(`<option value="${item.id}">${item.name}</option>`);
+        for (let element of data) {
+            $(selectElementId + ' select').append(`<option value="${element.id}">${element.name}</option>`);
         }
 
         if (selectedItemValue) {
@@ -763,9 +774,7 @@ $(document).ready(function () {
     async function hideAndShowSelectGroup(toHide, toShow, instanceForShow = null) {
 
         if (instanceForShow === toShow) {
-            addNewSelectItemButton.prop('disabled', false).fadeTo(10, 1);
-        } else {
-            addNewSelectItemButton.prop('disabled', true).fadeTo(10, 0.2);
+            $('.dynamic_content *').prop('disabled', false);
         }
         $(toHide).prop('hidden', true);
         $(toShow).prop('hidden', false);
@@ -830,18 +839,10 @@ $(document).ready(function () {
         }
     }
 
-
-    newOrderSaveButton.off().on('click', async function () {
-        validator();
-        if ($('#new_order_form').valid()) {
-            await newOrderSave().then();
-        }
-    });
-
-    function hideAndShow(item = NaN) {
+    function hideAndShow(itSelf) {
         $('.dynamic_content').prop('hidden', true).hide();
         removeErrors();
-        item.prop('hidden', false).fadeIn(100);
+        $('#' + itSelf).prop('hidden', false).fadeIn(100);
     }
 
     function removeErrors() {
@@ -854,9 +855,25 @@ $(document).ready(function () {
 
     function listElementCount(val = screen.width) {
         if (val < 1920) {
-            return '11'
+            return '11';
         }
-        return '18'
+        return '18';
+    }
+
+    async function getPageHash(pageSelectorName) {
+        let result = [];
+        $('#' + pageSelectorName + ' *').each(function () {
+            result += $(this).val();
+        });
+        return result;
+    }
+
+    async function hashCheck(pageSelectorName) {
+        let result = [];
+        $('#' + pageSelectorName + ' *').each(function () {
+            result += $(this).val();
+        });
+        return hashGlobal === result;
     }
 
     let lastPagesCount = null;
