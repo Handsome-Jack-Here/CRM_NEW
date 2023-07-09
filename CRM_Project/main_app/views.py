@@ -1,7 +1,3 @@
-import rest_framework.pagination
-from django.shortcuts import render
-from django.views import View
-from django.views.generic import ListView
 from rest_framework import viewsets
 from .serializers import OrderListSerializer, ClientListSerializer, UnitListSerializer, BrandListSerializer, \
     ModelListSerializer, PaymentListSerializer, ServiceAndPartListSerializer, UnitTypeSerializer, \
@@ -27,9 +23,9 @@ class OrderPagination(PageNumberPagination):
             self.page_size = request.POST['page_size']
             return self.page_size
 
-    page_size = 2
+    page_size = 7
     page_size_query_param = 'page_size'
-    max_page_size = 40
+    # max_page_size = 40
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -38,9 +34,9 @@ class OrderViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = User.objects.get(id=self.request.user.id)
         for order in user.orders.all():
-            client_actual = f'{order.client.first_name} {order.client.last_name} {order.client.phone}'
+            client_actual = f'{order.client.first_name} {order.client.last_name} {order.client.phone} {order.client.mail}'
             client_image = order.client_image
-            unit_actual = f'{order.unit.brand} {order.unit.model}'
+            unit_actual = f'{order.unit.brand} {order.unit.model} {order.unit.serial_number}'
             unit_image = order.unit_image
 
             if client_image != client_actual:
@@ -49,11 +45,11 @@ class OrderViewSet(viewsets.ModelViewSet):
             if unit_image != unit_actual:
                 order.unit_image = unit_actual
                 order.save()
-        return user.orders.all().order_by('-order_id')
+        return user.orders.all()
 
     serializer_class = OrderListSerializer
     filter_backends = (SearchFilter, OrderingFilter)
-    search_fields = ['defect', 'order_id', 'client_image', 'unit_image']
+    search_fields = ['$defect', '=order_id', '$client_image', '$unit_image', '$client__mail']
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = OrderPagination
 
@@ -65,7 +61,7 @@ class ClientViewSet(viewsets.ModelViewSet):
         return user.clients.all()
 
     filter_backends = (SearchFilter, OrderingFilter)
-    search_fields = ['first_name', 'last_name', 'phone', 'address', ]
+    search_fields = ['first_name', 'last_name', 'client_image', 'phone', 'unit_image', ]
 
     serializer_class = ClientListSerializer
     permission_classes = (permissions.IsAuthenticated,)

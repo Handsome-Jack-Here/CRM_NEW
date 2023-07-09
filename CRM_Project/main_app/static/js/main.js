@@ -188,14 +188,8 @@ $(document).ready(function () {
         await fetch(`/api/v1/units/${unit_num}/`, options);
 
 
-        data["name"] = $('#brand').val();
-        options.body = JSON.stringify(data);
-        options.method = 'POST';
-
-        const brand_response = await fetch(`/api/v1/brands/`, options);
-        const brand_data = await brand_response.json();
-
-        data['brand'] = brand_data.id;
+        data['brand'] = $('#order_detail_brand').find(':selected').val();
+        data['type'] = $('#order_detail_unit_type').find(':selected').val();
         options.body = JSON.stringify(data);
         options.method = 'PATCH';
 
@@ -236,7 +230,7 @@ $(document).ready(function () {
 
 
         async function listCreate() {
-            const response = await fetch(`/api/v1/orders/?` + currentPage + search + '&page_size=' + elementsPerPage);
+            const response = await fetch(`/api/v1/orders/?` + currentPage + search + '&page_size=' + elementsPerPage + '&ordering=-order_id');
             let orders = await response.json();
             for (let order of orders['results']) {
                 let client_image = order.client_image.split(' ')
@@ -247,7 +241,7 @@ $(document).ready(function () {
                         <td>${client_image[2]}${client_image[3]}${client_image[4]}</td>
                         <td>${order.unit_image}</td>
                         <td>${order.defect}</td>
-                        <td>Stage</td>
+                        <td><button type="button" class="btn btn-warning btn-sm btn-close-white">Stage</button></td>
                     </tr>`)
             }
 
@@ -860,9 +854,9 @@ $(document).ready(function () {
 
     function listElementCount(val = screen.width) {
         if (val < 1920) {
-            return '11';
+            return '9';
         }
-        return '18';
+        return '16';
     }
 
     async function getPageHash(pageSelectorName) {
