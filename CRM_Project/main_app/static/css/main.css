@@ -188,7 +188,7 @@ label {
 
 .table-striped>tbody>tr:nth-child(odd)>td,
 .table-striped>tbody>tr:nth-child(odd)>th {
-   background-color: rgba(199, 207, 229, 0.14);
+   background-color: rgb(231, 241, 251);
  }
 
 .btn {

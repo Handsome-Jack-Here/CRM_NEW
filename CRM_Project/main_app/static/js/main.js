@@ -206,17 +206,14 @@ $(document).ready(function () {
 
 
         $('.sort_by_order_id').off().on('click', async function () {
-            ordering = $(this).attr('val')
-            $(this).parent().find(':hidden').prop('hidden', false)
-            $(this).prop('hidden', true)
-            await getOrderList(search, lastPagesCount, currentPage, ordering)
+            ordering = $(this).attr('val');
+            $(this).parent().find(':hidden').prop('hidden', false);
+            $(this).prop('hidden', true);
+            await getOrderList(search, lastPagesCount, currentPage, ordering);
         })
-
 
         let showBySelectField = $('#show_by_select')
         let showBySelectFieldOptions = $('#show_by_select option')
-
-
 
         // search filter
         $('.form-control-dark').off().on('input', function (e) {
@@ -235,7 +232,7 @@ $(document).ready(function () {
 
         // shown elements count
         showBySelectField.off().on('change', function () {
-            getOrderList(search, $(this).val());
+            getOrderList(search, $(this).val(), currentPage, ordering);
         });
 
 
