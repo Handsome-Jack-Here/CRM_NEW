@@ -202,11 +202,20 @@ $(document).ready(function () {
     }
 
 
-    async function getOrderList(search = '', elementsPerPage = lastPagesCount, currentPage = 'page=1') {
+    async function getOrderList(search = '', elementsPerPage = lastPagesCount, currentPage = '&page=1', ordering='&ordering=-order_id') {
+
+
+        $('.sort_by_order_id').off().on('click', async function () {
+            ordering = $(this).attr('val')
+            $(this).parent().find(':hidden').prop('hidden', false)
+            $(this).prop('hidden', true)
+            await getOrderList(search, lastPagesCount, currentPage, ordering)
+        })
 
 
         let showBySelectField = $('#show_by_select')
         let showBySelectFieldOptions = $('#show_by_select option')
+
 
 
         // search filter
@@ -219,18 +228,19 @@ $(document).ready(function () {
 
             getOrderList(search, lastPagesCount);
         });
+        //globalize search
         if (search) {
             currentPage = '';
         }
 
         // shown elements count
         showBySelectField.off().on('change', function () {
-            getOrderList(search = '', $(this).val());
+            getOrderList(search, $(this).val());
         });
 
 
         async function listCreate() {
-            const response = await fetch(`/api/v1/orders/?` + currentPage + search + '&page_size=' + elementsPerPage + '&ordering=-order_id');
+            const response = await fetch(`/api/v1/orders/?`  + search + '&page_size=' + elementsPerPage + ordering + currentPage);
             let orders = await response.json();
             for (let order of orders['results']) {
                 let client_image = order.client_image.split(' ')
@@ -841,7 +851,7 @@ $(document).ready(function () {
     function hideAndShow(pageIdName) {
         $('.dynamic_content').prop('hidden', true).hide();
         removeErrors();
-        $('#' + pageIdName).prop('hidden', false).fadeIn(100);
+        $('#' + pageIdName).prop('hidden', false).fadeIn(40);
     }
 
     function removeErrors() {
