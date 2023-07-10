@@ -38,10 +38,13 @@
 
                 <thead style="position: sticky; top: 142px; z-index: 2; box-shadow: 0 4px 4px -2px rgba(7,105,177,0.5);">
                 <tr>
-                    <th style="width: 40px" scope="col"># <img src="{% static 'img/sort-numeric-down.svg' %}" alt=""
-                                           class="sort_by sort_by_order_id " val="&ordering=-order_id" hidden>
-                        <img src="{% static 'img/sort-numeric-down-alt.svg' %}" alt="" class="sort_by sort_by_order_id"
-                             val="&ordering=order_id"></th>
+                    <th style="width: 40px" scope="col" id="">#
+
+                        <img src="{% static 'img/sort-numeric-down-alt.svg' %}" alt="" class="sort_by sort_by_order_id sort_by_order_id_default"
+                                            val="&ordering=-order_id" >
+                        <img src="{% static 'img/sort-numeric-down.svg' %}" alt="" class="sort_by sort_by_order_id"
+                             val="&ordering=order_id" hidden></th>
+
                     <th style="width: 75px" scope="col">Client</th>
                     <th style="width: 96px" scope="col">Contact</th>
                     <th style="width: 110px" scope="col">Unit</th>

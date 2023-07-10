@@ -140,7 +140,7 @@ $(document).ready(function () {
         }
     }
 
-    async function saveOrder(order_num, client_num, unit_num) {
+    async function saveOrder(order_num) {
         $('#order_detail').attr('hidden', true);
 
         let data = {
@@ -152,8 +152,6 @@ $(document).ready(function () {
             'last_name': $('#last_name').val(),
             'phone': $('#phone_number').val(),
             'mail': $('#email').val(),
-
-            'serial_number': $('#serial_number').val(),
 
         }
         let options = {
@@ -171,6 +169,7 @@ $(document).ready(function () {
         data['client'] = JSON.stringify(clientResponse.id);
         options.body = JSON.stringify(data);
         options.method = 'PATCH';
+
         await fetch(`/api/v1/orders/${order_num}/`, options);
 
 
@@ -182,38 +181,40 @@ $(document).ready(function () {
         const model_data = await model_response.json();
 
         data['model'] = model_data.id;
-        options.body = JSON.stringify(data);
-        options.method = 'PATCH';
-
-        await fetch(`/api/v1/units/${unit_num}/`, options);
-
-
         data['brand'] = $('#order_detail_brand').find(':selected').val();
         data['type'] = $('#order_detail_unit_type').find(':selected').val();
+        data['serial_number'] = $('#serial_number').val();
+        options.body = JSON.stringify(data);
+        options.method = 'POST';
+
+        const unitRequest = await fetch(`/api/v1/units/`, options);
+        const unitResponse = await unitRequest.json();
+        data['unit'] = JSON.stringify(unitResponse.id);
         options.body = JSON.stringify(data);
         options.method = 'PATCH';
 
-        await fetch(`/api/v1/units/${unit_num}/`, options);
-
-
-        options.method = 'PATCH';
         await fetch(`/api/v1/orders/${order_num}/`, options);
-
     }
 
 
-    async function getOrderList(search = '', elementsPerPage = lastPagesCount, currentPage = '&page=1', ordering='&ordering=-order_id') {
+    async function getOrderList(search = '', elementsPerPage = lastPagesCount, currentPage = '&page=1', ordering = lastOrderingState) {
+
+        let showBySelectField = $('#show_by_select');
+        let showBySelectFieldOptions = $('#show_by_select option');
 
 
         $('.sort_by_order_id').off().on('click', async function () {
-            ordering = $(this).attr('val');
+
             $(this).parent().find(':hidden').prop('hidden', false);
             $(this).prop('hidden', true);
-            await getOrderList(search, lastPagesCount, currentPage, ordering);
-        })
 
-        let showBySelectField = $('#show_by_select')
-        let showBySelectFieldOptions = $('#show_by_select option')
+            ordering = $(this).parent().find(':visible').attr('val');
+            lastOrderingState = $('.sort_by_order_id').parent().find(':visible').attr('val');
+            await getOrderList(search, lastPagesCount, currentPage, ordering);
+        });
+
+
+
 
         // search filter
         $('.form-control-dark').off().on('input', function (e) {
@@ -223,8 +224,9 @@ $(document).ready(function () {
                 search = `search=` + `${search}`;
             }
 
-            getOrderList(search, lastPagesCount);
+            getOrderList(search, lastPagesCount, currentPage, ordering);
         });
+
         //globalize search
         if (search) {
             currentPage = '';
@@ -237,10 +239,10 @@ $(document).ready(function () {
 
 
         async function listCreate() {
-            const response = await fetch(`/api/v1/orders/?`  + search + '&page_size=' + elementsPerPage + ordering + currentPage);
+            const response = await fetch(`/api/v1/orders/?` + search + '&page_size=' + elementsPerPage + ordering);
             let orders = await response.json();
             for (let order of orders['results']) {
-                let client_image = order.client_image.split(' ')
+                let client_image = order.client_image.split(' ');
                 $('#order_list_page tbody').append(
                     `<tr>
                         <td><a href="" style="text-decoration: none" ">${order.order_id}</a></td>
@@ -253,14 +255,15 @@ $(document).ready(function () {
             }
 
             createPaginationSize(orders.count, elementsPerPage);
-            pageItem = 'order_list_page'
+
+            pageItem = 'order_list_page';
             hideAndShow(pageItem);
             releaseActions();
         }
 
         function createPaginationSize(max, current) {
             showBySelectFieldOptions.each(function () {
-                $(this).remove()
+                $(this).remove();
             });
 
             showBySelectField
@@ -271,7 +274,7 @@ $(document).ready(function () {
                 .append(`<option value="50">50</option>`)
                 .append(`<option value="${max}">All</option>`);
             showBySelectField.val(current);
-            lastPagesCount = current
+            lastPagesCount = current;
         }
 
         async function orderListClear() {
@@ -320,7 +323,6 @@ $(document).ready(function () {
         $('#last_name').val(client.last_name);
         $('#phone_number').val(client.phone);
 
-        $('#brand').val(brand.name);
         $('#model').val(model.name);
         $('#serial_number').val(unit.serial_number);
 
@@ -500,7 +502,7 @@ $(document).ready(function () {
 
         orderDetailSaveButton.off().on('click', async function (e) {
             e.preventDefault();
-            saveOrder(order_id, order.client, order.unit)
+            saveOrder(order_id)
                 .then(function () {
                     getOrderList();
                 });
@@ -661,7 +663,7 @@ $(document).ready(function () {
     });
 
 
-    getPaymentsList.click(async function () {
+    getPaymentsList.off().on('click', async function () {
         pageItem = 'payments_page';
         await getPaymentList();
 
@@ -669,8 +671,13 @@ $(document).ready(function () {
     });
 
     getOrdersList.off().on('click', async function () {
+
+        $('.sort_by_order_id').parent().find(':visible').prop('hidden', true);
+        $('.sort_by_order_id_default').prop('hidden', false);
+        lastOrderingState = '&ordering=-order_id';
+
         pageItem = 'order_list_page';
-        await getOrderList('', startElementsCount);
+        await getOrderList('', startElementsCount, '', lastOrderingState);
         hideAndShow(pageItem);
 
     });
@@ -883,6 +890,7 @@ $(document).ready(function () {
     }
 
     let lastPagesCount = null;
+    let lastOrderingState = $('.sort_by_order_id').parent().find(':visible').attr('val')
     let startElementsCount = listElementCount();
 
 

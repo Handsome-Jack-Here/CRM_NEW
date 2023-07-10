@@ -71,8 +71,8 @@ class Unit(models.Model):
     condition = models.ManyToManyField('UnitCondition',  blank=True, related_name='units')
 
     def save(self, *args, **kwargs):
-        if self.user.units.filter(brand=self.brand, model=self.model, serial_number=self.serial_number):
-            unit = self.user.units.get(brand=self.brand, model=self.model, serial_number=self.serial_number)
+        if self.user.units.filter(type=self.type, brand=self.brand, model=self.model, serial_number=self.serial_number):
+            unit = self.user.units.get(type=self.type, brand=self.brand, model=self.model, serial_number=self.serial_number)
             self.pk = unit.pk
             return unit
         else:
