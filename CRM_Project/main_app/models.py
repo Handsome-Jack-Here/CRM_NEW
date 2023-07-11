@@ -6,15 +6,15 @@ User = get_user_model()
 
 class Order(models.Model):
     order_id = models.IntegerField(null=True, blank=True)
-    defect = models.CharField(max_length=150)
-    diagnostic_result = models.CharField(max_length=250, blank=True)
-    required_works = models.CharField(max_length=250, blank=True)
-    client_comments = models.CharField(max_length=400, blank=True)
+    defect = models.CharField(max_length=350)
+    diagnostic_result = models.CharField(max_length=450, blank=True)
+    required_works = models.CharField(max_length=450, blank=True)
+    client_comments = models.CharField(max_length=450, blank=True)
 
     created = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
-    client_image = models.CharField(max_length=56, default='No info')
-    unit_image = models.CharField(max_length=28, default='No info')
+    client_image = models.CharField(max_length=70, default='No info')
+    unit_image = models.CharField(max_length=70, default='No info')
 
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='orders')
     client = models.ForeignKey('Client', on_delete=models.PROTECT, related_name='orders')

@@ -16,6 +16,7 @@
 }
 
 .a_general {
+    color: #0f0fb8;
     text-decoration: none;
 }
 
@@ -188,7 +189,7 @@ label {
 
 .table-striped>tbody>tr:nth-child(odd)>td,
 .table-striped>tbody>tr:nth-child(odd)>th {
-   background-color: rgb(234, 240, 245);
+   background-color: rgb(245, 247, 249);
  }
 
 .btn {

@@ -36,7 +36,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         for order in user.orders.all():
             client_actual = f'{order.client.first_name} {order.client.last_name} {order.client.phone} {order.client.mail}'
             client_image = order.client_image
-            unit_actual = f'{order.unit.brand} {order.unit.model} {order.unit.serial_number}'
+            unit_actual = f'{order.unit.brand} {order.unit.model}'
             unit_image = order.unit_image
 
             if client_image != client_actual:
@@ -49,7 +49,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     serializer_class = OrderListSerializer
     filter_backends = (SearchFilter, OrderingFilter)
-    search_fields = ['$defect', '=order_id', '$client_image', '$unit_image', '$client__mail']
+    search_fields = ['$defect', '=order_id', '$client_image', '$unit_image', '$client__mail', '$created']
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = OrderPagination
 

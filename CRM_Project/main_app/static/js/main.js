@@ -30,6 +30,9 @@ $(document).ready(function () {
     const returnToEditButton = $('#return_to_edit');
     const discardChangesButton = $('#discard_changes')
 
+    const sortableTableColClass = $('.sort_by a');
+    const sortableImgClass = $('.sort_by img');
+
     async function newOrderSave() {
 
         // client
@@ -203,17 +206,18 @@ $(document).ready(function () {
         let showBySelectFieldOptions = $('#show_by_select option');
 
 
-        $('.sort_by_order_id').off().on('click', async function () {
+        sortableTableColClass.off().on('click', async function () {
+            // Clickable sorting link creating as <th><a>Name of column</a></th>
+            $(this).parent().attr('class');
+            let self = $(this).parent().find('img:hidden:first');
 
-            $(this).parent().find(':hidden').prop('hidden', false);
-            $(this).prop('hidden', true);
+            sortableImgClass.prop('hidden', true);
+            self.prop('hidden', false);
 
-            ordering = $(this).parent().find(':visible').attr('val');
-            lastOrderingState = $('.sort_by_order_id').parent().find(':visible').attr('val');
+            ordering = self.attr('val');
+            lastOrderingState = ordering;
             await getOrderList(search, lastPagesCount, currentPage, ordering);
         });
-
-
 
 
         // search filter
@@ -250,6 +254,8 @@ $(document).ready(function () {
                         <td>${client_image[2]}${client_image[3]}${client_image[4]}</td>
                         <td>${order.unit_image}</td>
                         <td>${order.defect}</td>
+                        <td>${order.created.slice(8, 10)}.${order.created.slice(5, 7)}.${order.created.slice(0, 4)}
+                        ${order.created.slice(11, 14)}${order.created.slice(14, 16)}</td>
                         <td><button type="button" class="btn btn-warning btn-sm btn-close-white">Stage</button></td>
                     </tr>`)
             }
@@ -671,10 +677,10 @@ $(document).ready(function () {
     });
 
     getOrdersList.off().on('click', async function () {
+        // The table selector "table_id" must be created as the table id attribute in the clickable link and get by click function.
+        let table = $(this).attr('table_id')
 
-        $('.sort_by_order_id').parent().find(':visible').prop('hidden', true);
-        $('.sort_by_order_id_default').prop('hidden', false);
-        lastOrderingState = '&ordering=-order_id';
+        await resetTableSort(table)
 
         pageItem = 'order_list_page';
         await getOrderList('', startElementsCount, '', lastOrderingState);
@@ -834,6 +840,19 @@ $(document).ready(function () {
         });
     }
 
+    async function resetTableSort(table) {
+        // The table selector must be created as the table id attribute in the clickable link and get by click function.
+        // Default sort value should be added like class named "default" into one of two <img> tags.
+
+
+
+        let defaultItem = $(table).find('.default')
+        sortableImgClass.prop('hidden', true)
+        defaultItem.prop('hidden', false)
+
+        lastOrderingState = defaultItem.attr('val');
+    }
+
     async function createConditionsField(placeSelectorName, url, selected = null) {
         $(placeSelectorName + ' div').each(function () {
             $(this).remove();
@@ -890,7 +909,7 @@ $(document).ready(function () {
     }
 
     let lastPagesCount = null;
-    let lastOrderingState = $('.sort_by_order_id').parent().find(':visible').attr('val')
+    let lastOrderingState = $('#order_list_table').find('.default').attr('val')
     let startElementsCount = listElementCount();
 
 

@@ -36,19 +36,41 @@
         <div class="col-12" id="order_list_field">
             <table id="order_list_table" class="table table-striped table-hover">
 
-                <thead style="position: sticky; top: 142px; z-index: 2; box-shadow: 0 4px 4px -2px rgba(7,105,177,0.5);">
+                <thead style="position: sticky; top: 142px; z-index: 2; box-shadow: 0 4px 4px -2px rgba(7,105,177,0.5);"
+                       class="sort_by">
                 <tr>
-                    <th style="width: 40px" scope="col" id="">#
+                    <th style="width: 40px" scope="col" id="" class="sort_by"><a class="a_general" href="#">Order#</a>
 
-                        <img src="{% static 'img/sort-numeric-down-alt.svg' %}" alt="" class="sort_by sort_by_order_id sort_by_order_id_default"
-                                            val="&ordering=-order_id" >
-                        <img src="{% static 'img/sort-numeric-down.svg' %}" alt="" class="sort_by sort_by_order_id"
+                        <img src="{% static 'img/sort-numeric-down-alt.svg' %}" alt="" class="sort_by default"
+                             val="&ordering=-order_id">
+                        <img src="{% static 'img/sort-numeric-down.svg' %}" alt=""
                              val="&ordering=order_id" hidden></th>
 
-                    <th style="width: 75px" scope="col">Client</th>
+                    <th style="width: 75px" scope="col" class="sort_by"><a class="a_general" href="#">Client</a>
+                        <img src="{% static 'img/sort-alpha-down.svg' %}" alt=""
+                             val="&ordering=client_image" hidden>
+                        <img src="{% static 'img/sort-alpha-down-alt.svg' %}" alt="" class="sort_by"
+                             val="&ordering=-client_image" hidden>
+                    </th>
+
                     <th style="width: 96px" scope="col">Contact</th>
-                    <th style="width: 110px" scope="col">Unit</th>
+
+                    <th style="width: 110px" scope="col"><a class="a_general" href="#">Unit</a>
+                        <img src="{% static 'img/sort-alpha-down.svg' %}" alt=""
+                             val="&ordering=unit_image" hidden>
+                        <img src="{% static 'img/sort-alpha-down-alt.svg' %}" alt="" class="sort_by"
+                             val="&ordering=-unit_image" hidden>
+                    </th>
+
                     <th style="width: 135px" scope="col">Defect</th>
+
+                    <th style="width: 70px" scope="col" class="sort_by"><a class="a_general" href="#">Created</a>
+                        <img src="{% static 'img/sort-numeric-down.svg' %}" alt=""
+                             val="&ordering=created" hidden>
+                        <img src="{% static 'img/sort-numeric-down-alt.svg' %}" alt="" class="sort_by"
+                             val="&ordering=-created" hidden>
+                    </th>
+
                     <th style="width: 65px" scope="col">Stage</th>
                 </tr>
                 </thead>
