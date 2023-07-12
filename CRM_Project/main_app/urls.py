@@ -12,6 +12,7 @@ router.register(r'payments', views.PaymentViewSet, basename='payments')
 router.register(r'services-and-parst', views.ServiceAndPartViewSet, basename='sp')
 router.register(r'unit-types', views.UnitTypeViewSet, basename='unit_types')
 router.register(r'unit-conditions', views.UnitConditionViewSet, basename='unit_conditions')
+router.register(r'stages', views.StageViewSet, basename='stages')
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from .serializers import OrderListSerializer, ClientListSerializer, UnitListSerializer, BrandListSerializer, \
     ModelListSerializer, PaymentListSerializer, ServiceAndPartListSerializer, UnitTypeSerializer, \
-    UnitConditionSerializer
+    UnitConditionSerializer, StageSerializer
 from .models import Order, Client, User, Unit, Brand
 from django.views.generic import View, TemplateView
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -134,4 +134,14 @@ class UnitConditionViewSet(viewsets.ModelViewSet):
         return user.unit_conditions.all()
 
     serializer_class = UnitConditionSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class StageViewSet(viewsets.ModelViewSet):
+
+    def get_queryset(self):
+        user = User.objects.get(id=self.request.user.id)
+        return user.stages.all()
+
+    serializer_class = StageSerializer
     permission_classes = (permissions.IsAuthenticated,)

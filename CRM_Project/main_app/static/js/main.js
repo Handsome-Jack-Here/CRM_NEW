@@ -200,7 +200,7 @@ $(document).ready(function () {
     }
 
 
-    async function getOrderList(search = '', elementsPerPage = lastPagesCount, currentPage = '&page=1', ordering = lastOrderingState) {
+    async function getOrderList(search = '', elementsPerPage = currentPagesCount, currentPage = '&page=1', ordering = currentOrderingState) {
 
         let showBySelectField = $('#show_by_select');
         let showBySelectFieldOptions = $('#show_by_select option');
@@ -215,8 +215,8 @@ $(document).ready(function () {
             self.prop('hidden', false);
 
             ordering = self.attr('val');
-            lastOrderingState = ordering;
-            await getOrderList(search, lastPagesCount, currentPage, ordering);
+            currentOrderingState = ordering;
+            await getOrderList(search, currentPagesCount, currentPage, ordering);
         });
 
 
@@ -228,7 +228,7 @@ $(document).ready(function () {
                 search = `search=` + `${search}`;
             }
 
-            getOrderList(search, lastPagesCount, currentPage, ordering);
+            getOrderList(search, currentPagesCount, currentPage, ordering);
         });
 
         //globalize search
@@ -280,7 +280,7 @@ $(document).ready(function () {
                 .append(`<option value="50">50</option>`)
                 .append(`<option value="${max}">All</option>`);
             showBySelectField.val(current);
-            lastPagesCount = current;
+            currentPagesCount = current;
         }
 
         async function orderListClear() {
@@ -683,7 +683,7 @@ $(document).ready(function () {
         await resetTableSort(table)
 
         pageItem = 'order_list_page';
-        await getOrderList('', startElementsCount, '', lastOrderingState);
+        await getOrderList('', startElementsCount, '', currentOrderingState);
         hideAndShow(pageItem);
 
     });
@@ -850,7 +850,7 @@ $(document).ready(function () {
         sortableImgClass.prop('hidden', true)
         defaultItem.prop('hidden', false)
 
-        lastOrderingState = defaultItem.attr('val');
+        currentOrderingState = defaultItem.attr('val');
     }
 
     async function createConditionsField(placeSelectorName, url, selected = null) {
@@ -908,8 +908,8 @@ $(document).ready(function () {
         return hashGlobal === result;
     }
 
-    let lastPagesCount = null;
-    let lastOrderingState = $('#order_list_table').find('.default').attr('val')
+    let currentPagesCount = null;
+    let currentOrderingState = $('#order_list_table').find('.default').attr('val')
     let startElementsCount = listElementCount();
 
 

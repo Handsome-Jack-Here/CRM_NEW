@@ -20,6 +20,7 @@ class Order(models.Model):
     client = models.ForeignKey('Client', on_delete=models.PROTECT, related_name='orders')
     unit = models.ForeignKey('Unit', on_delete=models.PROTECT, related_name='orders')
     sp = models.ManyToManyField('ServiceAndPart', related_name='sp', blank=True)
+    stage = models.ForeignKey('Stage', on_delete=models.PROTECT, null=True, related_name='orders')
 
     def save(self, *args, **kwargs):
         user = self.user
@@ -68,11 +69,12 @@ class Unit(models.Model):
     brand = models.ForeignKey('Brand', on_delete=models.PROTECT, related_name='units')
     model = models.ForeignKey('Model', on_delete=models.PROTECT, related_name='units')
     type = models.ForeignKey('UnitType', on_delete=models.PROTECT, related_name='units')
-    condition = models.ManyToManyField('UnitCondition',  blank=True, related_name='units')
+    condition = models.ManyToManyField('UnitCondition', blank=True, related_name='units')
 
     def save(self, *args, **kwargs):
         if self.user.units.filter(type=self.type, brand=self.brand, model=self.model, serial_number=self.serial_number):
-            unit = self.user.units.get(type=self.type, brand=self.brand, model=self.model, serial_number=self.serial_number)
+            unit = self.user.units.get(type=self.type, brand=self.brand, model=self.model,
+                                       serial_number=self.serial_number)
             self.pk = unit.pk
             return unit
         else:
@@ -215,3 +217,21 @@ class ServiceAndPart(models.Model):
             return sp
         else:
             return super(ServiceAndPart, self).save(*args, **kwargs)
+
+
+class Stage(models.Model):
+    name = models.CharField(max_length=56)
+    visible = models.BooleanField(default=True)
+
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='stages', null=True)
+
+    def save(self, *args, **kwargs):
+        if self.user.stages.filter(name=self.name):
+            stage = self.user.stages.get(name=self.name)
+            self.pk = stage.pk
+            return stage
+        else:
+            return super(Stage, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.name}'

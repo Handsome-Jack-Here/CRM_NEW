@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Order, Client, Unit, Brand, Model, Payment, ServiceAndPart, UnitType, UnitCondition
+from .models import Order, Client, Unit, Brand, Model, Payment, ServiceAndPart, UnitType, UnitCondition, Stage
 
 
 class OrderListSerializer(serializers.ModelSerializer):
@@ -76,4 +76,12 @@ class UnitConditionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UnitCondition
+        fields = '__all__'
+
+
+class StageSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Stage
         fields = '__all__'
